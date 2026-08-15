@@ -90,13 +90,24 @@ const userSchema = new Schema<IUserDocument>(
       type: Date,
       select: false,
     },
+    lastLoginAt: {
+      type: Date,
+      default: null,
+    },
+    passwordChangedAt: {
+      type: Date,
+      default: null,
+    },
   },
   { timestamps: true }
 );
 
-// Hash password before saving
+// Hash password before saving & update passwordChangedAt timestamp
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
+  if (!this.isNew) {
+    this.passwordChangedAt = new Date();
+  }
   const salt = await bcrypt.genSalt(12);
   this.password = await bcrypt.hash(this.password, salt);
   next();

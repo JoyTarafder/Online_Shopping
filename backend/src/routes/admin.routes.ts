@@ -3,6 +3,7 @@ import {
   getDashboardStats,
   getAdminProducts,
   getAllUsers,
+  getUserDetails,
   createUser,
   updateUser,
   blockUser,
@@ -34,6 +35,7 @@ router.get("/products", getAdminProducts);
 
 // User management
 router.get("/users", getAllUsers);
+router.get("/users/:id", getUserDetails);
 router.post("/users", createUser);
 router.put("/users/:id", updateUser);
 router.put("/users/:id/permissions", rootAdminOnly, updateAdminPermissions);

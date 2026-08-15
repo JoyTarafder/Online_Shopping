@@ -50,6 +50,8 @@ export interface IUser {
   verificationCodeExpiry?: Date;
   passwordResetCode?: string;
   passwordResetCodeExpiry?: Date;
+  lastLoginAt?: Date;
+  passwordChangedAt?: Date;
   createdAt?: Date;
   updatedAt?: Date;
 }

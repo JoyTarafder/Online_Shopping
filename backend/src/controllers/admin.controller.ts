@@ -215,6 +215,59 @@ export const getAllUsers = asyncHandler(
   }
 );
 
+// ─── GET /api/admin/users/:id ──────────────────────────────────────────────────
+
+export const getUserDetails = asyncHandler(
+  async (req: Request, res: Response): Promise<void> => {
+    const user = await User.findById(req.params.id);
+    if (!user) throw new AppError("User not found", 404);
+
+    const userOrders = await Order.find({ user: user._id }).sort({ createdAt: -1 });
+
+    const statusCounts: Record<string, number> = {
+      pending: 0,
+      confirmed: 0,
+      shipped: 0,
+      delivered: 0,
+      cancelled: 0,
+      returned: 0,
+    };
+
+    let totalSpent = 0;
+    userOrders.forEach((o) => {
+      if (statusCounts[o.status] !== undefined) {
+        statusCounts[o.status]++;
+      }
+      if (o.status !== "cancelled") {
+        totalSpent += o.total;
+      }
+    });
+
+    const recentOrders = userOrders.slice(0, 10).map((o) => ({
+      _id: o._id,
+      total: o.total,
+      status: o.status,
+      paymentStatus: o.paymentStatus,
+      paymentMethod: o.paymentMethod,
+      createdAt: o.createdAt,
+      itemsCount: o.items ? o.items.length : 0,
+    }));
+
+    res.status(200).json({
+      success: true,
+      data: {
+        user,
+        stats: {
+          totalOrders: userOrders.length,
+          totalSpent,
+          statusCounts,
+        },
+        recentOrders,
+      },
+    });
+  }
+);
+
 // ─── POST /api/admin/users ────────────────────────────────────────────────────
 
 export const createUser = asyncHandler(

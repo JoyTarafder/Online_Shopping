@@ -377,6 +377,292 @@ function Avatar({ name }: { name: string }) {
   );
 }
 
+// ─── User Details Modal ──────────────────────────────────────────────────────
+
+interface UserDetailsData {
+  user: {
+    _id: string;
+    name: string;
+    email: string;
+    phone?: string;
+    role: "user" | "admin" | "sub-admin";
+    isBlocked: boolean;
+    isEmailVerified: boolean;
+    createdAt: string;
+    updatedAt?: string;
+    lastLoginAt?: string;
+    passwordChangedAt?: string;
+    addresses?: Array<{
+      label?: string;
+      address: string;
+      city?: string;
+      state?: string;
+      zip?: string;
+      country?: string;
+      phone?: string;
+    }>;
+  };
+  stats: {
+    totalOrders: number;
+    totalSpent: number;
+    statusCounts: {
+      pending: number;
+      confirmed: number;
+      shipped: number;
+      delivered: number;
+      cancelled: number;
+      returned: number;
+    };
+  };
+  recentOrders: Array<{
+    _id: string;
+    total: number;
+    status: string;
+    paymentStatus: string;
+    paymentMethod?: string;
+    createdAt: string;
+    itemsCount: number;
+  }>;
+}
+
+function UserDetailsModal({
+  userId,
+  onClose,
+}: {
+  userId: string;
+  onClose: () => void;
+}) {
+  const { apiFetch } = useAdminAuth();
+  const [data, setData] = useState<UserDetailsData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    let mounted = true;
+    async function load() {
+      setLoading(true);
+      setError("");
+      try {
+        const res = await apiFetch<{ success: boolean; data: UserDetailsData }>(
+          `/admin/users/${userId}`
+        );
+        if (mounted) setData(res.data);
+      } catch (err: unknown) {
+        if (mounted) setError(err instanceof Error ? err.message : "Failed to load details");
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    }
+    load();
+    return () => { mounted = false; };
+  }, [userId, apiFetch]);
+
+  const formatDate = (iso?: string) => {
+    if (!iso) return "Not recorded";
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return "Not recorded";
+    return d.toLocaleString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    });
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.75)", backdropFilter: "blur(10px)" }}>
+      <div className="rounded-3xl shadow-2xl w-full max-w-3xl flex flex-col max-h-[92vh] overflow-hidden" style={{ background: "rgba(15,15,25,0.98)", border: "1px solid rgba(255,255,255,0.1)" }}>
+        {/* Modal Header */}
+        <div className="flex items-center justify-between px-7 py-5" style={{ borderBottom: "1px solid rgba(255,255,255,0.06)", background: "linear-gradient(135deg, rgba(124,58,237,0.12), rgba(67,56,202,0.06))" }}>
+          <div className="flex items-center gap-3.5">
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center font-bold text-lg text-white shadow-lg bg-gradient-to-br from-violet-600 to-indigo-600">
+              {data?.user?.name ? data.user.name.split(" ").slice(0, 2).map((w) => w[0]?.toUpperCase()).join("") : "U"}
+            </div>
+            <div>
+              <h2 className="text-lg font-bold text-slate-100 flex items-center gap-2">
+                {data?.user?.name || "User Details"}
+                {data?.user?.isBlocked ? (
+                  <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-500/20 text-rose-300 border border-rose-500/30">Blocked</span>
+                ) : (
+                  <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Active</span>
+                )}
+              </h2>
+              <p className="text-xs text-slate-400 font-mono mt-0.5">{data?.user?.email || ""}</p>
+            </div>
+          </div>
+          <button onClick={onClose} className="w-9 h-9 flex items-center justify-center rounded-xl bg-white/[0.06] hover:bg-white/[0.12] text-slate-400 transition-colors">
+            ✕
+          </button>
+        </div>
+
+        {/* Modal Body */}
+        <div className="flex-1 overflow-y-auto px-7 py-6 space-y-6">
+          {loading ? (
+            <div className="flex flex-col items-center justify-center py-20">
+              <div className="w-8 h-8 border-2 rounded-full animate-spin border-purple-500/30 border-t-purple-500 mb-3" />
+              <p className="text-xs text-slate-400">Loading user profile & order analytics...</p>
+            </div>
+          ) : error ? (
+            <div className="p-5 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-300 text-sm">
+              {error}
+            </div>
+          ) : data ? (
+            <>
+              {/* Stat Cards Grid */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
+                <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/[0.06]">
+                  <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">Total Orders</p>
+                  <p className="text-2xl font-black text-violet-300">{data.stats.totalOrders}</p>
+                  <p className="text-[10px] text-slate-500 mt-1">Placed all-time</p>
+                </div>
+                <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/[0.06]">
+                  <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">Total Spent</p>
+                  <p className="text-2xl font-black text-emerald-300">৳{data.stats.totalSpent.toLocaleString()}</p>
+                  <p className="text-[10px] text-slate-500 mt-1">Net purchase total</p>
+                </div>
+                <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/[0.06]">
+                  <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">Last Login</p>
+                  <p className="text-xs font-bold text-slate-200 mt-1 truncate" title={formatDate(data.user.lastLoginAt)}>
+                    {data.user.lastLoginAt ? formatDate(data.user.lastLoginAt) : "Never Logged In"}
+                  </p>
+                </div>
+                <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/[0.06]">
+                  <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">Password Changed</p>
+                  <p className="text-xs font-bold text-slate-200 mt-1 truncate" title={formatDate(data.user.passwordChangedAt)}>
+                    {data.user.passwordChangedAt ? formatDate(data.user.passwordChangedAt) : "Original Password"}
+                  </p>
+                </div>
+              </div>
+
+              {/* Order Status Breakdown */}
+              <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/[0.06] space-y-3">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Order Status Breakdown</h3>
+                <div className="grid grid-cols-2 sm:grid-cols-6 gap-2">
+                  <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-center">
+                    <span className="block text-[10px] font-bold uppercase text-amber-400">Pending</span>
+                    <span className="text-base font-black text-amber-300">{data.stats.statusCounts.pending}</span>
+                  </div>
+                  <div className="p-2.5 rounded-xl bg-violet-500/10 border border-violet-500/20 text-center">
+                    <span className="block text-[10px] font-bold uppercase text-violet-400">Confirmed</span>
+                    <span className="text-base font-black text-violet-300">{data.stats.statusCounts.confirmed}</span>
+                  </div>
+                  <div className="p-2.5 rounded-xl bg-blue-500/10 border border-blue-500/20 text-center">
+                    <span className="block text-[10px] font-bold uppercase text-blue-400">Shipped</span>
+                    <span className="text-base font-black text-blue-300">{data.stats.statusCounts.shipped}</span>
+                  </div>
+                  <div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-center">
+                    <span className="block text-[10px] font-bold uppercase text-emerald-400">Delivered</span>
+                    <span className="text-base font-black text-emerald-300">{data.stats.statusCounts.delivered}</span>
+                  </div>
+                  <div className="p-2.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-center">
+                    <span className="block text-[10px] font-bold uppercase text-rose-400">Cancelled</span>
+                    <span className="text-base font-black text-rose-300">{data.stats.statusCounts.cancelled}</span>
+                  </div>
+                  <div className="p-2.5 rounded-xl bg-orange-500/10 border border-orange-500/20 text-center">
+                    <span className="block text-[10px] font-bold uppercase text-orange-400">Returned</span>
+                    <span className="text-base font-black text-orange-300">{data.stats.statusCounts.returned}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Security & Dates Card */}
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/[0.06] space-y-2.5">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Account History & Security</h3>
+                  <div className="space-y-2 text-xs">
+                    <div className="flex justify-between items-center text-slate-300">
+                      <span className="text-slate-400">Account Created:</span>
+                      <span className="font-semibold text-slate-200">{formatDate(data.user.createdAt)}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-slate-300">
+                      <span className="text-slate-400">Last Password Change:</span>
+                      <span className="font-semibold text-slate-200">{formatDate(data.user.passwordChangedAt)}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-slate-300">
+                      <span className="text-slate-400">Last Login Active:</span>
+                      <span className="font-semibold text-slate-200">{formatDate(data.user.lastLoginAt)}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-slate-300">
+                      <span className="text-slate-400">Email Verification:</span>
+                      <span className={`font-bold ${data.user.isEmailVerified ? "text-emerald-400" : "text-amber-400"}`}>
+                        {data.user.isEmailVerified ? "✓ Verified" : "⏳ Pending"}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/[0.06] space-y-2.5">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Saved Addresses ({data.user.addresses?.length || 0})</h3>
+                  {data.user.addresses && data.user.addresses.length > 0 ? (
+                    <div className="space-y-2 max-h-28 overflow-y-auto pr-1">
+                      {data.user.addresses.map((a, idx) => (
+                        <div key={idx} className="p-2 rounded-xl bg-white/[0.03] text-xs text-slate-300 border border-white/[0.04]">
+                          <p className="font-bold text-slate-200">{a.label || "Address"} {a.phone && `(${a.phone})`}</p>
+                          <p className="text-[11px] text-slate-400 truncate">{a.address}, {[a.city, a.state].filter(Boolean).join(", ")}</p>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-xs text-slate-500 italic py-3">No saved addresses on file</p>
+                  )}
+                </div>
+              </div>
+
+              {/* Recent Orders List */}
+              <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/[0.06] space-y-3">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Recent Orders List</h3>
+                {data.recentOrders.length === 0 ? (
+                  <p className="text-xs text-slate-500 italic py-4 text-center">This user has not placed any orders yet.</p>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-xs">
+                      <thead>
+                        <tr className="border-b border-white/[0.06] text-slate-400 font-bold uppercase text-[10px]">
+                          <th className="py-2.5 px-3">Order ID</th>
+                          <th className="py-2.5 px-3">Date</th>
+                          <th className="py-2.5 px-3">Items</th>
+                          <th className="py-2.5 px-3">Status</th>
+                          <th className="py-2.5 px-3">Payment</th>
+                          <th className="py-2.5 px-3 text-right">Total</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-white/[0.04] text-slate-300 font-medium">
+                        {data.recentOrders.map((o) => (
+                          <tr key={o._id} className="hover:bg-white/[0.02]">
+                            <td className="py-2.5 px-3 font-mono font-bold text-violet-300">#{o._id.slice(-8).toUpperCase()}</td>
+                            <td className="py-2.5 px-3 text-slate-400">{new Date(o.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</td>
+                            <td className="py-2.5 px-3 text-slate-400">{o.itemsCount} items</td>
+                            <td className="py-2.5 px-3">
+                              <span className="capitalize font-bold text-[11px] text-slate-200 px-2 py-0.5 rounded-full bg-white/[0.06]">
+                                {o.status}
+                              </span>
+                            </td>
+                            <td className="py-2.5 px-3">
+                              <span className={`font-bold text-[11px] px-2 py-0.5 rounded-full ${
+                                o.paymentStatus === "refunded" ? "bg-purple-500/20 text-purple-300" :
+                                o.paymentStatus === "paid" ? "bg-emerald-500/20 text-emerald-300" : "bg-amber-500/20 text-amber-300"
+                              }`}>
+                                {o.paymentStatus === "refunded" ? "Payment Returned" : o.paymentStatus === "paid" ? "Paid" : "Verifying"}
+                              </span>
+                            </td>
+                            <td className="py-2.5 px-3 text-right font-black text-slate-100">৳{o.total.toFixed(2)}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+            </>
+          ) : null}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 function UsersContent() {
@@ -387,6 +673,7 @@ function UsersContent() {
   const [pagination, setPagination] = useState({ total: 0, pages: 1 });
   const [loading, setLoading] = useState(true);
   const [toDelete, setToDelete] = useState<User | null>(null);
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [showCreate, setShowCreate] = useState(false);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
@@ -601,10 +888,14 @@ function UsersContent() {
                     style={{ borderBottom: "1px solid rgba(255,255,255,0.035)" }}
                   >
                     <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
+                      <div
+                        onClick={() => setSelectedUserId(user._id)}
+                        className="flex items-center gap-3 cursor-pointer group/user"
+                        title="Click to view user details"
+                      >
                         <Avatar name={user.name} />
                         <div>
-                          <p className="text-sm font-semibold" style={{ color: "#e2e8f0" }}>
+                          <p className="text-sm font-semibold group-hover/user:text-violet-300 transition-colors" style={{ color: "#e2e8f0" }}>
                             {user.name}
                           </p>
                           <p className="text-xs text-slate-400">{user.email}</p>
@@ -673,6 +964,14 @@ function UsersContent() {
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity justify-end">
+                        <button
+                          onClick={() => setSelectedUserId(user._id)}
+                          title="View user details and analytics"
+                          className="px-3 py-1.5 text-xs font-bold rounded-lg transition-colors border"
+                          style={{ background: "rgba(124,58,237,0.15)", color: "#a78bfa", borderColor: "rgba(124,58,237,0.3)" }}
+                        >
+                          Details
+                        </button>
                         {user.role === "user" && (
                           <button
                             onClick={() => handleBlock(user)}
@@ -794,6 +1093,13 @@ function UsersContent() {
           </div>
         )}
       </div>
+
+      {selectedUserId && (
+        <UserDetailsModal
+          userId={selectedUserId}
+          onClose={() => setSelectedUserId(null)}
+        />
+      )}
 
       {showCreate && (
         <CreateUserModal

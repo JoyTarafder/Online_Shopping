@@ -100,6 +100,9 @@ export const login = asyncHandler(
       throw new AppError("Please verify your email before logging in.", 403);
     }
 
+    user.lastLoginAt = new Date();
+    await user.save();
+
     const token = generateToken(user._id.toString());
 
     res.status(200).json({
