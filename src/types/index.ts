@@ -30,6 +30,7 @@ export interface CartState {
 }
 
 export type CartAction =
+  | { type: "INIT_CART"; payload: CartItem[] }
   | { type: "ADD_ITEM"; payload: CartItem }
   | {
       type: "REMOVE_ITEM";

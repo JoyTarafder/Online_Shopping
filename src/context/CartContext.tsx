@@ -1,10 +1,12 @@
 "use client";
 
-import React, { createContext, useContext, useReducer, useCallback } from "react";
+import React, { createContext, useContext, useReducer, useCallback, useEffect, useRef } from "react";
 import { CartItem, CartState, CartAction, Product } from "@/types";
 
 const cartReducer = (state: CartState, action: CartAction): CartState => {
   switch (action.type) {
+    case "INIT_CART":
+      return { ...state, items: action.payload };
     case "ADD_ITEM": {
       const { product, quantity, size, color } = action.payload;
       const existingIndex = state.items.findIndex(
@@ -83,6 +85,39 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     items: [],
     isOpen: false,
   });
+
+  const isInitialized = useRef(false);
+
+  // 1. Load persisted cart items on mount
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("shajsutro_cart");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          dispatch({ type: "INIT_CART", payload: parsed });
+        }
+      }
+    } catch {
+      // Ignore localStorage errors
+    } finally {
+      isInitialized.current = true;
+    }
+  }, []);
+
+  // 2. Persist cart items whenever state.items changes
+  useEffect(() => {
+    if (!isInitialized.current) return;
+    try {
+      if (state.items.length === 0) {
+        localStorage.removeItem("shajsutro_cart");
+      } else {
+        localStorage.setItem("shajsutro_cart", JSON.stringify(state.items));
+      }
+    } catch {
+      // Ignore localStorage write errors
+    }
+  }, [state.items]);
 
   const addItem = useCallback(
     (product: Product, size: string, color: string, quantity = 1) => {
