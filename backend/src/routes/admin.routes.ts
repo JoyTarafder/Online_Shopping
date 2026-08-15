@@ -19,6 +19,9 @@ import {
   getAdminActivityAlerts,
   getAllAdminUsers,
   updateAdminPermissions,
+  getSubscribers,
+  deleteSubscriber,
+  toggleSubscriberStatus,
 } from "../controllers/admin.controller";
 import { protect, adminOnly, rootAdminOnly } from "../middleware/auth.middleware";
 
@@ -29,6 +32,11 @@ router.use(protect, adminOnly);
 router.get("/stats", getDashboardStats);
 router.get("/activity-alerts", getAdminActivityAlerts);
 router.get("/team", rootAdminOnly, getAllAdminUsers);
+
+// Subscriber management
+router.get("/subscribers", getSubscribers);
+router.delete("/subscribers/:id", deleteSubscriber);
+router.patch("/subscribers/:id/toggle", toggleSubscriberStatus);
 
 // Product management (admin view — includes hidden products)
 router.get("/products", getAdminProducts);

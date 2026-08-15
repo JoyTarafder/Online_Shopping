@@ -6,6 +6,7 @@ import User from "../models/User";
 import Order from "../models/Order";
 import Product from "../models/Product";
 import JobApplication from "../models/JobApplication";
+import Subscriber from "../models/Subscriber";
 import { AppError } from "../middleware/error.middleware";
 import { AuthRequest } from "../types";
 
@@ -873,4 +874,76 @@ export const updateAdminPermissions = asyncHandler(
       },
     });
   },
+);
+
+// ─── GET /api/admin/subscribers ───────────────────────────────────────────────
+
+export const getSubscribers = asyncHandler(
+  async (req: AuthRequest, res: Response): Promise<void> => {
+    const page = Math.max(1, parseInt((req.query.page as string) ?? "1"));
+    const limit = Math.min(100, parseInt((req.query.limit as string) ?? "20"));
+    const search = ((req.query.search as string) ?? "").trim();
+    const skip = (page - 1) * limit;
+
+    const filter: any = {};
+    if (search) {
+      filter.email = { $regex: search, $options: "i" };
+    }
+
+    const [subscribers, total, activeCount] = await Promise.all([
+      Subscriber.find(filter)
+        .sort({ subscribedAt: -1, createdAt: -1 })
+        .skip(skip)
+        .limit(limit),
+      Subscriber.countDocuments(filter),
+      Subscriber.countDocuments({ isActive: true }),
+    ]);
+
+    res.status(200).json({
+      success: true,
+      data: subscribers,
+      meta: {
+        total,
+        activeCount,
+        page,
+        limit,
+        pages: Math.ceil(total / limit),
+      },
+    });
+  }
+);
+
+// ─── DELETE /api/admin/subscribers/:id ────────────────────────────────────────
+
+export const deleteSubscriber = asyncHandler(
+  async (req: AuthRequest, res: Response): Promise<void> => {
+    const subscriber = await Subscriber.findByIdAndDelete(req.params.id);
+    if (!subscriber) {
+      throw new AppError("Subscriber not found", 404);
+    }
+    res.status(200).json({
+      success: true,
+      message: "Subscriber removed successfully",
+    });
+  }
+);
+
+// ─── PATCH /api/admin/subscribers/:id/toggle ─────────────────────────────────
+
+export const toggleSubscriberStatus = asyncHandler(
+  async (req: AuthRequest, res: Response): Promise<void> => {
+    const subscriber = await Subscriber.findById(req.params.id);
+    if (!subscriber) {
+      throw new AppError("Subscriber not found", 404);
+    }
+
+    subscriber.isActive = !subscriber.isActive;
+    await subscriber.save();
+
+    res.status(200).json({
+      success: true,
+      message: `Subscriber marked as ${subscriber.isActive ? "Active" : "Inactive"}`,
+      data: subscriber,
+    });
+  }
 );

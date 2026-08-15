@@ -2,17 +2,36 @@
 
 import { useState } from "react";
 
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+
 export default function NewsletterSection() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email) return;
+    if (!email || !email.trim()) return;
+    
     setStatus("loading");
-    await new Promise((resolve) => setTimeout(resolve, 800));
-    setStatus("success");
-    setEmail("");
+    setErrorMessage("");
+
+    try {
+      const res = await fetch(`${API_BASE}/api/newsletter/subscribe`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim() }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data?.message || "Failed to subscribe");
+      }
+      setStatus("success");
+      setEmail("");
+    } catch (err: any) {
+      setErrorMessage(err.message || "Failed to subscribe. Please try again.");
+      setStatus("error");
+    }
   };
 
   return (
@@ -74,7 +93,10 @@ export default function NewsletterSection() {
 
               <button
                 type="button"
-                onClick={() => setStatus("idle")}
+                onClick={() => {
+                  setStatus("idle");
+                  setErrorMessage("");
+                }}
                 className="mt-1 text-[11px] text-emerald-400 hover:text-emerald-300 font-medium underline underline-offset-4 transition-colors"
               >
                 Subscribe another email
@@ -82,9 +104,13 @@ export default function NewsletterSection() {
             </div>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="w-full max-w-md mx-auto relative group">
-            {/* Integrated, bulletproof input frame with focus glow */}
-            <div className="relative flex items-center p-1.5 rounded-2xl bg-white/[0.03] border border-white/15 focus-within:border-amber-400/60 focus-within:ring-4 focus-within:ring-amber-400/10 transition-all duration-300 shadow-xl">
+          <form onSubmit={handleSubmit} className="w-full max-w-md mx-auto relative group space-y-3">
+            {/* Integrated input frame with focus glow */}
+            <div className={`relative flex items-center p-1.5 rounded-2xl bg-white/[0.03] border transition-all duration-300 shadow-xl ${
+              status === "error"
+                ? "border-rose-500/60 ring-4 ring-rose-500/10"
+                : "border-white/15 focus-within:border-amber-400/60 focus-within:ring-4 focus-within:ring-amber-400/10"
+            }`}>
               <input
                 type="email"
                 value={email}
@@ -101,6 +127,12 @@ export default function NewsletterSection() {
                 {status === "loading" ? "Subscribing..." : "Subscribe"}
               </button>
             </div>
+
+            {status === "error" && errorMessage && (
+              <p className="text-center text-xs text-rose-400 font-medium animate-fade-in">
+                ⚠️ {errorMessage}
+              </p>
+            )}
           </form>
         )}
 

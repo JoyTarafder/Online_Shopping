@@ -21,6 +21,7 @@ import productRoutes from "./routes/product.routes";
 import promoCodeRoutes from "./routes/promoCode.routes";
 import reviewRoutes from "./routes/review.routes";
 import statsRoutes from "./routes/stats.routes";
+import newsletterRoutes from "./routes/newsletter.routes";
 
 // ─── Connect to MongoDB Atlas ─────────────────────────────────────────────────
 connectDB();
@@ -98,6 +99,7 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/promo-codes", promoCodeRoutes);
 app.use("/api/jobs", jobRoutes);
 app.use("/api/job-applications", jobApplicationRoutes);
+app.use("/api/newsletter", newsletterRoutes);
 app.use("/api/stats", statsRoutes);
 app.use("/api/notifications", notificationRoutes);
 

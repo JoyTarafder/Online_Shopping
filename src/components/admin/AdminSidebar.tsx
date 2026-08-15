@@ -214,6 +214,32 @@ const NAV_ITEMS = [
       </svg>
     ),
   },
+  {
+    key: "subscribers",
+    label: "Subscribers",
+    href: "/admin/subscribers",
+    iconColor: "text-emerald-400",
+    iconBg: "bg-emerald-500/15 border-emerald-500/20",
+    activeBg:
+      "bg-gradient-to-r from-emerald-500/20 via-teal-500/10 to-transparent text-white font-bold",
+    barGradient:
+      "from-emerald-400 to-teal-500 shadow-[0_0_12px_rgba(16,185,129,0.8)]",
+    icon: (
+      <svg
+        className="w-4 h-4"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"
+        />
+      </svg>
+    ),
+  },
 ];
 
 

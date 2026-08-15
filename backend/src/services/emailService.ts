@@ -403,13 +403,42 @@ export const sendOrderConfirmationEmail = async (
     await transporter.sendMail({
       from: `"ShajSutro" <${process.env.EMAIL_USER}>`,
       to: recipientEmail,
-      subject: `Order Confirmation #${orderId} — ShajSutro`,
+      subject: `✨ Order Confirmation #${orderId} — ShajSutro`,
       html: emailShell(
         body,
-        `Your ShajSutro order #${orderId} for ৳${(order.total || 0).toFixed(2)} has been placed successfully!`,
+        `Your ShajSutro order #${orderId} for ৳${(order.total || 0).toFixed(2)} has been placed successfully!`
       ),
     });
   } catch (err) {
     console.error("Failed to send order confirmation email:", err);
+  }
+};
+
+// ─── Send: Newsletter Welcome Email ──────────────────────────────────────────
+
+export const sendNewsletterWelcomeEmail = async (email: string): Promise<void> => {
+  const body = `
+    <div style="text-align:center;margin-bottom:32px;">
+      <div style="width:64px;height:64px;margin:0 auto 16px;border-radius:20px;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.25);line-height:64px;font-size:28px;">
+        📩
+      </div>
+      <span style="display:inline-block;padding:4px 14px;background:#fef3c7;border:1px solid #fde047;border-radius:100px;font-size:11px;font-weight:800;color:#92400e;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">
+        Welcome to VIP Circle
+      </span>
+      <h2 style="margin:8px 0 6px;font-size:26px;font-weight:800;color:#0f172a;">Welcome to ShajSutro!</h2>
+      <p style="margin:0;font-size:14px;color:#64748b;line-height:1.6;max-width:440px;margin:0 auto;">
+        Thank you for subscribing to our newsletter. You&apos;re now on the VIP list for early drop alerts, private sales, and minimalist style guides.
+      </p>
+    </div>
+  `;
+  try {
+    await transporter.sendMail({
+      from: `"ShajSutro" <${process.env.EMAIL_USER}>`,
+      to: email,
+      subject: "Welcome to ShajSutro Newsletter!",
+      html: emailShell(body, "Welcome to ShajSutro! You are now subscribed to VIP updates."),
+    });
+  } catch (err) {
+    console.error("Failed to send newsletter welcome email:", err);
   }
 };
