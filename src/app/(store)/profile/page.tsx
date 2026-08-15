@@ -365,7 +365,7 @@ function OverviewTab({
 
   const delivered  = orders.filter((o) => o.status === "delivered").length;
   const active     = orders.filter((o) => ["pending","confirmed","shipped"].includes(o.status)).length;
-  const totalSpent = orders.filter((o) => o.status !== "cancelled").reduce((s, o) => s + o.total, 0);
+  const totalSpent = orders.filter((o) => !["cancelled", "returned"].includes(o.status)).reduce((s, o) => s + o.total, 0);
 
   const stats = [
     { label: "Total Orders",    value: orders.length,             icon: BoxIcon },

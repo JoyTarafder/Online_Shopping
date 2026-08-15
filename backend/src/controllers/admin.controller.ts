@@ -38,7 +38,7 @@ export const getDashboardStats = asyncHandler(
       Order.countDocuments(),
       Product.countDocuments(),
       Order.aggregate([
-        { $match: { status: { $ne: "cancelled" } } },
+        { $match: { status: { $nin: ["cancelled", "returned"] } } },
         { $group: { _id: null, total: { $sum: "$total" } } },
       ]),
       Order.aggregate([
@@ -51,7 +51,7 @@ export const getDashboardStats = asyncHandler(
       Order.aggregate([
         {
           $match: {
-            status: { $ne: "cancelled" },
+            status: { $nin: ["cancelled", "returned"] },
           },
         },
         {
@@ -67,7 +67,7 @@ export const getDashboardStats = asyncHandler(
       ]),
       // Top selling products
       Order.aggregate([
-        { $match: { status: { $ne: "cancelled" } } },
+        { $match: { status: { $nin: ["cancelled", "returned"] } } },
         { $unwind: "$items" },
         {
           $group: {
@@ -89,22 +89,22 @@ export const getDashboardStats = asyncHandler(
         .limit(5),
       // This Month Revenue
       Order.aggregate([
-        { $match: { status: { $ne: "cancelled" }, createdAt: { $gte: startOfThisMonth } } },
+        { $match: { status: { $nin: ["cancelled", "returned"] }, createdAt: { $gte: startOfThisMonth } } },
         { $group: { _id: null, total: { $sum: "$total" } } },
       ]),
       // Last Month Revenue
       Order.aggregate([
-        { $match: { status: { $ne: "cancelled" }, createdAt: { $gte: startOfLastMonth, $lt: startOfThisMonth } } },
+        { $match: { status: { $nin: ["cancelled", "returned"] }, createdAt: { $gte: startOfLastMonth, $lt: startOfThisMonth } } },
         { $group: { _id: null, total: { $sum: "$total" } } },
       ]),
       // This Week Revenue
       Order.aggregate([
-        { $match: { status: { $ne: "cancelled" }, createdAt: { $gte: startOfThisWeek } } },
+        { $match: { status: { $nin: ["cancelled", "returned"] }, createdAt: { $gte: startOfThisWeek } } },
         { $group: { _id: null, total: { $sum: "$total" } } },
       ]),
       // Last Week Revenue
       Order.aggregate([
-        { $match: { status: { $ne: "cancelled" }, createdAt: { $gte: startOfLastWeek, $lt: startOfThisWeek } } },
+        { $match: { status: { $nin: ["cancelled", "returned"] }, createdAt: { $gte: startOfLastWeek, $lt: startOfThisWeek } } },
         { $group: { _id: null, total: { $sum: "$total" } } },
       ]),
     ]);
