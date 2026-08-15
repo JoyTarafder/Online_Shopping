@@ -876,12 +876,6 @@ function UsersContent() {
                   <th className="text-left text-[11px] font-bold uppercase tracking-[0.08em] px-6 py-4" style={{ color: "rgba(148,163,184,0.5)" }}>
                     Status
                   </th>
-                  <th className="text-left text-[11px] font-bold uppercase tracking-[0.08em] px-6 py-4" style={{ color: "rgba(148,163,184,0.5)" }}>
-                    Joined
-                  </th>
-                  <th className="text-left text-[11px] font-bold uppercase tracking-[0.08em] px-6 py-4" style={{ color: "rgba(148,163,184,0.5)" }}>
-                    Last Login
-                  </th>
                   <th className="px-6 py-4" />
                 </tr>
               </thead>
@@ -958,30 +952,6 @@ function UsersContent() {
                           <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
                           Active
                         </span>
-                      )}
-                    </td>
-                    <td className="px-6 py-4 text-xs font-medium" style={{ color: "rgba(148,163,184,0.5)" }}>
-                      {new Date(user.createdAt).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                      })}
-                    </td>
-                    <td className="px-6 py-4 text-xs font-medium">
-                      {user.lastLoginAt ? (
-                        <span className="inline-flex items-center gap-1.5 text-slate-300 font-semibold">
-                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
-                          {new Date(user.lastLoginAt).toLocaleDateString("en-US", {
-                            month: "short",
-                            day: "numeric",
-                            year: "numeric",
-                            hour: "numeric",
-                            minute: "2-digit",
-                            hour12: true,
-                          })}
-                        </span>
-                      ) : (
-                        <span className="text-slate-500 italic text-[11px]">Never Logged In</span>
                       )}
                     </td>
                     <td className="px-6 py-4">
