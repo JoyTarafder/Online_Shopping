@@ -153,6 +153,7 @@ export default function AdminHeader() {
     fetchAlerts();
     const interval = setInterval(fetchAlerts, 30000);
     return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
   // Click outside to close dropdown

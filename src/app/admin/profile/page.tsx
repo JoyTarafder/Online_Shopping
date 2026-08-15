@@ -169,6 +169,7 @@ export default function AdminProfilePage() {
     if (activeTab === "team") {
       fetchTeamMembers();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab]);
 
   const handleToggleMemberPerm = (memberId: string, permKey: string) => {
