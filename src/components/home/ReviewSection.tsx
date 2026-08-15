@@ -102,7 +102,6 @@ export default function ReviewSection() {
   const touchStartX = useRef<number>(0);
   const touchEndX = useRef<number>(0);
 
-  // Total visible slides count logic
   const totalSlides = REVIEWS.length;
 
   // Auto slide every 5 seconds (5000ms)
@@ -142,38 +141,37 @@ export default function ReviewSection() {
   };
 
   return (
-    <section className="py-16 sm:py-24 bg-charcoal-950 text-white relative overflow-hidden border-t border-charcoal-900 shadow-soft-2xl">
-      {/* Subtle OLED ambient glows */}
-      <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-accent-600/5 rounded-full blur-[140px] pointer-events-none" />
-      <div className="absolute bottom-0 left-1/4 w-[500px] h-[500px] bg-warm-500/5 rounded-full blur-[140px] pointer-events-none" />
+    <section className="py-16 sm:py-24 bg-gradient-to-b from-white via-[#FAFAFA] to-[#F5F5F3] text-charcoal-900 relative overflow-hidden border-t border-charcoal-100">
+      {/* Soft warm light ambient glows */}
+      <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-accent-500/5 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute bottom-0 left-1/4 w-[500px] h-[500px] bg-warm-400/10 rounded-full blur-[140px] pointer-events-none" />
 
-      {/* Decorative dot mesh */}
-      <div className="absolute inset-0 bg-[radial-gradient(rgba(255,255,255,0.015)_1.5px,transparent_1.5px)] [background-size:24px_24px] pointer-events-none" />
+      {/* Decorative light grid backdrop */}
+      <div className="absolute inset-0 bg-[radial-gradient(rgba(0,0,0,0.02)_1.5px,transparent_1.5px)] [background-size:24px_24px] pointer-events-none" />
 
       <div className="relative max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 z-10">
-        
-        {/* Header with Navigation Controls */}
+        {/* Header with Controls */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-12">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.04] border border-white/10 mb-3">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
-              <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-amber-400">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-accent-100/70 border border-accent-200/60 mb-3.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-accent-600 animate-pulse" />
+              <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-accent-700">
                 Customer Voices
               </span>
             </div>
-            
-            <h2 className="text-3xl sm:text-4.5xl font-bold tracking-tight text-white">
+
+            <h2 className="text-3xl sm:text-4.5xl font-bold tracking-tight text-charcoal-950">
               What Our Community Says
             </h2>
-            <p className="text-charcoal-300 text-sm font-light mt-2 max-w-md">
+            <p className="text-charcoal-500 text-sm font-light mt-2 max-w-md">
               Real feedback from verified buyers across Bangladesh.
             </p>
           </div>
 
           {/* Carousel Navigation Arrows & Auto-Timer Status */}
           <div className="flex items-center gap-4">
-            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.03] border border-white/8 text-[11px] font-medium text-slate-400">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-charcoal-200/80 shadow-soft text-[11px] font-medium text-charcoal-600">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
               <span>Auto-sliding (5s)</span>
             </div>
 
@@ -181,27 +179,47 @@ export default function ReviewSection() {
               <button
                 onClick={handlePrev}
                 aria-label="Previous Review"
-                className="w-11 h-11 rounded-2xl bg-white/[0.04] border border-white/10 hover:bg-white/[0.1] hover:border-white/20 text-white flex items-center justify-center transition-all duration-300 active:scale-95 shadow-soft"
+                className="w-11 h-11 rounded-2xl bg-white border border-charcoal-200/80 hover:bg-charcoal-950 hover:text-white text-charcoal-800 flex items-center justify-center transition-all duration-300 active:scale-95 shadow-soft hover:shadow-soft-md"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 19l-7-7 7-7"
+                  />
                 </svg>
               </button>
 
               <button
                 onClick={handleNext}
                 aria-label="Next Review"
-                className="w-11 h-11 rounded-2xl bg-white/[0.04] border border-white/10 hover:bg-white/[0.1] hover:border-white/20 text-white flex items-center justify-center transition-all duration-300 active:scale-95 shadow-soft"
+                className="w-11 h-11 rounded-2xl bg-white border border-charcoal-200/80 hover:bg-charcoal-950 hover:text-white text-charcoal-800 flex items-center justify-center transition-all duration-300 active:scale-95 shadow-soft hover:shadow-soft-md"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 5l7 7-7 7"
+                  />
                 </svg>
               </button>
             </div>
           </div>
         </div>
 
-        {/* Carousel Container with requested spacing classes (-ml-[VALUE] on Content, pl-[VALUE] on Item) */}
+        {/* Carousel Container with requested spacing (-ml-[VALUE] on Content, pl-[VALUE] on Item) */}
         <div
           className="overflow-hidden"
           onMouseEnter={() => setIsPaused(true)}
@@ -214,7 +232,15 @@ export default function ReviewSection() {
           <div
             className="flex transition-transform duration-700 ease-out -ml-4 sm:-ml-6"
             style={{
-              transform: `translateX(-${currentIndex * (100 / (typeof window !== "undefined" && window.innerWidth >= 1024 ? 3 : window.innerWidth >= 640 ? 2 : 1))}%)`,
+              transform: `translateX(-${
+                currentIndex *
+                (100 /
+                  (typeof window !== "undefined" && window.innerWidth >= 1024
+                    ? 3
+                    : window.innerWidth >= 640
+                    ? 2
+                    : 1))
+              }%)`,
             }}
           >
             {REVIEWS.map((review) => (
@@ -223,11 +249,11 @@ export default function ReviewSection() {
                 key={review.id}
                 className="w-full sm:w-1/2 lg:w-1/3 flex-shrink-0 pl-4 sm:pl-6"
               >
-                <div className="h-full p-7 rounded-3xl bg-gradient-to-b from-white/[0.04] to-white/[0.01] border border-white/10 hover:border-white/20 transition-all duration-500 flex flex-col justify-between group hover:shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
+                <div className="h-full p-7 rounded-3xl bg-white border border-charcoal-200/70 hover:border-charcoal-300 transition-all duration-500 flex flex-col justify-between group shadow-soft hover:shadow-soft-xl">
                   <div>
                     {/* Header: Star Rating & Verified Badge */}
                     <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center gap-1 text-amber-400">
+                      <div className="flex items-center gap-1 text-amber-500">
                         {[...Array(review.rating)].map((_, i) => (
                           <svg
                             key={i}
@@ -240,9 +266,9 @@ export default function ReviewSection() {
                       </div>
 
                       {review.verified && (
-                        <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-400 bg-emerald-950/50 border border-emerald-500/20 px-2.5 py-0.5 rounded-full">
+                        <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">
                           <svg
-                            className="w-3 h-3 text-emerald-400"
+                            className="w-3 h-3 text-emerald-600"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -260,19 +286,19 @@ export default function ReviewSection() {
                     </div>
 
                     {/* Review Title & Text */}
-                    <h3 className="text-base font-bold text-white mb-2 group-hover:text-amber-300 transition-colors">
+                    <h3 className="text-base font-bold text-charcoal-950 mb-2 group-hover:text-accent-600 transition-colors">
                       {review.title}
                     </h3>
-                    <p className="text-charcoal-300 text-xs sm:text-sm font-light leading-relaxed mb-6">
+                    <p className="text-charcoal-600 text-xs sm:text-sm font-light leading-relaxed mb-6">
                       &quot;{review.comment}&quot;
                     </p>
                   </div>
 
                   <div>
                     {/* Purchased Item Tag */}
-                    <div className="mb-4 inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white/[0.03] border border-white/8 text-[11px] font-medium text-slate-300">
+                    <div className="mb-4 inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-charcoal-50 border border-charcoal-100 text-[11px] font-medium text-charcoal-700">
                       <svg
-                        className="w-3 h-3 text-amber-400"
+                        className="w-3 h-3 text-amber-500"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -288,7 +314,7 @@ export default function ReviewSection() {
                     </div>
 
                     {/* User Profile Footer */}
-                    <div className="flex items-center gap-3 pt-4 border-t border-white/5">
+                    <div className="flex items-center gap-3 pt-4 border-t border-charcoal-100">
                       <div
                         className={`w-10 h-10 rounded-full bg-gradient-to-br ${review.avatarBg} text-white font-bold text-xs flex items-center justify-center shadow-md shrink-0`}
                       >
@@ -299,10 +325,10 @@ export default function ReviewSection() {
                       </div>
 
                       <div className="min-w-0 flex-1">
-                        <p className="text-xs font-bold text-slate-200 truncate">
+                        <p className="text-xs font-bold text-charcoal-950 truncate">
                           {review.name}
                         </p>
-                        <p className="text-[11px] text-slate-400 font-light flex items-center gap-2">
+                        <p className="text-[11px] text-charcoal-400 font-light flex items-center gap-2">
                           <span>{review.location}</span>
                           <span>•</span>
                           <span>{review.date}</span>
@@ -325,8 +351,8 @@ export default function ReviewSection() {
               aria-label={`Go to slide ${idx + 1}`}
               className={`h-2 rounded-full transition-all duration-300 ${
                 currentIndex === idx
-                  ? "w-8 bg-amber-400"
-                  : "w-2 bg-white/20 hover:bg-white/40"
+                  ? "w-8 bg-charcoal-950"
+                  : "w-2 bg-charcoal-200 hover:bg-charcoal-400"
               }`}
             />
           ))}
