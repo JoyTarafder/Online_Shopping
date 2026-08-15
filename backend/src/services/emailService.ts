@@ -248,3 +248,164 @@ export const sendPasswordResetEmail = async (
     ),
   });
 };
+
+// ─── Send: Order Confirmation ──────────────────────────────────────────────────
+
+export const sendOrderConfirmationEmail = async (
+  recipientEmail: string,
+  order: any
+): Promise<void> => {
+  const orderId = order._id ? order._id.toString().slice(-8).toUpperCase() : "RECENT";
+  const dateStr = order.createdAt
+    ? new Date(order.createdAt).toLocaleString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
+      })
+    : new Date().toLocaleDateString();
+
+  const customerName = `${order.shippingAddress?.firstName || ""} ${order.shippingAddress?.lastName || ""}`.trim() || "Valued Customer";
+
+  const paymentMethodLabel =
+    order.paymentMethod === "bkash"
+      ? "bKash"
+      : order.paymentMethod === "nagad"
+      ? "Nagad"
+      : order.paymentMethod === "rocket"
+      ? "Rocket"
+      : "Cash on Delivery (COD)";
+
+  const paymentStatusText =
+    order.paymentStatus === "paid"
+      ? `Paid ${order.txnId ? `(TxnID: ${order.txnId})` : ""}`
+      : order.paymentStatus === "refunded"
+      ? "Payment Returned"
+      : "Cash on Delivery / Verification Pending";
+
+  const itemsHtml = (order.items || [])
+    .map(
+      (item: any) => `
+    <tr>
+      <td style="padding:12px 0;border-bottom:1px solid #f1f5f9;">
+        <table width="100%" cellpadding="0" cellspacing="0">
+          <tr>
+            <td style="vertical-align:middle;">
+              <p style="margin:0;font-size:14px;font-weight:700;color:#0f172a;">${item.name}</p>
+              <p style="margin:4px 0 0;font-size:12px;color:#64748b;">
+                ${item.size ? `Size: <strong>${item.size}</strong> &nbsp;•&nbsp; ` : ""}
+                ${item.color ? `Color: <strong>${item.color}</strong> &nbsp;•&nbsp; ` : ""}
+                Qty: <strong>${item.quantity}</strong>
+              </p>
+            </td>
+            <td style="text-align:right;vertical-align:middle;font-size:14px;font-weight:800;color:#0f172a;">
+              ৳${(item.price * item.quantity).toFixed(2)}
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  `
+    )
+    .join("");
+
+  const body = `
+    <!-- Header Badge & Title -->
+    <div style="text-align:center;margin-bottom:32px;">
+      <div style="width:64px;height:64px;margin:0 auto 16px;border-radius:20px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.25);line-height:64px;font-size:28px;">
+        🛍️
+      </div>
+      <span style="display:inline-block;padding:4px 14px;background:#ecfdf5;border:1px solid #a7f3d0;border-radius:100px;font-size:11px;font-weight:800;color:#047857;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">
+        Order Confirmed
+      </span>
+      <h2 style="margin:8px 0 6px;font-size:26px;font-weight:800;color:#0f172a;letter-spacing:-0.5px;">Thank You For Your Order!</h2>
+      <p style="margin:0;font-size:14px;color:#64748b;">Order Reference: <strong style="color:#0f172a;font-family:monospace;">#${orderId}</strong> &bull; ${dateStr}</p>
+    </div>
+
+    <!-- Customer & Shipping Summary Box -->
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:16px;padding:20px 24px;margin-bottom:28px;">
+      <tr>
+        <td style="vertical-align:top;width:50%;padding-right:12px;">
+          <p style="margin:0 0 6px;font-size:11px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:0.1em;">Customer Details</p>
+          <p style="margin:0;font-size:14px;font-weight:700;color:#0f172a;">${customerName}</p>
+          <p style="margin:3px 0 0;font-size:12px;color:#64748b;">${recipientEmail}</p>
+          <p style="margin:2px 0 0;font-size:12px;color:#64748b;">📞 ${order.shippingAddress?.phone || "N/A"}</p>
+        </td>
+        <td style="vertical-align:top;width:50%;padding-left:12px;border-left:1px solid #e2e8f0;">
+          <p style="margin:0 0 6px;font-size:11px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:0.1em;">Shipping Address</p>
+          <p style="margin:0;font-size:13px;color:#334155;line-height:1.5;">${order.shippingAddress?.address || ""}</p>
+          <p style="margin:3px 0 0;font-size:12px;color:#64748b;">
+            ${[order.shippingAddress?.city, order.shippingAddress?.state, order.shippingAddress?.zip].filter(Boolean).join(", ")}
+          </p>
+        </td>
+      </tr>
+    </table>
+
+    <!-- Order Items List -->
+    <p style="margin:0 0 12px;font-size:12px;font-weight:800;color:#0f172a;text-transform:uppercase;letter-spacing:0.1em;">Order Items (${(order.items || []).length})</p>
+    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
+      ${itemsHtml}
+    </table>
+
+    <!-- Financial Breakdown -->
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:16px;padding:20px 24px;margin-bottom:28px;">
+      <tr>
+        <td style="padding:4px 0;font-size:13px;color:#64748b;">Subtotal</td>
+        <td style="padding:4px 0;text-align:right;font-size:13px;font-weight:600;color:#0f172a;">৳${(order.subtotal || 0).toFixed(2)}</td>
+      </tr>
+      <tr>
+        <td style="padding:4px 0;font-size:13px;color:#64748b;">Delivery Fee</td>
+        <td style="padding:4px 0;text-align:right;font-size:13px;font-weight:600;color:#0f172a;">${order.shippingCost === 0 ? "FREE" : `৳${(order.shippingCost || 0).toFixed(2)}`}</td>
+      </tr>
+      ${
+        order.discount > 0
+          ? `
+      <tr>
+        <td style="padding:4px 0;font-size:13px;color:#059669;font-weight:600;">Promo Discount</td>
+        <td style="padding:4px 0;text-align:right;font-size:13px;font-weight:700;color:#059669;">-৳${order.discount.toFixed(2)}</td>
+      </tr>
+      `
+          : ""
+      }
+      <tr>
+        <td style="padding:12px 0 0;border-top:1px solid #e2e8f0;font-size:16px;font-weight:800;color:#0f172a;">Total Payable</td>
+        <td style="padding:12px 0 0;border-top:1px solid #e2e8f0;text-align:right;font-size:18px;font-weight:900;color:#0f172a;">৳${(order.total || 0).toFixed(2)}</td>
+      </tr>
+    </table>
+
+    <!-- Payment & Delivery Info -->
+    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
+      <tr>
+        <td style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:14px;padding:16px 20px;">
+          <p style="margin:0 0 4px;font-size:12px;font-weight:800;color:#1e40af;text-transform:uppercase;letter-spacing:0.05em;">Payment Details</p>
+          <p style="margin:0;font-size:13px;color:#1e3a8a;">
+            Method: <strong>${paymentMethodLabel}</strong> &nbsp;•&nbsp; Status: <strong>${paymentStatusText}</strong>
+          </p>
+        </td>
+      </tr>
+    </table>
+
+    <!-- Action Button -->
+    <div style="text-align:center;margin-top:32px;">
+      <a href="https://shajsutro.com/profile" style="display:inline-block;background:#0f172a;color:#ffffff;font-size:13px;font-weight:800;letter-spacing:0.08em;text-decoration:none;padding:14px 32px;border-radius:100px;box-shadow:0 10px 20px rgba(15,23,42,0.2);">
+        TRACK ORDER STATUS →
+      </a>
+    </div>
+  `;
+
+  try {
+    await transporter.sendMail({
+      from: `"ShajSutro" <${process.env.EMAIL_USER}>`,
+      to: recipientEmail,
+      subject: `Order Confirmation #${orderId} — ShajSutro`,
+      html: emailShell(
+        body,
+        `Your ShajSutro order #${orderId} for ৳${(order.total || 0).toFixed(2)} has been placed successfully!`
+      ),
+    });
+  } catch (err) {
+    console.error("Failed to send order confirmation email:", err);
+  }
+};

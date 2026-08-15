@@ -6,6 +6,7 @@ import Order from "../models/Order";
 import Product from "../models/Product";
 import { AppError } from "../middleware/error.middleware";
 import { AuthRequest, IShippingAddress } from "../types";
+import { sendOrderConfirmationEmail } from "../services/emailService";
 
 interface FrontendOrderItem {
   productId: string;
@@ -133,6 +134,14 @@ export const placeOrder = asyncHandler(
 
     // Decrement stock and increment totalOrdered (only for DB-backed products)
     await Promise.all(stockOps);
+
+    // Send Order Confirmation Email asynchronously
+    const recipientEmail = shippingAddress.email || req.user?.email;
+    if (recipientEmail) {
+      sendOrderConfirmationEmail(recipientEmail, order).catch((err) => {
+        console.error("Order confirmation email sending error:", err);
+      });
+    }
 
     res.status(201).json({
       success: true,
