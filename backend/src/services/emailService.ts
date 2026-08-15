@@ -442,3 +442,112 @@ export const sendNewsletterWelcomeEmail = async (email: string): Promise<void> =
     console.error("Failed to send newsletter welcome email:", err);
   }
 };
+
+// ─── Send: Broadcast Promotional Email ───────────────────────────────────────
+
+export interface IBroadcastMailPayload {
+  recipientEmails: string[];
+  subject: string;
+  badgeText?: string;
+  title: string;
+  messageBody: string;
+  bannerImageUrl?: string;
+  ctaButtonText?: string;
+  ctaButtonUrl?: string;
+}
+
+export const sendBroadcastEmail = async (
+  payload: IBroadcastMailPayload
+): Promise<{ sentCount: number; failedCount: number }> => {
+  const {
+    recipientEmails,
+    subject,
+    badgeText = "SPECIAL OFFER",
+    title,
+    messageBody,
+    bannerImageUrl,
+    ctaButtonText = "SHOP NOW",
+    ctaButtonUrl = "https://shajsutro.com/shop",
+  } = payload;
+
+  const formattedMessage = messageBody
+    .split("\n")
+    .filter((p) => p.trim())
+    .map(
+      (p) =>
+        `<p style="margin:0 0 14px;font-size:14px;color:#334155;line-height:1.7;">${p.trim()}</p>`
+    )
+    .join("");
+
+  const body = `
+    <!-- Header Badge & Title -->
+    <div style="text-align:center;margin-bottom:32px;">
+      ${
+        badgeText
+          ? `
+      <div style="display:inline-block;padding:4px 16px;background:#fef3c7;border:1px solid #fde047;border-radius:100px;margin-bottom:12px;">
+        <span style="font-size:11px;font-weight:800;color:#92400e;text-transform:uppercase;letter-spacing:0.18em;">${badgeText}</span>
+      </div>
+      `
+          : ""
+      }
+      <h2 style="margin:8px 0 10px;font-size:28px;font-weight:900;color:#0f172a;letter-spacing:-0.5px;line-height:1.2;">${title}</h2>
+    </div>
+
+    <!-- Banner Image (if provided) -->
+    ${
+      bannerImageUrl
+        ? `
+    <div style="margin-bottom:28px;border-radius:16px;overflow:hidden;box-shadow:0 12px 24px rgba(0,0,0,0.08);">
+      <img src="${bannerImageUrl}" alt="${title}" style="width:100%;max-height:280px;object-fit:cover;display:block;border:0;" />
+    </div>
+    `
+        : ""
+    }
+
+    <!-- Main Message Content Body -->
+    <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:16px;padding:24px 28px;margin-bottom:32px;">
+      ${formattedMessage}
+    </div>
+
+    <!-- CTA Button -->
+    ${
+      ctaButtonText && ctaButtonUrl
+        ? `
+    <div style="text-align:center;margin-top:32px;margin-bottom:16px;">
+      <a href="${ctaButtonUrl}" style="display:inline-block;background:linear-gradient(135deg, #09090b 0%, #18181b 100%);color:#ffffff;font-size:13px;font-weight:800;letter-spacing:0.12em;text-decoration:none;padding:16px 40px;border-radius:100px;box-shadow:0 12px 24px rgba(15,23,42,0.25);text-transform:uppercase;">
+        ${ctaButtonText} →
+      </a>
+    </div>
+    `
+        : ""
+    }
+  `;
+
+  let sentCount = 0;
+  let failedCount = 0;
+
+  // Process in batches of 5 to avoid SMTP concurrency limits
+  const BATCH_SIZE = 5;
+  for (let i = 0; i < recipientEmails.length; i += BATCH_SIZE) {
+    const batch = recipientEmails.slice(i, i + BATCH_SIZE);
+    await Promise.all(
+      batch.map(async (email) => {
+        try {
+          await transporter.sendMail({
+            from: `"ShajSutro" <${process.env.EMAIL_USER}>`,
+            to: email,
+            subject: subject,
+            html: emailShell(body, `${title} — ${badgeText}`),
+          });
+          sentCount++;
+        } catch (err) {
+          console.error(`Failed to send broadcast email to ${email}:`, err);
+          failedCount++;
+        }
+      })
+    );
+  }
+
+  return { sentCount, failedCount };
+};

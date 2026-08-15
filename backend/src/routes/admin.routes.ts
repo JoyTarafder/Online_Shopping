@@ -22,6 +22,7 @@ import {
   getSubscribers,
   deleteSubscriber,
   toggleSubscriberStatus,
+  broadcastSubscribersEmail,
 } from "../controllers/admin.controller";
 import { protect, adminOnly, rootAdminOnly } from "../middleware/auth.middleware";
 
@@ -35,6 +36,7 @@ router.get("/team", rootAdminOnly, getAllAdminUsers);
 
 // Subscriber management
 router.get("/subscribers", getSubscribers);
+router.post("/subscribers/broadcast", broadcastSubscribersEmail);
 router.delete("/subscribers/:id", deleteSubscriber);
 router.patch("/subscribers/:id/toggle", toggleSubscriberStatus);
 

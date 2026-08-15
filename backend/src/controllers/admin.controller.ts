@@ -8,6 +8,7 @@ import Product from "../models/Product";
 import JobApplication from "../models/JobApplication";
 import Subscriber from "../models/Subscriber";
 import { AppError } from "../middleware/error.middleware";
+import { sendBroadcastEmail } from "../services/emailService";
 import { AuthRequest } from "../types";
 
 // ─── GET /api/admin/stats ─────────────────────────────────────────────────────
@@ -944,6 +945,76 @@ export const toggleSubscriberStatus = asyncHandler(
       success: true,
       message: `Subscriber marked as ${subscriber.isActive ? "Active" : "Inactive"}`,
       data: subscriber,
+    });
+  }
+);
+
+// ─── POST /api/admin/subscribers/broadcast ─────────────────────────────────────
+
+export const broadcastSubscribersEmail = asyncHandler(
+  async (req: AuthRequest, res: Response): Promise<void> => {
+    const {
+      subject,
+      title,
+      messageBody,
+      badgeText,
+      bannerImageUrl,
+      ctaButtonText,
+      ctaButtonUrl,
+      target = "active",
+    } = req.body as {
+      subject: string;
+      title: string;
+      messageBody: string;
+      badgeText?: string;
+      bannerImageUrl?: string;
+      ctaButtonText?: string;
+      ctaButtonUrl?: string;
+      target?: "active" | "all";
+    };
+
+    if (!subject || !subject.trim()) {
+      throw new AppError("Email subject is required", 400);
+    }
+    if (!title || !title.trim()) {
+      throw new AppError("Email headline/title is required", 400);
+    }
+    if (!messageBody || !messageBody.trim()) {
+      throw new AppError("Email message body is required", 400);
+    }
+
+    const filter: any = {};
+    if (target === "active") {
+      filter.isActive = true;
+    }
+
+    const subscribers = await Subscriber.find(filter).select("email");
+    if (!subscribers || subscribers.length === 0) {
+      throw new AppError("No subscribers found matching target criteria", 404);
+    }
+
+    const recipientEmails = subscribers.map((s) => s.email);
+
+    // Call broadcast service
+    const result = await sendBroadcastEmail({
+      recipientEmails,
+      subject: subject.trim(),
+      title: title.trim(),
+      messageBody: messageBody.trim(),
+      badgeText: badgeText?.trim(),
+      bannerImageUrl: bannerImageUrl?.trim(),
+      ctaButtonText: ctaButtonText?.trim(),
+      ctaButtonUrl: ctaButtonUrl?.trim(),
+    });
+
+    res.status(200).json({
+      success: true,
+      message: `Broadcast mail completed. Sent: ${result.sentCount}, Failed: ${result.failedCount}`,
+      data: {
+        totalTargeted: recipientEmails.length,
+        sentCount: result.sentCount,
+        failedCount: result.failedCount,
+      },
     });
   }
 );

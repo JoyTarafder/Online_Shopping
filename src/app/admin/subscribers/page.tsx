@@ -24,6 +24,21 @@ export default function AdminSubscribersPage() {
   const [activeSubscribers, setActiveSubscribers] = useState(0);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
 
+  // Broadcast Modal State
+  const [showBroadcastModal, setShowBroadcastModal] = useState(false);
+  const [broadcastTarget, setBroadcastTarget] = useState<"active" | "all">("active");
+  const [broadcastSubject, setBroadcastSubject] = useState("");
+  const [broadcastBadge, setBroadcastBadge] = useState("SPECIAL OFFER");
+  const [broadcastTitle, setBroadcastTitle] = useState("");
+  const [broadcastMessage, setBroadcastMessage] = useState("");
+  const [broadcastBannerUrl, setBroadcastBannerUrl] = useState("");
+  const [broadcastCtaText, setBroadcastCtaText] = useState("SHOP THE SALE NOW");
+  const [broadcastCtaUrl, setBroadcastCtaUrl] = useState("https://shajsutro.com/shop");
+  const [activeTab, setActiveTab] = useState<"edit" | "preview">("edit");
+  const [sendingBroadcast, setSendingBroadcast] = useState(false);
+  const [broadcastResult, setBroadcastResult] = useState<string | null>(null);
+  const [broadcastError, setBroadcastError] = useState<string | null>(null);
+
   const fetchSubscribers = async () => {
     if (!token) return;
     setLoading(true);
@@ -109,6 +124,62 @@ export default function AdminSubscribersPage() {
     window.URL.revokeObjectURL(url);
   };
 
+  const handleSendBroadcast = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!token) return;
+    if (!broadcastSubject.trim() || !broadcastTitle.trim() || !broadcastMessage.trim()) {
+      setBroadcastError("Subject, Title, and Message Body are required.");
+      return;
+    }
+
+    const targetCount = broadcastTarget === "active" ? activeSubscribers : totalSubscribers;
+    if (targetCount === 0) {
+      setBroadcastError("No subscribers found matching the target criteria.");
+      return;
+    }
+
+    if (!confirm(`Are you sure you want to send this email blast to ${targetCount} subscribers?`)) {
+      return;
+    }
+
+    setSendingBroadcast(true);
+    setBroadcastError(null);
+    setBroadcastResult(null);
+
+    try {
+      const res = await fetch(`${API}/api/admin/subscribers/broadcast`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          subject: broadcastSubject,
+          badgeText: broadcastBadge,
+          title: broadcastTitle,
+          messageBody: broadcastMessage,
+          bannerImageUrl: broadcastBannerUrl,
+          ctaButtonText: broadcastCtaText,
+          ctaButtonUrl: broadcastCtaUrl,
+          target: broadcastTarget,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data?.message || "Failed to send broadcast email");
+      }
+
+      setBroadcastResult(
+        `🎉 Successfully sent promotional email to ${data.data?.sentCount || targetCount} subscribers!`
+      );
+    } catch (err: any) {
+      setBroadcastError(err.message || "Failed to send broadcast email.");
+    } finally {
+      setSendingBroadcast(false);
+    }
+  };
+
   return (
     <div className="p-6 lg:p-8 space-y-8 max-w-7xl mx-auto">
       {/* Top Title & Header Actions */}
@@ -117,18 +188,32 @@ export default function AdminSubscribersPage() {
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 mb-2">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
             <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-400">
-              Newsletter Directory
+              Newsletter Directory & Mailer
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
             Subscribers List
           </h1>
           <p className="text-xs text-slate-400 mt-1">
-            Manage all customer email subscriptions saved from the store newsletter.
+            Manage subscribers and send 1-click promotional emails & offer blasts.
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
+          <button
+            onClick={() => {
+              setShowBroadcastModal(true);
+              setBroadcastResult(null);
+              setBroadcastError(null);
+            }}
+            className="px-4.5 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white text-xs font-bold shadow-lg shadow-indigo-600/30 flex items-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98]"
+          >
+            <svg className="w-4 h-4 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
+            </svg>
+            📢 Broadcast Promo Mail
+          </button>
+
           <button
             onClick={fetchSubscribers}
             className="px-4 py-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700 text-slate-200 text-xs font-semibold flex items-center gap-2 transition-all"
@@ -142,9 +227,9 @@ export default function AdminSubscribersPage() {
           <button
             onClick={handleExportCSV}
             disabled={subscribers.length === 0}
-            className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white text-xs font-bold shadow-lg shadow-emerald-500/20 flex items-center gap-2 transition-all disabled:opacity-50"
+            className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-bold flex items-center gap-2 transition-all disabled:opacity-50"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
             </svg>
             Export CSV
@@ -325,6 +410,307 @@ export default function AdminSubscribersPage() {
           </div>
         )}
       </div>
+
+      {/* ── BROADCAST PROMO MAIL MODAL ── */}
+      {showBroadcastModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in overflow-y-auto">
+          <div className="relative w-full max-w-3xl bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl overflow-hidden my-8">
+            {/* Header */}
+            <div className="p-6 border-b border-slate-800 bg-gradient-to-r from-violet-950/40 via-slate-900 to-indigo-950/40 flex items-center justify-between">
+              <div>
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-500/10 border border-violet-500/20 mb-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+                  <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-violet-300">
+                    Bulk Promotional Email Blast
+                  </span>
+                </div>
+                <h2 className="text-xl font-bold text-white tracking-tight">
+                  📢 Send Broadcast Email to Subscribers
+                </h2>
+              </div>
+              <button
+                onClick={() => setShowBroadcastModal(false)}
+                className="w-9 h-9 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition-colors"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Navigation Tabs */}
+            <div className="flex border-b border-slate-800 bg-slate-950/60 px-6">
+              <button
+                type="button"
+                onClick={() => setActiveTab("edit")}
+                className={`py-3.5 px-5 font-bold text-xs border-b-2 transition-all flex items-center gap-2 ${
+                  activeTab === "edit"
+                    ? "border-violet-500 text-violet-400"
+                    : "border-transparent text-slate-400 hover:text-slate-200"
+                }`}
+              >
+                ✏️ Compose Email
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab("preview")}
+                className={`py-3.5 px-5 font-bold text-xs border-b-2 transition-all flex items-center gap-2 ${
+                  activeTab === "preview"
+                    ? "border-violet-500 text-violet-400"
+                    : "border-transparent text-slate-400 hover:text-slate-200"
+                }`}
+              >
+                👁️ Live Email Preview
+              </button>
+            </div>
+
+            {/* Form & Content */}
+            <form onSubmit={handleSendBroadcast} className="p-6 space-y-5">
+              {broadcastResult && (
+                <div className="p-4 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold flex items-center gap-2">
+                  <span>{broadcastResult}</span>
+                </div>
+              )}
+
+              {broadcastError && (
+                <div className="p-4 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-300 text-xs font-semibold flex items-center gap-2">
+                  <span>⚠️ {broadcastError}</span>
+                </div>
+              )}
+
+              {activeTab === "edit" ? (
+                <div className="space-y-4">
+                  {/* Target Audience */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <label
+                      onClick={() => setBroadcastTarget("active")}
+                      className={`p-3.5 rounded-2xl border cursor-pointer flex items-center gap-3 transition-all ${
+                        broadcastTarget === "active"
+                          ? "bg-violet-500/15 border-violet-500/50 text-white"
+                          : "bg-slate-950/60 border-slate-800 text-slate-400"
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="target"
+                        checked={broadcastTarget === "active"}
+                        onChange={() => setBroadcastTarget("active")}
+                        className="text-violet-500 focus:ring-0"
+                      />
+                      <div>
+                        <p className="text-xs font-bold">Active Subscribers Only</p>
+                        <p className="text-[11px] text-slate-400">{activeSubscribers} recipients</p>
+                      </div>
+                    </label>
+
+                    <label
+                      onClick={() => setBroadcastTarget("all")}
+                      className={`p-3.5 rounded-2xl border cursor-pointer flex items-center gap-3 transition-all ${
+                        broadcastTarget === "all"
+                          ? "bg-violet-500/15 border-violet-500/50 text-white"
+                          : "bg-slate-950/60 border-slate-800 text-slate-400"
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="target"
+                        checked={broadcastTarget === "all"}
+                        onChange={() => setBroadcastTarget("all")}
+                        className="text-violet-500 focus:ring-0"
+                      />
+                      <div>
+                        <p className="text-xs font-bold">All Subscribers (Including Inactive)</p>
+                        <p className="text-[11px] text-slate-400">{totalSubscribers} recipients</p>
+                      </div>
+                    </label>
+                  </div>
+
+                  {/* Email Subject */}
+                  <div>
+                    <label className="block text-xs font-bold text-slate-300 mb-1">
+                      Email Subject Line <span className="text-rose-400">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={broadcastSubject}
+                      onChange={(e) => setBroadcastSubject(e.target.value)}
+                      placeholder="e.g., 🔥 Exclusive 25% Off Spring Sale — ShajSutro"
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-violet-500"
+                    />
+                  </div>
+
+                  {/* Badge Text & Title */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-300 mb-1">
+                        Pill Badge Text (Optional)
+                      </label>
+                      <input
+                        type="text"
+                        value={broadcastBadge}
+                        onChange={(e) => setBroadcastBadge(e.target.value)}
+                        placeholder="e.g., SPECIAL OFFER or NEW ARRIVAL"
+                        className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-violet-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-slate-300 mb-1">
+                        Headline / Main Title <span className="text-rose-400">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={broadcastTitle}
+                        onChange={(e) => setBroadcastTitle(e.target.value)}
+                        placeholder="e.g., Elevate Your Wardrobe Today"
+                        className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-violet-500"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Poster Banner Image URL */}
+                  <div>
+                    <label className="block text-xs font-bold text-slate-300 mb-1">
+                      Poster Banner Image URL (Optional)
+                    </label>
+                    <input
+                      type="url"
+                      value={broadcastBannerUrl}
+                      onChange={(e) => setBroadcastBannerUrl(e.target.value)}
+                      placeholder="e.g., https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=1200"
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-violet-500"
+                    />
+                  </div>
+
+                  {/* Message Body */}
+                  <div>
+                    <label className="block text-xs font-bold text-slate-300 mb-1">
+                      Message Content Body <span className="text-rose-400">*</span>
+                    </label>
+                    <textarea
+                      required
+                      rows={5}
+                      value={broadcastMessage}
+                      onChange={(e) => setBroadcastMessage(e.target.value)}
+                      placeholder="Write your email body here. New lines will automatically format into paragraphs."
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-violet-500 leading-relaxed"
+                    />
+                  </div>
+
+                  {/* CTA Button Label & Link */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-300 mb-1">
+                        Call-To-Action Button Text
+                      </label>
+                      <input
+                        type="text"
+                        value={broadcastCtaText}
+                        onChange={(e) => setBroadcastCtaText(e.target.value)}
+                        placeholder="e.g., SHOP THE SALE NOW"
+                        className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-violet-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-slate-300 mb-1">
+                        Button Link URL
+                      </label>
+                      <input
+                        type="url"
+                        value={broadcastCtaUrl}
+                        onChange={(e) => setBroadcastCtaUrl(e.target.value)}
+                        placeholder="e.g., https://shajsutro.com/shop?badge=Sale"
+                        className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-violet-500"
+                      />
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                /* LIVE EMAIL PREVIEW CONTAINER */
+                <div className="bg-slate-950 border border-slate-800 rounded-2xl p-6 overflow-hidden">
+                  <div className="max-w-md mx-auto bg-white rounded-2xl shadow-2xl overflow-hidden text-slate-900 border border-slate-200">
+                    {/* Shell Header */}
+                    <div className="bg-gradient-to-r from-zinc-900 to-zinc-950 p-6 text-center">
+                      <span className="text-[9px] font-bold tracking-[0.2em] text-amber-500 uppercase px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 inline-block mb-2">
+                        Official Broadcast
+                      </span>
+                      <h1 className="text-xl font-black text-white tracking-widest uppercase">SHAJSUTRO</h1>
+                      <p className="text-[10px] text-zinc-400 uppercase tracking-widest mt-1">Fashion &bull; Elegance</p>
+                    </div>
+
+                    {/* Email Body Preview */}
+                    <div className="p-6">
+                      {broadcastBadge && (
+                        <div className="text-center mb-2">
+                          <span className="inline-block px-3 py-1 bg-amber-100 border border-amber-300 text-amber-900 font-extrabold text-[10px] uppercase tracking-wider rounded-full">
+                            {broadcastBadge}
+                          </span>
+                        </div>
+                      )}
+
+                      <h2 className="text-xl font-black text-center text-slate-900 mb-4 tracking-tight">
+                        {broadcastTitle || "Your Offer Title Here"}
+                      </h2>
+
+                      {broadcastBannerUrl && (
+                        <div className="mb-4 rounded-xl overflow-hidden shadow-md">
+                          <img src={broadcastBannerUrl} alt="Preview" className="w-full h-44 object-cover" />
+                        </div>
+                      )}
+
+                      <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 mb-5 text-xs text-slate-700 leading-relaxed space-y-2">
+                        {(broadcastMessage || "Your promotional message body will appear here...")
+                          .split("\n")
+                          .filter(Boolean)
+                          .map((p, idx) => (
+                            <p key={idx}>{p}</p>
+                          ))}
+                      </div>
+
+                      {broadcastCtaText && (
+                        <div className="text-center">
+                          <span className="inline-block bg-zinc-900 text-white font-extrabold text-xs uppercase tracking-wider px-6 py-3 rounded-full shadow-lg">
+                            {broadcastCtaText} &rarr;
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Action Buttons */}
+              <div className="pt-4 border-t border-slate-800 flex items-center justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setShowBroadcastModal(false)}
+                  className="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition-all"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="submit"
+                  disabled={sendingBroadcast}
+                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white text-xs font-extrabold shadow-lg shadow-indigo-600/30 flex items-center gap-2 transition-all disabled:opacity-50"
+                >
+                  {sendingBroadcast ? (
+                    <>
+                      <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      Sending Broadcast...
+                    </>
+                  ) : (
+                    <>
+                      <span>🚀</span> Send Email Blast Now
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
