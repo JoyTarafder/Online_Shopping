@@ -154,7 +154,8 @@ export default function CheckoutPage() {
   const [orderError, setOrderError] = useState("");
   const [placedOrderId, setPlacedOrderId] = useState("");
 
-  const handlePlaceOrder = async () => {
+  const handlePlaceOrder = async (overrideTxnId?: string) => {
+    const finalTxnId = overrideTxnId || paymentInfo.txnId;
     setIsPlacingOrder(true);
     setOrderError("");
     try {
@@ -170,7 +171,7 @@ export default function CheckoutPage() {
       const body = {
         shippingAddress: shippingInfo,
         paymentMethod: paymentInfo.method,
-        txnId: paymentInfo.txnId,
+        txnId: finalTxnId,
         discount,
         items: state.items
           .filter((i) => Boolean(i && i.product))
@@ -541,7 +542,13 @@ export default function CheckoutPage() {
                           </div>
                           <button
                             type="button"
-                            onClick={() => setIsGatewayOpen(true)}
+                            onClick={() => {
+                              if (validateShipping()) {
+                                setIsGatewayOpen(true);
+                              } else {
+                                notifyError("Please complete your shipping address details first.");
+                              }
+                            }}
                             className={`w-full sm:w-auto px-7 py-3.5 rounded-xl text-white font-bold text-sm shadow-lg transition-all ${numBg} hover:opacity-90 flex items-center justify-center gap-2 shrink-0`}
                           >
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -676,7 +683,7 @@ export default function CheckoutPage() {
                   <div className="flex gap-3 mt-9">
                     <button onClick={() => setCurrentStep(1)} className="btn-secondary flex-1">Back</button>
                     <button
-                      onClick={handlePlaceOrder}
+                      onClick={() => handlePlaceOrder()}
                       disabled={isPlacingOrder}
                       className="btn-accent flex-1 relative"
                     >
@@ -833,6 +840,7 @@ export default function CheckoutPage() {
           setPaymentErrors((prev) => ({ ...prev, txnId: "" }));
           setIsGatewayOpen(false);
           notifySuccess(`Payment verified! TxnID: ${txnId}`);
+          handlePlaceOrder(txnId);
         }}
         onClose={() => setIsGatewayOpen(false)}
       />

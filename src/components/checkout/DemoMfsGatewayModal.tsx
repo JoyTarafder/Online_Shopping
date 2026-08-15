@@ -474,7 +474,7 @@ export default function DemoMfsGatewayModal({
                 onClick={handleFinish}
                 className="w-full py-4 px-4 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-xl shadow-emerald-600/25 transition-all transform active:scale-95"
               >
-                Complete & Review Order ➔
+                Complete & Place Order ➔
               </button>
             </div>
           )}
