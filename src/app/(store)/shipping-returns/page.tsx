@@ -25,7 +25,7 @@ function Section({
 
 export default function ShippingReturnsPage() {
   const updated = "11 August 2026";
-  const supportEmail = "support@shajsutro.com";
+  const supportEmail = "shajsutro@gmail.com";
 
   return (
     <div className="min-h-screen bg-warm-50">

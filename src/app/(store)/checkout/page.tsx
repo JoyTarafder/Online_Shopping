@@ -226,26 +226,26 @@ export default function CheckoutPage() {
           )}
 
           {isMFS ? (
-            <div className="bg-amber-50 border border-amber-200 rounded-2xl px-5 py-4 mb-6 text-left">
-              <p className="text-sm font-semibold text-amber-800 mb-1">⏳ Awaiting Payment Verification</p>
-              <p className="text-xs text-amber-700 font-light leading-relaxed">
-                Your <strong>{methodLabel}</strong> Transaction ID <strong className="font-mono">{paymentInfo.txnId}</strong> has been received.
-                Our team will verify your payment and confirm your order shortly.
-                You can track the status in your <strong>Order History</strong>.
+            <div className="bg-emerald-50 border border-emerald-200 rounded-2xl px-5 py-4 mb-6 text-left shadow-xs">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                <p className="text-sm font-bold text-emerald-950">✓ Payment Confirmed (Paid)</p>
+              </div>
+              <p className="text-xs text-emerald-800 font-light leading-relaxed">
+                Your <strong>{methodLabel}</strong> payment of <strong>৳{total.toFixed(2)}</strong> (TxnID: <strong className="font-mono font-bold text-emerald-950">{paymentInfo.txnId}</strong>) has been successfully received & verified. Your order is now confirmed!
               </p>
             </div>
           ) : (
             <div className="bg-blue-50 border border-blue-200 rounded-2xl px-5 py-4 mb-6 text-left">
-              <p className="text-sm font-semibold text-blue-800 mb-1">🚚 Cash on Delivery</p>
+              <p className="text-sm font-bold text-blue-900 mb-1">📦 Cash on Delivery Selected</p>
               <p className="text-xs text-blue-700 font-light leading-relaxed">
                 Please have <strong>৳{total.toFixed(2)}</strong> ready when our delivery agent arrives.
-                Your order will be confirmed after successful delivery and payment collection.
               </p>
             </div>
           )}
 
           <p className="text-xs text-charcoal-400 font-light mb-7">
-            Estimated delivery: 3–5 business days &middot; Updates sent to <strong className="text-charcoal-600">{shippingInfo.email}</strong>
+            Estimated delivery: 3–5 business days &middot; Updates sent to <strong className="text-charcoal-600">{shippingInfo.email || "shajsutro@gmail.com"}</strong>
           </p>
           <div className="flex gap-3">
             <Link href="/profile" className="btn-secondary flex-1">My Orders</Link>
