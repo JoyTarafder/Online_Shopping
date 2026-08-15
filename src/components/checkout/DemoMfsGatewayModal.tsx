@@ -159,38 +159,38 @@ export default function DemoMfsGatewayModal({
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-5 bg-slate-950/80 backdrop-blur-md transition-all duration-300 animate-fadeIn">
-      <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-100 flex flex-col transition-all">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 bg-slate-950/80 backdrop-blur-md transition-all duration-300 animate-fadeIn overflow-y-auto">
+      <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-100 flex flex-col transition-all my-auto max-h-[92vh]">
 
         {/* ── STUNNING BRANDED HEADER ── */}
-        <div className={`p-6 text-white bg-gradient-to-br ${brand.accentGradient} relative flex flex-col justify-between overflow-hidden shadow-lg`}>
+        <div className={`p-4 sm:p-5 text-white bg-gradient-to-br ${brand.accentGradient} relative flex flex-col justify-between overflow-hidden shadow-lg shrink-0`}>
           {/* Decorative background glow circle */}
           <div className="absolute -right-8 -top-8 w-32 h-32 rounded-full bg-white/10 blur-2xl pointer-events-none" />
 
           {/* Close button */}
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 w-8 h-8 rounded-full bg-black/20 hover:bg-black/40 flex items-center justify-center text-white/90 hover:text-white transition-all backdrop-blur-sm"
+            className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/20 hover:bg-black/40 flex items-center justify-center text-white/90 hover:text-white transition-all backdrop-blur-sm z-10"
             title="Close Gateway"
           >
             ✕
           </button>
 
           {/* Top Brand Info */}
-          <div className="flex items-center justify-between mb-5 pr-8">
-            <div className="flex items-center gap-3">
-              <div className="w-11 h-11 rounded-2xl bg-white/15 backdrop-blur-md flex items-center justify-center text-white border border-white/20 shadow-inner shrink-0">
+          <div className="flex items-center justify-between mb-3 pr-8">
+            <div className="flex items-center gap-2.5">
+              <div className="w-10 h-10 rounded-2xl bg-white/15 backdrop-blur-md flex items-center justify-center text-white border border-white/20 shadow-inner shrink-0">
                 {brand.logoSvg}
               </div>
               <div>
-                <h2 className="text-xl font-black tracking-tight leading-tight text-white">{brand.name}</h2>
-                <p className="text-[11px] text-white/80 font-medium">{brand.tagline}</p>
+                <h2 className="text-lg sm:text-xl font-black tracking-tight leading-tight text-white">{brand.name}</h2>
+                <p className="text-[10px] sm:text-[11px] text-white/80 font-medium">{brand.tagline}</p>
               </div>
             </div>
           </div>
 
           {/* Translucent Order Details Card */}
-          <div className="bg-white/15 backdrop-blur-md rounded-2xl p-4 border border-white/20 flex items-center justify-between shadow-inner">
+          <div className="bg-white/15 backdrop-blur-md rounded-2xl p-3 sm:p-3.5 border border-white/20 flex items-center justify-between shadow-inner">
             <div className="space-y-0.5">
               <div className="flex items-center gap-1.5 text-emerald-300 font-bold text-[10px] uppercase tracking-wider">
                 <svg className="w-3 h-3 text-emerald-300" fill="currentColor" viewBox="0 0 20 20">
@@ -198,18 +198,18 @@ export default function DemoMfsGatewayModal({
                 </svg>
                 Verified Merchant
               </div>
-              <p className="text-sm font-black text-white">ShajSutro Official Store</p>
-              <p className="text-[11px] text-white/70 font-mono">Invoice: INV-{(Date.now() % 100000).toString()}</p>
+              <p className="text-xs sm:text-sm font-black text-white">ShajSutro Official Store</p>
+              <p className="text-[10px] text-white/70 font-mono">Invoice: INV-{(Date.now() % 100000).toString()}</p>
             </div>
             <div className="text-right">
               <p className="text-[10px] uppercase text-white/80 font-bold tracking-wider">Amount</p>
-              <p className="text-2xl font-black text-white tracking-tight">৳{amount.toFixed(2)}</p>
+              <p className="text-xl sm:text-2xl font-black text-white tracking-tight">৳{amount.toFixed(2)}</p>
             </div>
           </div>
         </div>
 
         {/* ── STEP PROGRESS BAR ── */}
-        <div className="bg-slate-100/80 px-6 py-2.5 border-b border-slate-200/60 flex items-center justify-between text-[11px] font-bold text-slate-400">
+        <div className="bg-slate-100/80 px-4 py-2 border-b border-slate-200/60 flex items-center justify-between text-[10px] sm:text-[11px] font-bold text-slate-400 shrink-0">
           <span className={`flex items-center gap-1 ${step === "number" ? brand.textColor : "text-emerald-600"}`}>
             1. Number {step !== "number" && "✓"}
           </span>
@@ -228,7 +228,7 @@ export default function DemoMfsGatewayModal({
         </div>
 
         {/* ── MODAL BODY CONTENT ── */}
-        <div className="p-6 flex-1 flex flex-col justify-between bg-slate-50/50 min-h-[320px]">
+        <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between bg-slate-50/50 overflow-y-auto min-h-[260px]">
 
           {/* STEP 1: MOBILE NUMBER ENTRY */}
           {step === "number" && (
