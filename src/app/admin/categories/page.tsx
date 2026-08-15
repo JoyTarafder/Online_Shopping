@@ -601,7 +601,7 @@ function CategoriesContent() {
               {isSubView ? (
                 <span className="flex items-center gap-2">
                   <span className="" style={{ color: "rgba(148,163,184,0.5)" }}>{selectedParent.name}</span>
-                  <span className="text-slate-500">></span>
+                  <span className="text-slate-500">&gt;</span>
                   Sub-categories
                 </span>
               ) : (
