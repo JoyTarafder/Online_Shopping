@@ -415,8 +415,8 @@ export default function AdminSubscribersPage() {
 
       {/* ── BROADCAST PROMO MAIL MODAL ── */}
       {showBroadcastModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-black/80 backdrop-blur-md animate-fade-in">
-          <div className="relative w-full max-w-3xl max-h-[85vh] sm:max-h-[88vh] bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl flex flex-col overflow-hidden">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6 bg-black/65 backdrop-blur-sm animate-fade-in">
+          <div className="relative w-full max-w-3xl max-h-[82vh] sm:max-h-[85vh] bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl flex flex-col overflow-hidden">
             {/* Header (Fixed at Top) */}
             <div className="p-5 sm:p-6 border-b border-slate-800 bg-gradient-to-r from-violet-950/40 via-slate-900 to-indigo-950/40 flex items-center justify-between shrink-0 z-10">
               <div>

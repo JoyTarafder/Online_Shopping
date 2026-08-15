@@ -177,7 +177,7 @@ export default function AdminHeader() {
 
   return (
     <header
-      className="h-[60px] flex items-center justify-between px-8 flex-shrink-0 sticky top-0 z-50"
+      className="h-[60px] flex items-center justify-between px-8 flex-shrink-0 sticky top-0 z-30"
       style={{
         background: "rgba(10, 10, 15, 0.75)",
         backdropFilter: "blur(16px)",
