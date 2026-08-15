@@ -120,7 +120,11 @@ export default function CheckoutPage() {
     if (!shippingInfo.lastName.trim())   errors.lastName  = "Last name is required";
     if (!shippingInfo.email.trim())      errors.email     = "Email is required";
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(shippingInfo.email)) errors.email = "Enter a valid email";
-    if (!shippingInfo.phone.trim())      errors.phone     = "Phone number is required";
+    if (!shippingInfo.phone.trim()) {
+      errors.phone = "Phone number is required";
+    } else if (!/^01[3-9]\d{8}$/.test(shippingInfo.phone.trim())) {
+      errors.phone = "Phone number must be valid 11 digits (e.g. 017XXXXXXXX)";
+    }
     if (!shippingInfo.address.trim())    errors.address   = "Address is required";
     if (!shippingInfo.city.trim())       errors.city      = "Division is required";
     if (!shippingInfo.state.trim())      errors.state     = "District is required";
@@ -359,9 +363,18 @@ export default function CheckoutPage() {
                       <input
                         className={`input-field ${shippingErrors.phone ? "border-red-400 focus:ring-red-200 focus:border-red-400" : ""}`}
                         type="tel"
+                        maxLength={11}
                         placeholder="01XXXXXXXXX"
                         value={shippingInfo.phone}
-                        onChange={(e) => { setShippingInfo({...shippingInfo, phone: e.target.value}); setShippingErrors({...shippingErrors, phone: ""}); }}
+                        onChange={(e) => {
+                          const val = e.target.value.replace(/\D/g, "").slice(0, 11);
+                          setShippingInfo({...shippingInfo, phone: val});
+                          if (val && !/^01[3-9]\d{8}$/.test(val)) {
+                            setShippingErrors({...shippingErrors, phone: "Phone number must be valid 11 digits (e.g. 017XXXXXXXX)"});
+                          } else {
+                            setShippingErrors({...shippingErrors, phone: ""});
+                          }
+                        }}
                       />
                       {shippingErrors.phone && <p className="mt-1.5 text-xs text-red-500 flex items-center gap-1"><svg className="w-3 h-3 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd"/></svg>{shippingErrors.phone}</p>}
                     </div>

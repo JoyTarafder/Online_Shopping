@@ -36,6 +36,9 @@ export const placeOrder = asyncHandler(
     };
 
     if (!shippingAddress) throw new AppError("Shipping address is required", 400);
+    if (!shippingAddress.phone || !/^01[3-9]\d{8}$/.test(shippingAddress.phone.trim())) {
+      throw new AppError("Phone number must be valid 11 digits (e.g. 017XXXXXXXX)", 400);
+    }
     if (!paymentMethod)   throw new AppError("Payment method is required", 400);
     if (!frontendItems || frontendItems.length === 0) throw new AppError("Order must contain at least one item", 400);
     if (paymentMethod !== "cod" && !txnId.trim()) throw new AppError("Transaction ID is required for mobile payments", 400);
