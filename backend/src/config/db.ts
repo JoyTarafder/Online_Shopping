@@ -1,11 +1,13 @@
 import mongoose, { Connection } from "mongoose";
 import dns from "dns";
 
-// Fallback DNS for MongoDB Atlas SRV resolution
-try {
-  dns.setServers(["8.8.8.8", "1.1.1.1"]);
-} catch (error) {
-  console.warn("⚠️ Warning: Failed to set custom DNS servers:", error);
+// Fallback DNS for MongoDB Atlas SRV resolution (only in local environments)
+if (!process.env.VERCEL && !process.env.AWS_LAMBDA_FUNCTION_NAME) {
+  try {
+    dns.setServers(["8.8.8.8", "1.1.1.1"]);
+  } catch (error) {
+    console.warn("⚠️ Warning: Failed to set custom DNS servers:", error);
+  }
 }
 
 export let secondaryConnection: Connection | null = null;
@@ -92,10 +94,15 @@ mongoose.plugin((schema) => {
 });
 
 const connectDB = async (): Promise<void> => {
+  if (mongoose.connection.readyState >= 1) {
+    return;
+  }
+
   try {
     const uri = process.env.MONGODB_URI;
     if (!uri) {
-      throw new Error("MONGODB_URI is not defined in environment variables");
+      console.error("✗ MONGODB_URI is not defined in environment variables");
+      return;
     }
 
     // 1. Connect to Primary Database
@@ -107,7 +114,7 @@ const connectDB = async (): Promise<void> => {
 
     // 2. Connect to Secondary Backup Database
     const secondaryUri = process.env.MONGODB_SECONDARY_URI;
-    if (secondaryUri) {
+    if (secondaryUri && !secondaryConnection) {
       try {
         secondaryConnection = mongoose.createConnection(secondaryUri, {
           dbName: "shajsutro",
@@ -119,9 +126,11 @@ const connectDB = async (): Promise<void> => {
         console.error("⚠️ Warning: Failed to connect Secondary MongoDB:", secErr.message);
       }
     }
-  } catch (error) {
-    console.error("✗ Primary MongoDB connection failed:", error);
-    process.exit(1);
+  } catch (error: any) {
+    console.error("✗ Primary MongoDB connection failed:", error?.message || error);
+    if (!process.env.VERCEL) {
+      process.exit(1);
+    }
   }
 };
 
