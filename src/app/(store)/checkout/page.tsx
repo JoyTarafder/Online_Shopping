@@ -614,7 +614,11 @@ export default function CheckoutPage() {
 
                   <div className="flex gap-3 mt-7">
                     <button onClick={() => setCurrentStep(0)} className="btn-secondary flex-1">Back</button>
-                    <button onClick={() => { if (validatePayment()) setCurrentStep(2); }} className="btn-primary flex-1">Review Order</button>
+                    {paymentInfo.method === "cod" && (
+                      <button onClick={() => { if (validatePayment()) setCurrentStep(2); }} className="btn-primary flex-1">
+                        Review Order
+                      </button>
+                    )}
                   </div>
                 </div>
               )}
