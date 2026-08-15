@@ -56,7 +56,7 @@ export default function DemoMfsGatewayModal({
       accentGradient: "from-[#E2136E] via-[#d60e65] to-[#990847]",
       prefix: "BK",
       helpPhone: "16247",
-      logoPath: "/images/bkash.svg",
+      logoPath: "/images/bkash.jpg",
     },
     nagad: {
       name: "Nagad",
@@ -71,7 +71,7 @@ export default function DemoMfsGatewayModal({
       accentGradient: "from-[#F05A28] via-[#e24e1c] to-[#b33509]",
       prefix: "NG",
       helpPhone: "16167",
-      logoPath: "/images/nagad.svg",
+      logoPath: "/images/Nagad.png",
     },
     rocket: {
       name: "Rocket",
@@ -86,7 +86,7 @@ export default function DemoMfsGatewayModal({
       accentGradient: "from-[#8C3494] via-[#7d2b85] to-[#55165c]",
       prefix: "RK",
       helpPhone: "16216",
-      logoPath: "/images/rocket.svg",
+      logoPath: "/images/rocket.jpg",
     },
   }[method];
 
