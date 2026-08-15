@@ -109,9 +109,21 @@ function CreateUserModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}>
-      <div className="w-full max-w-md rounded-3xl overflow-hidden shadow-2xl" style={{ background: "rgba(22,22,35,0.98)", border: "1px solid rgba(255,255,255,0.1)" }}>
-        <div className="flex items-center justify-between px-7 py-5" style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}
+    >
+      <div
+        className="w-full max-w-md rounded-3xl overflow-hidden shadow-2xl"
+        style={{
+          background: "rgba(22,22,35,0.98)",
+          border: "1px solid rgba(255,255,255,0.1)",
+        }}
+      >
+        <div
+          className="flex items-center justify-between px-7 py-5"
+          style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}
+        >
           <div>
             <h3 className="text-lg font-bold text-slate-100">Create User</h3>
             <p className="text-xs" style={{ color: "rgba(148,163,184,0.6)" }}>
@@ -129,12 +141,22 @@ function CreateUserModal({
 
         <form onSubmit={submit} className="px-7 py-5 space-y-4">
           {error && (
-            <div className="px-4 py-3 rounded-xl text-sm font-medium" style={{ background: "rgba(248,113,113,0.12)", border: "1px solid rgba(248,113,113,0.2)", color: "#f87171" }}>
+            <div
+              className="px-4 py-3 rounded-xl text-sm font-medium"
+              style={{
+                background: "rgba(248,113,113,0.12)",
+                border: "1px solid rgba(248,113,113,0.2)",
+                color: "#f87171",
+              }}
+            >
               {error}
             </div>
           )}
           <div>
-            <label className="block text-xs font-semibold mb-1.5" style={{ color: "rgba(148,163,184,0.6)" }}>
+            <label
+              className="block text-xs font-semibold mb-1.5"
+              style={{ color: "rgba(148,163,184,0.6)" }}
+            >
               Full Name *
             </label>
             <input
@@ -144,11 +166,19 @@ function CreateUserModal({
               onChange={set}
               placeholder="e.g. Jane Smith"
               className="w-full px-3.5 py-3 rounded-xl text-sm focus:outline-none admin-dark-input"
-              style={{ backgroundColor: "#0f172a", border: "1px solid rgba(255,255,255,0.1)", color: "#f1f5f9", colorScheme: "dark" }}
+              style={{
+                backgroundColor: "#0f172a",
+                border: "1px solid rgba(255,255,255,0.1)",
+                color: "#f1f5f9",
+                colorScheme: "dark",
+              }}
             />
           </div>
           <div>
-            <label className="block text-xs font-semibold mb-1.5" style={{ color: "rgba(148,163,184,0.6)" }}>
+            <label
+              className="block text-xs font-semibold mb-1.5"
+              style={{ color: "rgba(148,163,184,0.6)" }}
+            >
               Email Address *
             </label>
             <input
@@ -159,11 +189,19 @@ function CreateUserModal({
               onChange={set}
               placeholder="jane@example.com"
               className="w-full px-3.5 py-3 rounded-xl text-sm focus:outline-none admin-dark-input"
-              style={{ backgroundColor: "#0f172a", border: "1px solid rgba(255,255,255,0.1)", color: "#f1f5f9", colorScheme: "dark" }}
+              style={{
+                backgroundColor: "#0f172a",
+                border: "1px solid rgba(255,255,255,0.1)",
+                color: "#f1f5f9",
+                colorScheme: "dark",
+              }}
             />
           </div>
           <div>
-            <label className="block text-xs font-semibold mb-1.5" style={{ color: "rgba(148,163,184,0.6)" }}>
+            <label
+              className="block text-xs font-semibold mb-1.5"
+              style={{ color: "rgba(148,163,184,0.6)" }}
+            >
               Password *
             </label>
             <div className="relative">
@@ -176,7 +214,12 @@ function CreateUserModal({
                 onChange={set}
                 placeholder="Min 6 characters"
                 className="w-full px-3.5 py-3 pr-10 rounded-xl text-sm focus:outline-none admin-dark-input"
-                style={{ backgroundColor: "#0f172a", border: "1px solid rgba(255,255,255,0.1)", color: "#f1f5f9", colorScheme: "dark" }}
+                style={{
+                  backgroundColor: "#0f172a",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  color: "#f1f5f9",
+                  colorScheme: "dark",
+                }}
               />
               <button
                 type="button"
@@ -218,7 +261,10 @@ function CreateUserModal({
             </div>
           </div>
           <div>
-            <label className="block text-xs font-semibold mb-1.5" style={{ color: "rgba(148,163,184,0.6)" }}>
+            <label
+              className="block text-xs font-semibold mb-1.5"
+              style={{ color: "rgba(148,163,184,0.6)" }}
+            >
               Role
             </label>
             <select
@@ -226,7 +272,11 @@ function CreateUserModal({
               value={form.role}
               onChange={set}
               className="w-full px-3.5 py-3 rounded-xl text-sm focus:outline-none"
-              style={{ background: "rgba(15,15,25,0.95)", border: "1px solid rgba(255,255,255,0.1)", color: "#f1f5f9" }}
+              style={{
+                background: "rgba(15,15,25,0.95)",
+                border: "1px solid rgba(255,255,255,0.1)",
+                color: "#f1f5f9",
+              }}
             >
               <option value="user">Customer</option>
               <option value="sub-admin">Sub-Admin</option>
@@ -239,7 +289,11 @@ function CreateUserModal({
               type="button"
               onClick={onClose}
               className="flex-1 px-5 py-3 rounded-2xl text-sm font-semibold transition-colors"
-              style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(226,232,240,0.7)" }}
+              style={{
+                background: "rgba(255,255,255,0.05)",
+                border: "1px solid rgba(255,255,255,0.08)",
+                color: "rgba(226,232,240,0.7)",
+              }}
             >
               Cancel
             </button>
@@ -292,9 +346,25 @@ function DeleteModal({
   loading: boolean;
 }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}>
-      <div className="rounded-3xl w-full max-w-sm p-8" style={{ background: "rgba(15,15,25,0.98)", border: "1px solid rgba(255,255,255,0.08)", boxShadow: "0 24px 80px rgba(0,0,0,0.6)" }}>
-        <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5" style={{ background: "rgba(248,113,113,0.12)", border: "1px solid rgba(248,113,113,0.2)" }}>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}
+    >
+      <div
+        className="rounded-3xl w-full max-w-sm p-8"
+        style={{
+          background: "rgba(15,15,25,0.98)",
+          border: "1px solid rgba(255,255,255,0.08)",
+          boxShadow: "0 24px 80px rgba(0,0,0,0.6)",
+        }}
+      >
+        <div
+          className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5"
+          style={{
+            background: "rgba(248,113,113,0.12)",
+            border: "1px solid rgba(248,113,113,0.2)",
+          }}
+        >
           <svg
             className="w-7 h-7 text-red-400"
             fill="none"
@@ -309,17 +379,25 @@ function DeleteModal({
             />
           </svg>
         </div>
-        <h3 className="text-xl font-bold mb-2" style={{ color: "#e2e8f0" }}>Delete User</h3>
+        <h3 className="text-xl font-bold mb-2" style={{ color: "#e2e8f0" }}>
+          Delete User
+        </h3>
         <p className="text-sm mb-7" style={{ color: "rgba(148,163,184,0.6)" }}>
           You&apos;re about to permanently delete{" "}
-          <span className="font-semibold" style={{ color: "#e2e8f0" }}>{user.name}</span>. This
-          cannot be undone.
+          <span className="font-semibold" style={{ color: "#e2e8f0" }}>
+            {user.name}
+          </span>
+          . This cannot be undone.
         </p>
         <div className="flex gap-3">
           <button
             onClick={onCancel}
             className="flex-1 px-5 py-3 rounded-2xl text-sm font-semibold transition-colors"
-            style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(226,232,240,0.7)" }}
+            style={{
+              background: "rgba(255,255,255,0.05)",
+              border: "1px solid rgba(255,255,255,0.08)",
+              color: "rgba(226,232,240,0.7)",
+            }}
           >
             Cancel
           </button>
@@ -456,17 +534,22 @@ function UserDetailsModal({
       setError("");
       try {
         const res = await apiFetch<{ success: boolean; data: UserDetailsData }>(
-          `/admin/users/${userId}`
+          `/admin/users/${userId}`,
         );
         if (mounted) setData(res.data);
       } catch (err: unknown) {
-        if (mounted) setError(err instanceof Error ? err.message : "Failed to load details");
+        if (mounted)
+          setError(
+            err instanceof Error ? err.message : "Failed to load details",
+          );
       } finally {
         if (mounted) setLoading(false);
       }
     }
     load();
-    return () => { mounted = false; };
+    return () => {
+      mounted = false;
+    };
   }, [userId, apiFetch]);
 
   const formatDate = (iso?: string) => {
@@ -484,27 +567,58 @@ function UserDetailsModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.75)", backdropFilter: "blur(10px)" }}>
-      <div className="rounded-3xl shadow-2xl w-full max-w-3xl flex flex-col max-h-[92vh] overflow-hidden" style={{ background: "rgba(15,15,25,0.98)", border: "1px solid rgba(255,255,255,0.1)" }}>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ background: "rgba(0,0,0,0.75)", backdropFilter: "blur(10px)" }}
+    >
+      <div
+        className="rounded-3xl shadow-2xl w-full max-w-3xl flex flex-col max-h-[92vh] overflow-hidden"
+        style={{
+          background: "rgba(15,15,25,0.98)",
+          border: "1px solid rgba(255,255,255,0.1)",
+        }}
+      >
         {/* Modal Header */}
-        <div className="flex items-center justify-between px-7 py-5" style={{ borderBottom: "1px solid rgba(255,255,255,0.06)", background: "linear-gradient(135deg, rgba(124,58,237,0.12), rgba(67,56,202,0.06))" }}>
+        <div
+          className="flex items-center justify-between px-7 py-5"
+          style={{
+            borderBottom: "1px solid rgba(255,255,255,0.06)",
+            background:
+              "linear-gradient(135deg, rgba(124,58,237,0.12), rgba(67,56,202,0.06))",
+          }}
+        >
           <div className="flex items-center gap-3.5">
             <div className="w-12 h-12 rounded-2xl flex items-center justify-center font-bold text-lg text-white shadow-lg bg-gradient-to-br from-violet-600 to-indigo-600">
-              {data?.user?.name ? data.user.name.split(" ").slice(0, 2).map((w) => w[0]?.toUpperCase()).join("") : "U"}
+              {data?.user?.name
+                ? data.user.name
+                    .split(" ")
+                    .slice(0, 2)
+                    .map((w) => w[0]?.toUpperCase())
+                    .join("")
+                : "U"}
             </div>
             <div>
               <h2 className="text-lg font-bold text-slate-100 flex items-center gap-2">
                 {data?.user?.name || "User Details"}
                 {data?.user?.isBlocked ? (
-                  <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-500/20 text-rose-300 border border-rose-500/30">Blocked</span>
+                  <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-500/20 text-rose-300 border border-rose-500/30">
+                    Blocked
+                  </span>
                 ) : (
-                  <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Active</span>
+                  <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                    Active
+                  </span>
                 )}
               </h2>
-              <p className="text-xs text-slate-400 font-mono mt-0.5">{data?.user?.email || ""}</p>
+              <p className="text-xs text-slate-400 font-mono mt-0.5">
+                {data?.user?.email || ""}
+              </p>
             </div>
           </div>
-          <button onClick={onClose} className="w-9 h-9 flex items-center justify-center rounded-xl bg-white/[0.06] hover:bg-white/[0.12] text-slate-400 transition-colors">
+          <button
+            onClick={onClose}
+            className="w-9 h-9 flex items-center justify-center rounded-xl bg-white/[0.06] hover:bg-white/[0.12] text-slate-400 transition-colors"
+          >
             ✕
           </button>
         </div>
@@ -514,7 +628,9 @@ function UserDetailsModal({
           {loading ? (
             <div className="flex flex-col items-center justify-center py-20">
               <div className="w-8 h-8 border-2 rounded-full animate-spin border-purple-500/30 border-t-purple-500 mb-3" />
-              <p className="text-xs text-slate-400">Loading user profile & order analytics...</p>
+              <p className="text-xs text-slate-400">
+                Loading user profile & order analytics...
+              </p>
             </div>
           ) : error ? (
             <div className="p-5 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-300 text-sm">
@@ -525,56 +641,108 @@ function UserDetailsModal({
               {/* Stat Cards Grid */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
                 <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/[0.06]">
-                  <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">Total Orders</p>
-                  <p className="text-2xl font-black text-violet-300">{data.stats.totalOrders}</p>
-                  <p className="text-[10px] text-slate-500 mt-1">Placed all-time</p>
-                </div>
-                <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/[0.06]">
-                  <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">Total Spent</p>
-                  <p className="text-2xl font-black text-emerald-300">৳{data.stats.totalSpent.toLocaleString()}</p>
-                  <p className="text-[10px] text-slate-500 mt-1">Net purchase total</p>
-                </div>
-                <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/[0.06]">
-                  <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">Last Login</p>
-                  <p className="text-xs font-bold text-slate-200 mt-1 truncate" title={formatDate(data.user.lastLoginAt)}>
-                    {data.user.lastLoginAt ? formatDate(data.user.lastLoginAt) : "Never Logged In"}
+                  <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">
+                    Total Orders
+                  </p>
+                  <p className="text-2xl font-black text-violet-300">
+                    {data.stats.totalOrders}
+                  </p>
+                  <p className="text-[10px] text-slate-500 mt-1">
+                    Placed all-time
                   </p>
                 </div>
                 <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/[0.06]">
-                  <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">Password Changed</p>
-                  <p className="text-xs font-bold text-slate-200 mt-1 truncate" title={formatDate(data.user.passwordChangedAt)}>
-                    {data.user.passwordChangedAt ? formatDate(data.user.passwordChangedAt) : "Original Password"}
+                  <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">
+                    Total Spent
+                  </p>
+                  <p className="text-2xl font-black text-emerald-300">
+                    ৳{data.stats.totalSpent.toLocaleString()}
+                  </p>
+                  <p className="text-[10px] text-slate-500 mt-1">
+                    Net purchase total
+                  </p>
+                </div>
+                <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/[0.06]">
+                  <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">
+                    Last Login
+                  </p>
+                  <p
+                    className="text-xs font-bold text-slate-200 mt-1 truncate"
+                    title={formatDate(data.user.lastLoginAt)}
+                  >
+                    {data.user.lastLoginAt
+                      ? formatDate(data.user.lastLoginAt)
+                      : "Never Logged In"}
+                  </p>
+                </div>
+                <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/[0.06]">
+                  <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">
+                    Password Changed
+                  </p>
+                  <p
+                    className="text-xs font-bold text-slate-200 mt-1 truncate"
+                    title={formatDate(data.user.passwordChangedAt)}
+                  >
+                    {data.user.passwordChangedAt
+                      ? formatDate(data.user.passwordChangedAt)
+                      : "Original Password"}
                   </p>
                 </div>
               </div>
 
               {/* Order Status Breakdown */}
               <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/[0.06] space-y-3">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Order Status Breakdown</h3>
+                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                  Order Status Breakdown
+                </h3>
                 <div className="grid grid-cols-2 sm:grid-cols-6 gap-2">
                   <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-center">
-                    <span className="block text-[10px] font-bold uppercase text-amber-400">Pending</span>
-                    <span className="text-base font-black text-amber-300">{data.stats.statusCounts.pending}</span>
+                    <span className="block text-[10px] font-bold uppercase text-amber-400">
+                      Pending
+                    </span>
+                    <span className="text-base font-black text-amber-300">
+                      {data.stats.statusCounts.pending}
+                    </span>
                   </div>
                   <div className="p-2.5 rounded-xl bg-violet-500/10 border border-violet-500/20 text-center">
-                    <span className="block text-[10px] font-bold uppercase text-violet-400">Confirmed</span>
-                    <span className="text-base font-black text-violet-300">{data.stats.statusCounts.confirmed}</span>
+                    <span className="block text-[10px] font-bold uppercase text-violet-400">
+                      Confirmed
+                    </span>
+                    <span className="text-base font-black text-violet-300">
+                      {data.stats.statusCounts.confirmed}
+                    </span>
                   </div>
                   <div className="p-2.5 rounded-xl bg-blue-500/10 border border-blue-500/20 text-center">
-                    <span className="block text-[10px] font-bold uppercase text-blue-400">Shipped</span>
-                    <span className="text-base font-black text-blue-300">{data.stats.statusCounts.shipped}</span>
+                    <span className="block text-[10px] font-bold uppercase text-blue-400">
+                      Shipped
+                    </span>
+                    <span className="text-base font-black text-blue-300">
+                      {data.stats.statusCounts.shipped}
+                    </span>
                   </div>
                   <div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-center">
-                    <span className="block text-[10px] font-bold uppercase text-emerald-400">Delivered</span>
-                    <span className="text-base font-black text-emerald-300">{data.stats.statusCounts.delivered}</span>
+                    <span className="block text-[10px] font-bold uppercase text-emerald-400">
+                      Delivered
+                    </span>
+                    <span className="text-base font-black text-emerald-300">
+                      {data.stats.statusCounts.delivered}
+                    </span>
                   </div>
                   <div className="p-2.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-center">
-                    <span className="block text-[10px] font-bold uppercase text-rose-400">Cancelled</span>
-                    <span className="text-base font-black text-rose-300">{data.stats.statusCounts.cancelled}</span>
+                    <span className="block text-[10px] font-bold uppercase text-rose-400">
+                      Cancelled
+                    </span>
+                    <span className="text-base font-black text-rose-300">
+                      {data.stats.statusCounts.cancelled}
+                    </span>
                   </div>
                   <div className="p-2.5 rounded-xl bg-orange-500/10 border border-orange-500/20 text-center">
-                    <span className="block text-[10px] font-bold uppercase text-orange-400">Returned</span>
-                    <span className="text-base font-black text-orange-300">{data.stats.statusCounts.returned}</span>
+                    <span className="block text-[10px] font-bold uppercase text-orange-400">
+                      Returned
+                    </span>
+                    <span className="text-base font-black text-orange-300">
+                      {data.stats.statusCounts.returned}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -582,28 +750,46 @@ function UserDetailsModal({
               {/* Security & Contact Card */}
               <div className="grid sm:grid-cols-2 gap-4">
                 <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/[0.06] space-y-2.5">
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Account History & Security</h3>
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                    Account History & Security
+                  </h3>
                   <div className="space-y-2 text-xs">
                     <div className="flex justify-between items-center text-slate-300">
                       <span className="text-slate-400">Phone Number:</span>
-                      <span className="font-bold text-emerald-400 font-mono">{data.user.phone || "Not recorded"}</span>
+                      <span className="font-bold text-emerald-400 font-mono">
+                        {data.user.phone || "Not recorded"}
+                      </span>
                     </div>
                     <div className="flex justify-between items-center text-slate-300">
                       <span className="text-slate-400">Account Created:</span>
-                      <span className="font-semibold text-slate-200">{formatDate(data.user.createdAt)}</span>
+                      <span className="font-semibold text-slate-200">
+                        {formatDate(data.user.createdAt)}
+                      </span>
                     </div>
                     <div className="flex justify-between items-center text-slate-300">
-                      <span className="text-slate-400">Last Password Change:</span>
-                      <span className="font-semibold text-slate-200">{formatDate(data.user.passwordChangedAt)}</span>
+                      <span className="text-slate-400">
+                        Last Password Change:
+                      </span>
+                      <span className="font-semibold text-slate-200">
+                        {formatDate(data.user.passwordChangedAt)}
+                      </span>
                     </div>
                     <div className="flex justify-between items-center text-slate-300">
                       <span className="text-slate-400">Last Login Active:</span>
-                      <span className="font-semibold text-slate-200">{formatDate(data.user.lastLoginAt)}</span>
+                      <span className="font-semibold text-slate-200">
+                        {formatDate(data.user.lastLoginAt)}
+                      </span>
                     </div>
                     <div className="flex justify-between items-center text-slate-300">
-                      <span className="text-slate-400">Email Verification:</span>
-                      <span className={`font-bold ${data.user.isEmailVerified ? "text-emerald-400" : "text-amber-400"}`}>
-                        {data.user.isEmailVerified ? "✓ Verified" : "⏳ Pending"}
+                      <span className="text-slate-400">
+                        Email Verification:
+                      </span>
+                      <span
+                        className={`font-bold ${data.user.isEmailVerified ? "text-emerald-400" : "text-amber-400"}`}
+                      >
+                        {data.user.isEmailVerified
+                          ? "✓ Verified"
+                          : "⏳ Pending"}
                       </span>
                     </div>
                   </div>
@@ -611,9 +797,10 @@ function UserDetailsModal({
 
                 {/* Saved & Order Addresses Card */}
                 {(() => {
-                  const addressList = data.addresses && data.addresses.length > 0 
-                    ? data.addresses 
-                    : (data.user.addresses || []);
+                  const addressList =
+                    data.addresses && data.addresses.length > 0
+                      ? data.addresses
+                      : data.user.addresses || [];
                   return (
                     <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/[0.06] space-y-2.5">
                       <div className="flex items-center justify-between">
@@ -629,7 +816,10 @@ function UserDetailsModal({
                       {addressList.length > 0 ? (
                         <div className="space-y-2 max-h-36 overflow-y-auto pr-1">
                           {addressList.map((a, idx) => (
-                            <div key={idx} className="p-2.5 rounded-xl bg-white/[0.03] text-xs text-slate-300 border border-white/[0.05] space-y-1">
+                            <div
+                              key={idx}
+                              className="p-2.5 rounded-xl bg-white/[0.03] text-xs text-slate-300 border border-white/[0.05] space-y-1"
+                            >
                               <div className="flex items-center justify-between">
                                 <span className="font-bold text-slate-200 flex items-center gap-1.5">
                                   <span className="w-1.5 h-1.5 rounded-full bg-violet-400" />
@@ -641,17 +831,23 @@ function UserDetailsModal({
                                   </span>
                                 )}
                               </div>
-                              <p className="text-xs text-slate-300 leading-snug">{a.address}</p>
+                              <p className="text-xs text-slate-300 leading-snug">
+                                {a.address}
+                              </p>
                               {(a.city || a.state || a.zip) && (
                                 <p className="text-[11px] text-slate-400">
-                                  {[a.city, a.state, a.zip].filter(Boolean).join(", ")}
+                                  {[a.city, a.state, a.zip]
+                                    .filter(Boolean)
+                                    .join(", ")}
                                 </p>
                               )}
                             </div>
                           ))}
                         </div>
                       ) : (
-                        <p className="text-xs text-slate-500 italic py-4 text-center">No addresses or phone numbers recorded</p>
+                        <p className="text-xs text-slate-500 italic py-4 text-center">
+                          No addresses or phone numbers recorded
+                        </p>
                       )}
                     </div>
                   );
@@ -660,9 +856,13 @@ function UserDetailsModal({
 
               {/* Recent Orders List */}
               <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/[0.06] space-y-3">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Recent Orders List</h3>
+                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                  Recent Orders List
+                </h3>
                 {data.recentOrders.length === 0 ? (
-                  <p className="text-xs text-slate-500 italic py-4 text-center">This user has not placed any orders yet.</p>
+                  <p className="text-xs text-slate-500 italic py-4 text-center">
+                    This user has not placed any orders yet.
+                  </p>
                 ) : (
                   <div className="overflow-x-auto">
                     <table className="w-full text-left text-xs">
@@ -679,36 +879,69 @@ function UserDetailsModal({
                       <tbody className="divide-y divide-white/[0.04] text-slate-300 font-medium">
                         {data.recentOrders.map((o) => (
                           <tr key={o._id} className="hover:bg-white/[0.02]">
-                            <td className="py-2.5 px-3 font-mono font-bold text-violet-300">#{o._id.slice(-8).toUpperCase()}</td>
-                            <td className="py-2.5 px-3 text-slate-400">{new Date(o.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</td>
-                            <td className="py-2.5 px-3 text-slate-400">{o.itemsCount} items</td>
+                            <td className="py-2.5 px-3 font-mono font-bold text-violet-300">
+                              #{o._id.slice(-8).toUpperCase()}
+                            </td>
+                            <td className="py-2.5 px-3 text-slate-400">
+                              {new Date(o.createdAt).toLocaleDateString(
+                                "en-US",
+                                {
+                                  month: "short",
+                                  day: "numeric",
+                                  year: "numeric",
+                                },
+                              )}
+                            </td>
+                            <td className="py-2.5 px-3 text-slate-400">
+                              {o.itemsCount} items
+                            </td>
                             <td className="py-2.5 px-3">
-                              <span className={`capitalize font-bold text-[11px] px-2.5 py-0.5 rounded-full border ${
-                                o.status === "delivered" ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/30" :
-                                o.status === "shipped" ? "bg-blue-500/20 text-blue-300 border-blue-500/30" :
-                                o.status === "confirmed" ? "bg-violet-500/20 text-violet-300 border-violet-500/30" :
-                                o.status === "cancelled" ? "bg-rose-500/20 text-rose-300 border-rose-500/30" :
-                                o.status === "returned" ? "bg-orange-500/20 text-orange-300 border-orange-500/30" :
-                                "bg-amber-500/20 text-amber-300 border-amber-500/30"
-                              }`}>
+                              <span
+                                className={`capitalize font-bold text-[11px] px-2.5 py-0.5 rounded-full border ${
+                                  o.status === "delivered"
+                                    ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/30"
+                                    : o.status === "shipped"
+                                      ? "bg-blue-500/20 text-blue-300 border-blue-500/30"
+                                      : o.status === "confirmed"
+                                        ? "bg-violet-500/20 text-violet-300 border-violet-500/30"
+                                        : o.status === "cancelled"
+                                          ? "bg-rose-500/20 text-rose-300 border-rose-500/30"
+                                          : o.status === "returned"
+                                            ? "bg-orange-500/20 text-orange-300 border-orange-500/30"
+                                            : "bg-amber-500/20 text-amber-300 border-amber-500/30"
+                                }`}
+                              >
                                 {o.status}
                               </span>
                             </td>
                             <td className="py-2.5 px-3">
-                              <span className={`font-bold text-[11px] px-2.5 py-0.5 rounded-full border ${
-                                o.paymentStatus === "refunded" || o.status === "returned" ? "bg-purple-500/20 text-purple-300 border-purple-500/30" :
-                                o.paymentStatus === "cancelled" || o.status === "cancelled" ? "bg-rose-500/20 text-rose-300 border-rose-500/30" :
-                                o.paymentStatus === "paid" ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/30" :
-                                "bg-amber-500/20 text-amber-300 border-amber-500/30"
-                              }`}>
-                                {
-                                  o.paymentStatus === "refunded" || o.status === "returned" ? "Payment Returned" :
-                                  o.paymentStatus === "cancelled" || o.status === "cancelled" ? "Cancelled" :
-                                  o.paymentStatus === "paid" ? "Paid" : "Verifying"
-                                }
+                              <span
+                                className={`font-bold text-[11px] px-2.5 py-0.5 rounded-full border ${
+                                  o.paymentStatus === "refunded" ||
+                                  o.status === "returned"
+                                    ? "bg-purple-500/20 text-purple-300 border-purple-500/30"
+                                    : o.paymentStatus === "cancelled" ||
+                                        o.status === "cancelled"
+                                      ? "bg-rose-500/20 text-rose-300 border-rose-500/30"
+                                      : o.paymentStatus === "paid"
+                                        ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/30"
+                                        : "bg-amber-500/20 text-amber-300 border-amber-500/30"
+                                }`}
+                              >
+                                {o.paymentStatus === "refunded" ||
+                                o.status === "returned"
+                                  ? "Payment Returned"
+                                  : o.paymentStatus === "cancelled" ||
+                                      o.status === "cancelled"
+                                    ? "Cancelled"
+                                    : o.paymentStatus === "paid"
+                                      ? "Paid"
+                                      : "Verifying"}
                               </span>
                             </td>
-                            <td className="py-2.5 px-3 text-right font-black text-slate-100">৳{o.total.toFixed(2)}</td>
+                            <td className="py-2.5 px-3 text-right font-black text-slate-100">
+                              ৳{o.total.toFixed(2)}
+                            </td>
                           </tr>
                         ))}
                       </tbody>
@@ -815,8 +1048,8 @@ function UsersContent() {
       user.role === "user"
         ? "sub-admin"
         : user.role === "sub-admin"
-        ? "admin"
-        : "user";
+          ? "admin"
+          : "user";
     setActionLoading(user._id + "-role");
     try {
       await apiFetch(`/admin/users/${user._id}`, {
@@ -830,8 +1063,8 @@ function UsersContent() {
         newRole === "admin"
           ? "Admin"
           : newRole === "sub-admin"
-          ? "Sub-Admin"
-          : "Customer";
+            ? "Sub-Admin"
+            : "Customer";
       showToast("success", `${user.name} role updated to ${roleLabel}`);
     } catch (e: unknown) {
       showToast("error", e instanceof Error ? e.message : "Update failed");
@@ -845,7 +1078,10 @@ function UsersContent() {
       {toast && <Toast msg={toast.msg} type={toast.type} />}
 
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <p className="text-sm font-medium" style={{ color: "rgba(148,163,184,0.6)" }}>
+        <p
+          className="text-sm font-medium"
+          style={{ color: "rgba(148,163,184,0.6)" }}
+        >
           {pagination.total} registered account
           {pagination.total !== 1 ? "s" : ""}
         </p>
@@ -874,7 +1110,11 @@ function UsersContent() {
                 setPage(1);
               }}
               className="w-full pl-10 pr-4 py-2.5 rounded-xl text-sm focus:outline-none transition-all"
-              style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: "#f1f5f9" }}
+              style={{
+                background: "rgba(255,255,255,0.05)",
+                border: "1px solid rgba(255,255,255,0.08)",
+                color: "#f1f5f9",
+              }}
             />
           </div>
           <button
@@ -899,13 +1139,28 @@ function UsersContent() {
         </div>
       </div>
 
-      <div className="rounded-2xl overflow-hidden" style={{ background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.06)" }}>
+      <div
+        className="rounded-2xl overflow-hidden"
+        style={{
+          background: "rgba(255,255,255,0.025)",
+          border: "1px solid rgba(255,255,255,0.06)",
+        }}
+      >
         {loading ? (
           <div className="flex items-center justify-center py-24">
-            <div className="w-8 h-8 border-2 rounded-full animate-spin" style={{ borderColor: "rgba(255,255,255,0.08)", borderTopColor: "#7c3aed" }} />
+            <div
+              className="w-8 h-8 border-2 rounded-full animate-spin"
+              style={{
+                borderColor: "rgba(255,255,255,0.08)",
+                borderTopColor: "#7c3aed",
+              }}
+            />
           </div>
         ) : users.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-24" style={{ color: "rgba(148,163,184,0.4)" }}>
+          <div
+            className="flex flex-col items-center justify-center py-24"
+            style={{ color: "rgba(148,163,184,0.4)" }}
+          >
             <svg
               className="w-12 h-12 mb-3"
               fill="none"
@@ -925,14 +1180,28 @@ function UsersContent() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.05)", background: "rgba(255,255,255,0.02)" }}>
-                  <th className="text-left text-[11px] font-bold uppercase tracking-[0.08em] px-6 py-4" style={{ color: "rgba(148,163,184,0.5)" }}>
+                <tr
+                  style={{
+                    borderBottom: "1px solid rgba(255,255,255,0.05)",
+                    background: "rgba(255,255,255,0.02)",
+                  }}
+                >
+                  <th
+                    className="text-left text-[11px] font-bold uppercase tracking-[0.08em] px-6 py-4"
+                    style={{ color: "rgba(148,163,184,0.5)" }}
+                  >
                     User
                   </th>
-                  <th className="text-left text-[11px] font-bold uppercase tracking-[0.08em] px-6 py-4" style={{ color: "rgba(148,163,184,0.5)" }}>
+                  <th
+                    className="text-left text-[11px] font-bold uppercase tracking-[0.08em] px-6 py-4"
+                    style={{ color: "rgba(148,163,184,0.5)" }}
+                  >
                     Role
                   </th>
-                  <th className="text-left text-[11px] font-bold uppercase tracking-[0.08em] px-6 py-4" style={{ color: "rgba(148,163,184,0.5)" }}>
+                  <th
+                    className="text-left text-[11px] font-bold uppercase tracking-[0.08em] px-6 py-4"
+                    style={{ color: "rgba(148,163,184,0.5)" }}
+                  >
                     Status
                   </th>
                   <th className="px-6 py-4" />
@@ -943,7 +1212,9 @@ function UsersContent() {
                   <tr
                     key={user._id}
                     className={`hover:bg-violet-900/10 transition-colors duration-100 group ${user.isBlocked ? "opacity-50" : ""}`}
-                    style={{ borderBottom: "1px solid rgba(255,255,255,0.035)" }}
+                    style={{
+                      borderBottom: "1px solid rgba(255,255,255,0.035)",
+                    }}
                   >
                     <td className="px-6 py-4">
                       <div
@@ -953,7 +1224,10 @@ function UsersContent() {
                       >
                         <Avatar name={user.name} />
                         <div>
-                          <p className="text-sm font-semibold group-hover/user:text-violet-300 transition-colors" style={{ color: "#e2e8f0" }}>
+                          <p
+                            className="text-sm font-semibold group-hover/user:text-violet-300 transition-colors"
+                            style={{ color: "#e2e8f0" }}
+                          >
                             {user.name}
                           </p>
                           <p className="text-xs text-slate-400">{user.email}</p>
@@ -964,11 +1238,22 @@ function UsersContent() {
                       <span
                         className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold capitalize"
                         style={
-                          user.role === "admin" 
-                            ? { background: "rgba(167,139,250,0.12)", color: "#a78bfa", border: "1px solid rgba(167,139,250,0.2)" } 
+                          user.role === "admin"
+                            ? {
+                                background: "rgba(167,139,250,0.12)",
+                                color: "#a78bfa",
+                                border: "1px solid rgba(167,139,250,0.2)",
+                              }
                             : user.role === "sub-admin"
-                            ? { background: "rgba(56,189,248,0.12)", color: "#38bdf8", border: "1px solid rgba(56,189,248,0.2)" }
-                            : { background: "rgba(255,255,255,0.06)", color: "rgba(148,163,184,0.7)" }
+                              ? {
+                                  background: "rgba(56,189,248,0.12)",
+                                  color: "#38bdf8",
+                                  border: "1px solid rgba(56,189,248,0.2)",
+                                }
+                              : {
+                                  background: "rgba(255,255,255,0.06)",
+                                  color: "rgba(148,163,184,0.7)",
+                                }
                         }
                       >
                         {user.role === "admin" && (
@@ -1002,12 +1287,26 @@ function UsersContent() {
                     </td>
                     <td className="px-6 py-4">
                       {user.isBlocked ? (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold" style={{ background: "rgba(248,113,113,0.12)", color: "#f87171", border: "1px solid rgba(248,113,113,0.2)" }}>
+                        <span
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold"
+                          style={{
+                            background: "rgba(248,113,113,0.12)",
+                            color: "#f87171",
+                            border: "1px solid rgba(248,113,113,0.2)",
+                          }}
+                        >
                           <span className="w-1.5 h-1.5 rounded-full bg-red-400" />
                           Blocked
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold" style={{ background: "rgba(52,211,153,0.12)", color: "#34d399", border: "1px solid rgba(52,211,153,0.2)" }}>
+                        <span
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold"
+                          style={{
+                            background: "rgba(52,211,153,0.12)",
+                            color: "#34d399",
+                            border: "1px solid rgba(52,211,153,0.2)",
+                          }}
+                        >
                           <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
                           Active
                         </span>
@@ -1019,7 +1318,11 @@ function UsersContent() {
                           onClick={() => setSelectedUserId(user._id)}
                           title="View user details and analytics"
                           className="px-3 py-1.5 text-xs font-bold rounded-lg transition-colors border"
-                          style={{ background: "rgba(124,58,237,0.15)", color: "#a78bfa", borderColor: "rgba(124,58,237,0.3)" }}
+                          style={{
+                            background: "rgba(124,58,237,0.15)",
+                            color: "#a78bfa",
+                            borderColor: "rgba(124,58,237,0.3)",
+                          }}
                         >
                           Details
                         </button>
@@ -1031,9 +1334,19 @@ function UsersContent() {
                               user.isBlocked ? "Unblock user" : "Block user"
                             }
                             className="px-3 py-1.5 text-xs font-bold rounded-lg transition-colors disabled:opacity-60"
-                            style={user.isBlocked 
-                              ? { background: "rgba(52,211,153,0.12)", color: "#34d399", border: "1px solid rgba(52,211,153,0.2)" } 
-                              : { background: "rgba(251,146,60,0.12)", color: "#fb923c", border: "1px solid rgba(251,146,60,0.2)" }}
+                            style={
+                              user.isBlocked
+                                ? {
+                                    background: "rgba(52,211,153,0.12)",
+                                    color: "#34d399",
+                                    border: "1px solid rgba(52,211,153,0.2)",
+                                  }
+                                : {
+                                    background: "rgba(251,146,60,0.12)",
+                                    color: "#fb923c",
+                                    border: "1px solid rgba(251,146,60,0.2)",
+                                  }
+                            }
                           >
                             {actionLoading === user._id + "-block" ? (
                               <svg
@@ -1067,7 +1380,10 @@ function UsersContent() {
                           disabled={actionLoading === user._id + "-role"}
                           title="Click to change user role"
                           className="px-3 py-1.5 text-xs font-bold rounded-lg transition-colors disabled:opacity-60"
-                          style={{ background: "rgba(255,255,255,0.06)", color: "rgba(226,232,240,0.7)" }}
+                          style={{
+                            background: "rgba(255,255,255,0.06)",
+                            color: "rgba(226,232,240,0.7)",
+                          }}
                         >
                           {actionLoading === user._id + "-role" ? (
                             <svg
@@ -1102,7 +1418,10 @@ function UsersContent() {
                               : "Delete user"
                           }
                           className="px-3 py-1.5 text-xs font-bold rounded-lg transition-colors disabled:opacity-0 disabled:cursor-not-allowed"
-                          style={{ background: "rgba(248,113,113,0.12)", color: "#f87171" }}
+                          style={{
+                            background: "rgba(248,113,113,0.12)",
+                            color: "#f87171",
+                          }}
                         >
                           Delete
                         </button>
@@ -1116,7 +1435,13 @@ function UsersContent() {
         )}
 
         {pagination.pages > 1 && (
-          <div className="flex items-center justify-between px-6 py-4" style={{ borderTop: "1px solid rgba(255,255,255,0.05)", background: "rgba(255,255,255,0.01)" }}>
+          <div
+            className="flex items-center justify-between px-6 py-4"
+            style={{
+              borderTop: "1px solid rgba(255,255,255,0.05)",
+              background: "rgba(255,255,255,0.01)",
+            }}
+          >
             <p className="text-sm" style={{ color: "rgba(148,163,184,0.5)" }}>
               Page <span className="font-bold text-slate-300">{page}</span> of{" "}
               {pagination.pages}
@@ -1126,7 +1451,11 @@ function UsersContent() {
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={page === 1}
                 className="px-4 py-2 text-sm font-semibold rounded-xl transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-                style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(226,232,240,0.7)" }}
+                style={{
+                  background: "rgba(255,255,255,0.05)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  color: "rgba(226,232,240,0.7)",
+                }}
               >
                 ← Prev
               </button>
@@ -1136,7 +1465,11 @@ function UsersContent() {
                 }
                 disabled={page === pagination.pages}
                 className="px-4 py-2 text-sm font-semibold rounded-xl transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-                style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(226,232,240,0.7)" }}
+                style={{
+                  background: "rgba(255,255,255,0.05)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  color: "rgba(226,232,240,0.7)",
+                }}
               >
                 Next →
               </button>

@@ -1,6 +1,7 @@
 "use client";
 
 import AdminAuthGuard from "@/components/admin/AdminAuthGuard";
+import AdminSpinner from "@/components/admin/AdminSpinner";
 import { useAdminAuth } from "@/context/AdminAuthContext";
 import { useCallback, useEffect, useState } from "react";
 
@@ -1298,15 +1299,7 @@ function OrdersContent() {
         }}
       >
         {loading ? (
-          <div className="flex items-center justify-center py-24">
-            <div
-              className="w-8 h-8 border-2 rounded-full animate-spin"
-              style={{
-                borderColor: "rgba(255,255,255,0.08)",
-                borderTopColor: "#7c3aed",
-              }}
-            />
-          </div>
+          <AdminSpinner label="Loading orders..." />
         ) : orders.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 text-slate-400">
             <svg

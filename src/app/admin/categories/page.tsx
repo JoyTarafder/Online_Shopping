@@ -100,9 +100,25 @@ function CategoryModal({
   const isSubcategory = !!parentName;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}>
-      <div className="rounded-3xl w-full max-w-md overflow-hidden" style={{ background: "rgba(15,15,25,0.98)", border: "1px solid rgba(255,255,255,0.08)", boxShadow: "0 24px 80px rgba(0,0,0,0.6)" }}>
-        <div className="flex items-center justify-between px-7 py-5" style={{ borderBottom: "1px solid rgba(255,255,255,0.06)", background: "rgba(124,58,237,0.06)" }}>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}
+    >
+      <div
+        className="rounded-3xl w-full max-w-md overflow-hidden"
+        style={{
+          background: "rgba(15,15,25,0.98)",
+          border: "1px solid rgba(255,255,255,0.08)",
+          boxShadow: "0 24px 80px rgba(0,0,0,0.6)",
+        }}
+      >
+        <div
+          className="flex items-center justify-between px-7 py-5"
+          style={{
+            borderBottom: "1px solid rgba(255,255,255,0.06)",
+            background: "rgba(124,58,237,0.06)",
+          }}
+        >
           <div>
             <h2 className="text-lg font-bold" style={{ color: "#e2e8f0" }}>
               {category
@@ -110,7 +126,10 @@ function CategoryModal({
                 : `New ${isSubcategory ? "Sub-category" : "Category"}`}
             </h2>
             {parentName && (
-              <p className="text-xs mt-0.5" style={{ color: "rgba(148,163,184,0.5)" }}>
+              <p
+                className="text-xs mt-0.5"
+                style={{ color: "rgba(148,163,184,0.5)" }}
+              >
                 Under:{" "}
                 <span className="font-semibold" style={{ color: "#a78bfa" }}>
                   {parentName}
@@ -120,7 +139,11 @@ function CategoryModal({
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 flex items-center justify-center rounded-xl transition-colors" style={{ background: "rgba(255,255,255,0.06)", color: "rgba(148,163,184,0.8)" }}
+            className="w-8 h-8 flex items-center justify-center rounded-xl transition-colors"
+            style={{
+              background: "rgba(255,255,255,0.06)",
+              color: "rgba(148,163,184,0.8)",
+            }}
           >
             <svg
               className="w-4 h-4"
@@ -140,7 +163,10 @@ function CategoryModal({
 
         <form onSubmit={submit} className="px-7 py-5 space-y-4">
           <div>
-            <label className="block text-xs font-semibold mb-1.5" style={{ color: "rgba(148,163,184,0.6)" }}>
+            <label
+              className="block text-xs font-semibold mb-1.5"
+              style={{ color: "rgba(148,163,184,0.6)" }}
+            >
               Name *
             </label>
             <input
@@ -149,11 +175,19 @@ function CategoryModal({
               value={form.name}
               onChange={set}
               placeholder="e.g. T-Shirts"
-              className="w-full px-3.5 py-3 rounded-xl text-sm focus:outline-none" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "#f1f5f9" }}
+              className="w-full px-3.5 py-3 rounded-xl text-sm focus:outline-none"
+              style={{
+                background: "rgba(255,255,255,0.05)",
+                border: "1px solid rgba(255,255,255,0.1)",
+                color: "#f1f5f9",
+              }}
             />
           </div>
           <div>
-            <label className="block text-xs font-semibold mb-1.5" style={{ color: "rgba(148,163,184,0.6)" }}>
+            <label
+              className="block text-xs font-semibold mb-1.5"
+              style={{ color: "rgba(148,163,184,0.6)" }}
+            >
               Description
             </label>
             <textarea
@@ -162,11 +196,19 @@ function CategoryModal({
               value={form.description}
               onChange={set}
               placeholder="Brief description..."
-              className="w-full px-3.5 py-3 rounded-xl text-sm focus:outline-none resize-none admin-dark-input" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "#f1f5f9" }}
+              className="w-full px-3.5 py-3 rounded-xl text-sm focus:outline-none resize-none admin-dark-input"
+              style={{
+                background: "rgba(255,255,255,0.05)",
+                border: "1px solid rgba(255,255,255,0.1)",
+                color: "#f1f5f9",
+              }}
             />
           </div>
           <div>
-            <label className="block text-xs font-semibold mb-1.5" style={{ color: "rgba(148,163,184,0.6)" }}>
+            <label
+              className="block text-xs font-semibold mb-1.5"
+              style={{ color: "rgba(148,163,184,0.6)" }}
+            >
               Image URL
             </label>
             <input
@@ -175,10 +217,18 @@ function CategoryModal({
               value={form.image}
               onChange={set}
               placeholder="https://example.com/image.jpg"
-              className="w-full px-3.5 py-3 rounded-xl text-sm focus:outline-none admin-dark-input" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "#f1f5f9" }}
+              className="w-full px-3.5 py-3 rounded-xl text-sm focus:outline-none admin-dark-input"
+              style={{
+                background: "rgba(255,255,255,0.05)",
+                border: "1px solid rgba(255,255,255,0.1)",
+                color: "#f1f5f9",
+              }}
             />
             {form.image && (
-              <div className="mt-2 w-16 h-16 rounded-xl overflow-hidden" style={{ background: "rgba(255,255,255,0.06)" }}>
+              <div
+                className="mt-2 w-16 h-16 rounded-xl overflow-hidden"
+                style={{ background: "rgba(255,255,255,0.06)" }}
+              >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={form.image}
@@ -195,7 +245,12 @@ function CategoryModal({
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-5 py-3 rounded-2xl text-sm font-semibold transition-colors" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(226,232,240,0.7)" }}
+              className="flex-1 px-5 py-3 rounded-2xl text-sm font-semibold transition-colors"
+              style={{
+                background: "rgba(255,255,255,0.05)",
+                border: "1px solid rgba(255,255,255,0.08)",
+                color: "rgba(226,232,240,0.7)",
+              }}
             >
               Cancel
             </button>
@@ -248,9 +303,25 @@ function DeleteConfirm({
   onConfirm: () => void;
 }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}>
-      <div className="rounded-3xl w-full max-w-sm p-8" style={{ background: "rgba(15,15,25,0.98)", border: "1px solid rgba(255,255,255,0.08)", boxShadow: "0 24px 80px rgba(0,0,0,0.6)" }}>
-        <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5" style={{ background: "rgba(248,113,113,0.12)", border: "1px solid rgba(248,113,113,0.2)" }}>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}
+    >
+      <div
+        className="rounded-3xl w-full max-w-sm p-8"
+        style={{
+          background: "rgba(15,15,25,0.98)",
+          border: "1px solid rgba(255,255,255,0.08)",
+          boxShadow: "0 24px 80px rgba(0,0,0,0.6)",
+        }}
+      >
+        <div
+          className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5"
+          style={{
+            background: "rgba(248,113,113,0.12)",
+            border: "1px solid rgba(248,113,113,0.2)",
+          }}
+        >
           <svg
             className="w-7 h-7 text-red-600"
             fill="none"
@@ -265,9 +336,15 @@ function DeleteConfirm({
             />
           </svg>
         </div>
-        <h3 className="text-xl font-bold mb-2" style={{ color: "#e2e8f0" }}>Delete?</h3>
+        <h3 className="text-xl font-bold mb-2" style={{ color: "#e2e8f0" }}>
+          Delete?
+        </h3>
         <p className="text-sm mb-1" style={{ color: "rgba(148,163,184,0.6)" }}>
-          Delete <span className="font-semibold" style={{ color: "#e2e8f0" }}>{name}</span>?
+          Delete{" "}
+          <span className="font-semibold" style={{ color: "#e2e8f0" }}>
+            {name}
+          </span>
+          ?
         </p>
         <p className="text-xs mb-7" style={{ color: "rgba(148,163,184,0.5)" }}>
           Cannot delete if it has products or subcategories.
@@ -331,8 +408,21 @@ function CategoryCard({
   onManageProducts?: () => void;
 }) {
   return (
-    <div className="rounded-2xl overflow-hidden group transition-all duration-300 hover:-translate-y-1" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", boxShadow: "0 4px 24px rgba(0,0,0,0.3)" }}>
-      <div className="h-36 relative overflow-hidden" style={{ background: "linear-gradient(135deg, rgba(124,58,237,0.15), rgba(79,70,229,0.08))" }}>
+    <div
+      className="rounded-2xl overflow-hidden group transition-all duration-300 hover:-translate-y-1"
+      style={{
+        background: "rgba(255,255,255,0.03)",
+        border: "1px solid rgba(255,255,255,0.07)",
+        boxShadow: "0 4px 24px rgba(0,0,0,0.3)",
+      }}
+    >
+      <div
+        className="h-36 relative overflow-hidden"
+        style={{
+          background:
+            "linear-gradient(135deg, rgba(124,58,237,0.15), rgba(79,70,229,0.08))",
+        }}
+      >
         {cat.image ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -343,7 +433,8 @@ function CategoryCard({
         ) : (
           <div className="w-full h-full flex items-center justify-center">
             <svg
-              className="w-10 h-10" style={{ color: "rgba(148,163,184,0.2)" }}
+              className="w-10 h-10"
+              style={{ color: "rgba(148,163,184,0.2)" }}
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -359,17 +450,28 @@ function CategoryCard({
         )}
       </div>
       <div className="p-4">
-        <h3 className="text-sm font-bold" style={{ color: "#e2e8f0" }}>{cat.name}</h3>
-        <p className="text-[11px] font-mono mt-0.5" style={{ color: "rgba(148,163,184,0.4)" }}>
+        <h3 className="text-sm font-bold" style={{ color: "#e2e8f0" }}>
+          {cat.name}
+        </h3>
+        <p
+          className="text-[11px] font-mono mt-0.5"
+          style={{ color: "rgba(148,163,184,0.4)" }}
+        >
           {cat.slug}
         </p>
         {cat.description && (
-          <p className="text-xs mt-1.5 line-clamp-2" style={{ color: "rgba(148,163,184,0.5)" }}>
+          <p
+            className="text-xs mt-1.5 line-clamp-2"
+            style={{ color: "rgba(148,163,184,0.5)" }}
+          >
             {cat.description}
           </p>
         )}
         {cat.productCount !== undefined && (
-          <p className="text-xs mt-1" style={{ color: "rgba(148,163,184,0.4)" }}>
+          <p
+            className="text-xs mt-1"
+            style={{ color: "rgba(148,163,184,0.4)" }}
+          >
             {cat.productCount} products
           </p>
         )}
@@ -377,7 +479,12 @@ function CategoryCard({
           {showSubBtn && (
             <button
               onClick={onManageSub}
-              className="flex-1 px-3 py-2 text-xs font-bold rounded-xl flex items-center justify-center gap-1 transition-colors" style={{ background: "rgba(167,139,250,0.12)", color: "#a78bfa", border: "1px solid rgba(167,139,250,0.2)" }}
+              className="flex-1 px-3 py-2 text-xs font-bold rounded-xl flex items-center justify-center gap-1 transition-colors"
+              style={{
+                background: "rgba(167,139,250,0.12)",
+                color: "#a78bfa",
+                border: "1px solid rgba(167,139,250,0.2)",
+              }}
             >
               <svg
                 className="w-3.5 h-3.5"
@@ -398,7 +505,12 @@ function CategoryCard({
           {!showSubBtn && (
             <button
               onClick={onManageProducts}
-              className="flex-1 px-3 py-2 text-xs font-bold rounded-xl flex items-center justify-center gap-1 transition-colors" style={{ background: "rgba(52,211,153,0.1)", color: "#34d399", border: "1px solid rgba(52,211,153,0.2)" }}
+              className="flex-1 px-3 py-2 text-xs font-bold rounded-xl flex items-center justify-center gap-1 transition-colors"
+              style={{
+                background: "rgba(52,211,153,0.1)",
+                color: "#34d399",
+                border: "1px solid rgba(52,211,153,0.2)",
+              }}
             >
               <svg
                 className="w-3.5 h-3.5"
@@ -418,13 +530,18 @@ function CategoryCard({
           )}
           <button
             onClick={onEdit}
-            className="flex-1 px-3 py-2 text-xs font-bold rounded-xl transition-colors" style={{ background: "rgba(255,255,255,0.06)", color: "rgba(226,232,240,0.7)" }}
+            className="flex-1 px-3 py-2 text-xs font-bold rounded-xl transition-colors"
+            style={{
+              background: "rgba(255,255,255,0.06)",
+              color: "rgba(226,232,240,0.7)",
+            }}
           >
             Edit
           </button>
           <button
             onClick={onDelete}
-            className="flex-1 px-3 py-2 text-xs font-bold rounded-xl transition-colors" style={{ background: "rgba(248,113,113,0.1)", color: "#f87171" }}
+            className="flex-1 px-3 py-2 text-xs font-bold rounded-xl transition-colors"
+            style={{ background: "rgba(248,113,113,0.1)", color: "#f87171" }}
           >
             Delete
           </button>
@@ -577,7 +694,8 @@ function CategoriesContent() {
           {isSubView && (
             <button
               onClick={closeSubPanel}
-              className="flex items-center gap-1.5 text-sm transition-colors" style={{ color: "rgba(148,163,184,0.6)" }}
+              className="flex items-center gap-1.5 text-sm transition-colors"
+              style={{ color: "rgba(148,163,184,0.6)" }}
             >
               <svg
                 className="w-4 h-4"
@@ -600,7 +718,9 @@ function CategoriesContent() {
             <p className="text-sm font-semibold" style={{ color: "#e2e8f0" }}>
               {isSubView ? (
                 <span className="flex items-center gap-2">
-                  <span className="" style={{ color: "rgba(148,163,184,0.5)" }}>{selectedParent.name}</span>
+                  <span className="" style={{ color: "rgba(148,163,184,0.5)" }}>
+                    {selectedParent.name}
+                  </span>
                   <span className="text-slate-500">&gt;</span>
                   Sub-categories
                 </span>
@@ -639,10 +759,19 @@ function CategoriesContent() {
       {/* Grid */}
       {activeLoading ? (
         <div className="flex items-center justify-center py-24">
-          <div className="w-8 h-8 border-2 rounded-full animate-spin" style={{ borderColor: "rgba(255,255,255,0.08)", borderTopColor: "#7c3aed" }} />
+          <div
+            className="w-8 h-8 border-2 rounded-full animate-spin"
+            style={{
+              borderColor: "rgba(255,255,255,0.08)",
+              borderTopColor: "#7c3aed",
+            }}
+          />
         </div>
       ) : activeList.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-24" style={{ color: "rgba(148,163,184,0.4)" }}>
+        <div
+          className="flex flex-col items-center justify-center py-24"
+          style={{ color: "rgba(148,163,184,0.4)" }}
+        >
           <svg
             className="w-12 h-12 mb-3"
             fill="none"
@@ -661,7 +790,8 @@ function CategoriesContent() {
           </p>
           <button
             onClick={() => setModal("new")}
-            className="mt-3 text-sm hover:underline font-bold" style={{ color: "#a78bfa" }}
+            className="mt-3 text-sm hover:underline font-bold"
+            style={{ color: "#a78bfa" }}
           >
             Create {isSubView ? "first sub-category" : "first category"} â†’
           </button>
@@ -715,4 +845,3 @@ export default function CategoriesPage() {
     </AdminAuthGuard>
   );
 }
-
