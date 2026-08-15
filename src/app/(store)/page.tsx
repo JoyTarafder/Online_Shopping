@@ -1,12 +1,12 @@
 import BestSellerSection from "@/components/home/BestSellerSection";
 import CategorySection from "@/components/home/CategorySection";
-
 import FeaturesSection from "@/components/home/FeaturesSection";
 import HeroSection from "@/components/home/HeroSection";
 import NewArrivalsSection from "@/components/home/NewArrivalsSection";
 import NewsletterSection from "@/components/home/NewsletterSection";
 import PromoBanner from "@/components/home/PromoBanner";
 import PromoGrid from "@/components/home/PromoGrid";
+import ReviewSection from "@/components/home/ReviewSection";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -38,9 +38,10 @@ export default function HomePage() {
       {/* 7. Best Sellers - Soft Sandy Contrast backdrop */}
       <BestSellerSection />
 
+      {/* 8. Verified Reviews Carousel - Auto-sliding (5s) with custom spacing */}
+      <ReviewSection />
 
-
-      {/* 9. Newsletter CTA - Luxury Dark Closing signature */}
+      {/* 9. Newsletter CTA - Luxury Dark Closing signature ("Stay in the Loop") */}
       <NewsletterSection />
     </>
   );
