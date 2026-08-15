@@ -253,10 +253,71 @@ export const getUserDetails = asyncHandler(
       itemsCount: o.items ? o.items.length : 0,
     }));
 
+    // Collect all unique addresses & phone numbers from user profile AND order history
+    const allAddresses: Array<{
+      label?: string;
+      phone?: string;
+      address: string;
+      city?: string;
+      state?: string;
+      zip?: string;
+    }> = [];
+
+    let primaryPhone = user.phone || "";
+
+    if (user.addresses && user.addresses.length > 0) {
+      user.addresses.forEach((addr) => {
+        if (addr.phone && !primaryPhone) primaryPhone = addr.phone;
+        allAddresses.push({
+          label: addr.label || "Saved Address",
+          phone: addr.phone || user.phone,
+          address: addr.address,
+          city: addr.city,
+          zip: addr.zip,
+        });
+      });
+    }
+
+    userOrders.forEach((o) => {
+      if (o.shippingAddress && o.shippingAddress.address) {
+        const addrText = o.shippingAddress.address;
+        const phone = o.shippingAddress.phone;
+        const city = o.shippingAddress.city;
+        const state = o.shippingAddress.state;
+        const zip = o.shippingAddress.zip;
+
+        if (phone && !primaryPhone) {
+          primaryPhone = phone;
+        }
+
+        const exists = allAddresses.some(
+          (a) => a.address.toLowerCase() === addrText.toLowerCase()
+        );
+
+        if (!exists) {
+          const dateStr = o.createdAt ? new Date(o.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : "";
+          allAddresses.push({
+            label: `Order Address ${dateStr ? `(${dateStr})` : ""}`,
+            phone,
+            address: addrText,
+            city,
+            state,
+            zip,
+          });
+        }
+      }
+    });
+
+    const userObj = user.toObject();
+    if (primaryPhone) {
+      userObj.phone = primaryPhone;
+    }
+
     res.status(200).json({
       success: true,
       data: {
-        user,
+        user: userObj,
+        addresses: allAddresses,
         stats: {
           totalOrders: userOrders.length,
           totalSpent,

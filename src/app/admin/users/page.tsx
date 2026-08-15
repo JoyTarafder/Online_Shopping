@@ -404,6 +404,16 @@ interface UserDetailsData {
       phone?: string;
     }>;
   };
+  addresses?: Array<{
+    label?: string;
+    phone?: string;
+    address: string;
+    city?: string;
+    state?: string;
+    district?: string;
+    division?: string;
+    zip?: string;
+  }>;
   stats: {
     totalOrders: number;
     totalSpent: number;
@@ -569,11 +579,15 @@ function UserDetailsModal({
                 </div>
               </div>
 
-              {/* Security & Dates Card */}
+              {/* Security & Contact Card */}
               <div className="grid sm:grid-cols-2 gap-4">
                 <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/[0.06] space-y-2.5">
                   <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Account History & Security</h3>
                   <div className="space-y-2 text-xs">
+                    <div className="flex justify-between items-center text-slate-300">
+                      <span className="text-slate-400">Phone Number:</span>
+                      <span className="font-bold text-emerald-400 font-mono">{data.user.phone || "Not recorded"}</span>
+                    </div>
                     <div className="flex justify-between items-center text-slate-300">
                       <span className="text-slate-400">Account Created:</span>
                       <span className="font-semibold text-slate-200">{formatDate(data.user.createdAt)}</span>
@@ -595,21 +609,53 @@ function UserDetailsModal({
                   </div>
                 </div>
 
-                <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/[0.06] space-y-2.5">
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Saved Addresses ({data.user.addresses?.length || 0})</h3>
-                  {data.user.addresses && data.user.addresses.length > 0 ? (
-                    <div className="space-y-2 max-h-28 overflow-y-auto pr-1">
-                      {data.user.addresses.map((a, idx) => (
-                        <div key={idx} className="p-2 rounded-xl bg-white/[0.03] text-xs text-slate-300 border border-white/[0.04]">
-                          <p className="font-bold text-slate-200">{a.label || "Address"} {a.phone && `(${a.phone})`}</p>
-                          <p className="text-[11px] text-slate-400 truncate">{a.address}, {[a.city, a.state].filter(Boolean).join(", ")}</p>
+                {/* Saved & Order Addresses Card */}
+                {(() => {
+                  const addressList = data.addresses && data.addresses.length > 0 
+                    ? data.addresses 
+                    : (data.user.addresses || []);
+                  return (
+                    <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/[0.06] space-y-2.5">
+                      <div className="flex items-center justify-between">
+                        <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                          Saved & Order Addresses ({addressList.length})
+                        </h3>
+                        {data.user.phone && (
+                          <span className="text-[10px] font-mono font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full">
+                            📞 {data.user.phone}
+                          </span>
+                        )}
+                      </div>
+                      {addressList.length > 0 ? (
+                        <div className="space-y-2 max-h-36 overflow-y-auto pr-1">
+                          {addressList.map((a, idx) => (
+                            <div key={idx} className="p-2.5 rounded-xl bg-white/[0.03] text-xs text-slate-300 border border-white/[0.05] space-y-1">
+                              <div className="flex items-center justify-between">
+                                <span className="font-bold text-slate-200 flex items-center gap-1.5">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-violet-400" />
+                                  {a.label || "Address"}
+                                </span>
+                                {a.phone && (
+                                  <span className="text-[10px] font-mono font-bold text-violet-300 bg-violet-500/15 border border-violet-500/30 px-2 py-0.5 rounded-md">
+                                    📞 {a.phone}
+                                  </span>
+                                )}
+                              </div>
+                              <p className="text-xs text-slate-300 leading-snug">{a.address}</p>
+                              {(a.city || a.state || a.zip) && (
+                                <p className="text-[11px] text-slate-400">
+                                  {[a.city, a.state, a.zip].filter(Boolean).join(", ")}
+                                </p>
+                              )}
+                            </div>
+                          ))}
                         </div>
-                      ))}
+                      ) : (
+                        <p className="text-xs text-slate-500 italic py-4 text-center">No addresses or phone numbers recorded</p>
+                      )}
                     </div>
-                  ) : (
-                    <p className="text-xs text-slate-500 italic py-3">No saved addresses on file</p>
-                  )}
-                </div>
+                  );
+                })()}
               </div>
 
               {/* Recent Orders List */}

@@ -99,10 +99,27 @@ const REVIEWS: Review[] = [
 export default function ReviewSection() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [visibleCards, setVisibleCards] = useState(3);
   const touchStartX = useRef<number>(0);
   const touchEndX = useRef<number>(0);
 
   const totalSlides = REVIEWS.length;
+
+  // Handle window resize safely on client
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setVisibleCards(3);
+      } else if (window.innerWidth >= 640) {
+        setVisibleCards(2);
+      } else {
+        setVisibleCards(1);
+      }
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // Auto slide every 5 seconds (5000ms)
   useEffect(() => {
@@ -170,11 +187,6 @@ export default function ReviewSection() {
 
           {/* Carousel Navigation Arrows & Auto-Timer Status */}
           <div className="flex items-center gap-4">
-            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-charcoal-200/80 shadow-soft text-[11px] font-medium text-charcoal-600">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-              <span>Auto-sliding (5s)</span>
-            </div>
-
             <div className="flex items-center gap-2">
               <button
                 onClick={handlePrev}
@@ -232,15 +244,7 @@ export default function ReviewSection() {
           <div
             className="flex transition-transform duration-700 ease-out -ml-4 sm:-ml-6"
             style={{
-              transform: `translateX(-${
-                currentIndex *
-                (100 /
-                  (typeof window !== "undefined" && window.innerWidth >= 1024
-                    ? 3
-                    : window.innerWidth >= 640
-                    ? 2
-                    : 1))
-              }%)`,
+              transform: `translateX(-${currentIndex * (100 / visibleCards)}%)`,
             }}
           >
             {REVIEWS.map((review) => (
