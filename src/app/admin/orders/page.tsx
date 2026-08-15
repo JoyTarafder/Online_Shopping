@@ -287,12 +287,21 @@ function OrderDetailsModal({ order, onClose, onStatusUpdate, onConfirmPayment, o
               </svg>
               <p className="text-sm font-semibold text-orange-400">Order Returned</p>
             </div>
-          ) : (order.status === "delivered" || order.paymentStatus === "paid") ? (
-            <div className="rounded-2xl p-4 flex items-center gap-3" style={{ background: "rgba(52,211,153,0.08)", border: "1px solid rgba(52,211,153,0.2)" }}>
-              <svg className="w-5 h-5 text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-              </svg>
-              <p className="text-sm font-semibold text-emerald-400">Payment Confirmed (Paid)</p>
+          ) : (order.status === "delivered" || order.paymentStatus === "paid" || order.paymentMethod !== "cod") ? (
+            <div className="rounded-2xl p-4 flex items-center justify-between gap-3" style={{ background: "rgba(52,211,153,0.08)", border: "1px solid rgba(52,211,153,0.2)" }}>
+              <div className="flex items-center gap-3">
+                <svg className="w-5 h-5 text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <p className="text-sm font-bold text-emerald-400">
+                  Payment Confirmed ({(order.paymentMethod && order.paymentMethod !== "cod") ? `Paid via ${METHOD_LABEL[order.paymentMethod] ?? order.paymentMethod}` : "Paid"})
+                </p>
+              </div>
+              {order.txnId && (
+                <span className="font-mono text-xs font-bold text-emerald-300 bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20">
+                  TxnID: {order.txnId}
+                </span>
+              )}
             </div>
           ) : (
             <div className="rounded-2xl p-4 flex items-center gap-3" style={{ background: "rgba(96,165,250,0.08)", border: "1px solid rgba(96,165,250,0.2)" }}>
@@ -332,12 +341,19 @@ function OrderDetailsModal({ order, onClose, onStatusUpdate, onConfirmPayment, o
           {/* Payment method + TxnID */}
           {order.paymentMethod && (
             <div className="flex items-center gap-3 text-sm text-slate-400">
-              <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${payCfg.badge}`}>
-                <span className={`w-1.5 h-1.5 rounded-full ${payCfg.dot}`}/>
-                {payCfg.label}
-              </span>
-              <span className="font-medium text-slate-300">{METHOD_LABEL[order.paymentMethod] ?? order.paymentMethod}</span>
-              {order.txnId && <span className="font-mono text-xs text-slate-400 bg-white/[0.06] px-2 py-0.5 rounded-lg">TxnID: {order.txnId}</span>}
+              {order.paymentMethod !== "cod" || order.paymentStatus === "paid" ? (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                  Paid
+                </span>
+              ) : (
+                <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${payCfg.badge}`}>
+                  <span className={`w-1.5 h-1.5 rounded-full ${payCfg.dot}`}/>
+                  {payCfg.label}
+                </span>
+              )}
+              <span className="font-semibold text-slate-200">{METHOD_LABEL[order.paymentMethod] ?? order.paymentMethod}</span>
+              {order.txnId && <span className="font-mono text-xs font-bold text-slate-200 bg-white/[0.08] px-2.5 py-1 rounded-lg border border-white/10">TxnID: {order.txnId}</span>}
             </div>
           )}
 

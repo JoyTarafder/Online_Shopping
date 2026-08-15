@@ -104,7 +104,7 @@ export const placeOrder = asyncHandler(
     const discountAmt  = parseFloat(Math.min(discount, subtotal).toFixed(2));
     const total        = parseFloat((subtotal + shippingCost - discountAmt).toFixed(2));
 
-    const paymentStatus = paymentMethod === "cod" ? "pending_delivery" : "pending_verification";
+    const paymentStatus = paymentMethod === "cod" ? "pending_delivery" : "paid";
 
     const order = await Order.create({
       user: req.user?._id,

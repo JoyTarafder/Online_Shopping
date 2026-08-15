@@ -31,14 +31,21 @@ async function fixOldOrderTotals() {
       const shippingCost = order.shippingCost ?? 0;
       const discount = order.discount ?? 0;
       const correctTotal = parseFloat(Math.max(0, subtotal + shippingCost - discount).toFixed(2));
+      const targetPaymentStatus = order.paymentMethod !== "cod" ? "paid" : (order.paymentStatus || "pending_delivery");
 
-      if (order.tax !== 0 || order.total !== correctTotal || order.subtotal !== subtotal) {
+      if (
+        order.tax !== 0 ||
+        order.total !== correctTotal ||
+        order.subtotal !== subtotal ||
+        order.paymentStatus !== targetPaymentStatus
+      ) {
         order.tax = 0;
         order.subtotal = subtotal;
         order.total = correctTotal;
+        order.paymentStatus = targetPaymentStatus as any;
         await order.save();
         updatedCount++;
-        console.log(`Updated Order #${order._id.toString().slice(-8).toUpperCase()}: Subtotal=৳${subtotal}, Discount=৳${discount}, New Total=৳${correctTotal}`);
+        console.log(`Updated Order #${order._id.toString().slice(-8).toUpperCase()}: Subtotal=৳${subtotal}, PaymentStatus=${targetPaymentStatus}, Total=৳${correctTotal}`);
       }
     }
 
@@ -59,9 +66,11 @@ async function fixOldOrderTotals() {
         const shippingCost = order.shippingCost ?? 0;
         const discount = order.discount ?? 0;
         const correctTotal = parseFloat(Math.max(0, subtotal + shippingCost - discount).toFixed(2));
+        const targetPaymentStatus = order.paymentMethod !== "cod" ? "paid" : (order.paymentStatus || "pending_delivery");
         order.tax = 0;
         order.subtotal = subtotal;
         order.total = correctTotal;
+        order.paymentStatus = targetPaymentStatus as any;
         await order.save();
       }
       console.log("✓ Secondary DB orders updated!");
