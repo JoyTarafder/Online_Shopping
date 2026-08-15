@@ -172,16 +172,18 @@ export default function CheckoutPage() {
         paymentMethod: paymentInfo.method,
         txnId: paymentInfo.txnId,
         discount,
-        items: state.items.map((i) => ({
-          // Prefer Mongo _id when products are loaded from backend
-          productId: ((i.product as unknown as { _id?: string })._id ?? i.product.id) as string,
-          name: i.product.name,
-          price: i.product.price,
-          quantity: i.quantity,
-          size: i.size,
-          color: i.color,
-          image: i.product.images[0] ?? "",
-        })),
+        items: state.items
+          .filter((i) => Boolean(i && i.product))
+          .map((i) => ({
+            // Prefer Mongo _id when products are loaded from backend
+            productId: ((i.product as unknown as { _id?: string })._id ?? i.product.id ?? "") as string,
+            name: i.product.name ?? "Product",
+            price: i.product.price ?? 0,
+            quantity: i.quantity ?? 1,
+            size: i.size,
+            color: i.color,
+            image: i.product.images?.[0] ?? "",
+          })),
       };
 
       const res = await fetch(`${API}/api/orders`, {
@@ -641,17 +643,21 @@ export default function CheckoutPage() {
                     <div>
                       <h3 className="text-sm font-semibold text-charcoal-900 mb-4">Items ({totalItems})</h3>
                       <div className="space-y-3">
-                        {state.items.map((item, idx) => (
+                        {state.items.filter((i) => Boolean(i && i.product)).map((item, idx) => (
                           <div key={idx} className="flex items-center gap-4">
                             <div className="relative w-14 h-16 rounded-xl overflow-hidden bg-warm-50 flex-shrink-0 shadow-soft">
-                              <Image src={item.product.images[0]} alt={item.product.name} fill className="object-cover" sizes="56px" />
+                              {item.product.images?.[0] ? (
+                                <Image src={item.product.images[0]} alt={item.product.name ?? "Product"} fill className="object-cover" sizes="56px" />
+                              ) : (
+                                <div className="w-full h-full bg-slate-200" />
+                              )}
                             </div>
                             <div className="flex-1 min-w-0">
-                              <p className="text-sm font-medium text-charcoal-900 truncate">{item.product.name}</p>
+                              <p className="text-sm font-medium text-charcoal-900 truncate">{item.product.name ?? "Product"}</p>
                               <p className="text-xs text-charcoal-400 font-light">{item.size} &middot; {item.color} &middot; Qty {item.quantity}</p>
                             </div>
                             <span className="text-sm font-semibold text-charcoal-900 flex-shrink-0">
-                              ৳{(item.product.price * item.quantity).toFixed(2)}
+                              ৳{((item.product.price ?? 0) * item.quantity).toFixed(2)}
                             </span>
                           </div>
                         ))}
@@ -700,20 +706,24 @@ export default function CheckoutPage() {
 
               {/* Items list */}
               <div className="space-y-3 max-h-64 overflow-y-auto pr-1">
-                {state.items.map((item, idx) => (
+                {state.items.filter((i) => Boolean(i && i.product)).map((item, idx) => (
                   <div key={idx} className="flex gap-3.5">
                     <div className="relative w-12 h-14 rounded-lg overflow-hidden bg-warm-50 flex-shrink-0 shadow-soft">
-                      <Image src={item.product.images[0]} alt={item.product.name} fill className="object-cover" sizes="48px" />
+                      {item.product.images?.[0] ? (
+                        <Image src={item.product.images[0]} alt={item.product.name ?? "Product"} fill className="object-cover" sizes="48px" />
+                      ) : (
+                        <div className="w-full h-full bg-slate-200" />
+                      )}
                       <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-charcoal-700 text-white text-[10px] flex items-center justify-center font-bold">
                         {item.quantity}
                       </div>
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs font-medium text-charcoal-900 truncate">{item.product.name}</p>
+                      <p className="text-xs font-medium text-charcoal-900 truncate">{item.product.name ?? "Product"}</p>
                       <p className="text-xs text-charcoal-300 font-light">{item.size}</p>
                     </div>
                     <span className="text-xs font-semibold text-charcoal-900 flex-shrink-0">
-                      ৳{(item.product.price * item.quantity).toFixed(2)}
+                      ৳{((item.product.price ?? 0) * item.quantity).toFixed(2)}
                     </span>
                   </div>
                 ))}

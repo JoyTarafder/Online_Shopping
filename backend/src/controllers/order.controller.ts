@@ -44,7 +44,9 @@ export const placeOrder = asyncHandler(
     const orderItems = [];
     const stockOps: Promise<unknown>[] = [];
     for (const item of frontendItems) {
+      if (!item) continue;
       const rawId = (item.productId ?? "").toString().trim();
+      const itemName = item.name ?? "Product";
 
       const product = mongoose.isValidObjectId(rawId)
         ? await Product.findById(rawId)
@@ -54,16 +56,16 @@ export const placeOrder = asyncHandler(
             name: { $regex: `^${rawId.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, $options: "i" },
           })) ??
           (await Product.findOne({
-            name: { $regex: `^${(item.name ?? "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, $options: "i" },
+            name: { $regex: `^${itemName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, $options: "i" },
           }));
 
       // If product isn't in DB, still allow order placement using frontend snapshot
       // (useful when the storefront uses local/static products)
       if (!product) {
         orderItems.push({
-          name: item.name,
-          price: item.price,
-          quantity: item.quantity,
+          name: itemName,
+          price: item.price ?? 0,
+          quantity: item.quantity ?? 1,
           size: item.size,
           color: item.color,
           image: item.image ?? "",
