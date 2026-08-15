@@ -53,6 +53,12 @@ textarea:-webkit-autofill {
   color-scheme: dark !important;
 }
 
+/* Force dark dropdown menu background & light text for select options */
+select option {
+  background-color: #0f172a !important;
+  color: #f1f5f9 !important;
+}
+
 @layer components {
   .btn-primary {
     @apply inline-flex items-center justify-center px-7 py-3.5

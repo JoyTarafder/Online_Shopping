@@ -186,17 +186,17 @@ function ProductModal({
                   value={form.category}
                   onChange={set}
                   disabled={categoriesLoading || categories.length === 0}
-                  className="px-3.5 py-3 rounded-xl text-sm bg-white/[0.05] border border-white/10 text-slate-100 focus:outline-none focus:border-violet-500/60 bg-white disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="px-3.5 py-3 rounded-xl text-sm bg-slate-900 border border-white/10 text-slate-100 focus:outline-none focus:border-violet-500/60 disabled:opacity-60 disabled:cursor-not-allowed admin-dark-input"
                 >
                   {categoriesLoading ? (
-                    <option value="">Loading categoriesâ€¦</option>
+                    <option value="" className="bg-slate-900 text-slate-100">Loading categories...</option>
                   ) : categories.length === 0 ? (
-                    <option value="">No categories found</option>
+                    <option value="" className="bg-slate-900 text-slate-100">No categories found</option>
                   ) : (
                     <>
-                      <option value="">Select a categoryâ€¦</option>
+                      <option value="" className="bg-slate-900 text-slate-100">Select a category...</option>
                       {categories.map((c) => (
-                        <option key={c._id} value={c._id}>{c.name}</option>
+                        <option key={c._id} value={c._id} className="bg-slate-900 text-slate-100">{c.name}</option>
                       ))}
                     </>
                   )}
@@ -208,22 +208,22 @@ function ProductModal({
                     </svg>
                     No categories yet.{" "}
                     <a href="/admin/categories" target="_blank" className="underline font-semibold hover:text-amber-700">
-                      Create one first â†’
+                      Create one first -&gt;
                     </a>
                   </p>
                 )}
               </Field>
               <Field label="Badge">
-                <select name="badge" value={form.badge} onChange={set} className="px-3.5 py-3 rounded-xl text-sm bg-white/[0.05] border border-white/10 text-slate-100 focus:outline-none focus:border-violet-500/60 bg-white">
-                  <option value="">None</option>
-                  <option value="New">New</option>
-                  <option value="Sale">Sale</option>
-                  <option value="Best Seller">Best Seller</option>
+                <select name="badge" value={form.badge} onChange={set} className="px-3.5 py-3 rounded-xl text-sm bg-slate-900 border border-white/10 text-slate-100 focus:outline-none focus:border-violet-500/60 admin-dark-input">
+                  <option value="" className="bg-slate-900 text-slate-100">None</option>
+                  <option value="New" className="bg-slate-900 text-slate-100">New</option>
+                  <option value="Sale" className="bg-slate-900 text-slate-100">Sale</option>
+                  <option value="Best Seller" className="bg-slate-900 text-slate-100">Best Seller</option>
                 </select>
               </Field>
             </div>
             <Field label="Image URLs (comma-separated) *">
-              <input name="images" required value={form.images} onChange={set} placeholder="https://â€¦, https://â€¦" className="px-3.5 py-3 rounded-xl text-sm bg-white/[0.05] border border-white/10 text-slate-100 focus:outline-none focus:border-violet-500/60 placeholder-gray-300" />
+              <input name="images" required value={form.images} onChange={set} placeholder="https://domain.com/img1.jpg, https://domain.com/img2.jpg" className="px-3.5 py-3 rounded-xl text-sm bg-white/[0.05] border border-white/10 text-slate-100 focus:outline-none focus:border-violet-500/60 placeholder-gray-400 admin-dark-input" />
             </Field>
             <div className="grid grid-cols-2 gap-3">
               <Field label="Sizes">
@@ -400,8 +400,8 @@ function ProductsContent() {
           {filterCategoryName && (
             <div className="flex items-center gap-2 mb-1">
               <a href="/admin/categories" className="text-xs text-slate-400 hover:text-slate-300 transition-colors">Categories</a>
-              <span className="text-slate-300 text-xs">â€º</span>
-              <span className="text-xs font-semibold text-violet-700">{filterCategoryName}</span>
+              <span className="text-slate-300 text-xs">&gt;</span>
+              <span className="text-xs font-semibold text-violet-400">{filterCategoryName}</span>
             </div>
           )}
           <p className="text-sm text-slate-400 font-medium">
@@ -430,7 +430,7 @@ function ProductsContent() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007z" />
             </svg>
             <p className="text-sm font-medium">No products yet</p>
-            <button onClick={() => setModalProduct("new")} className="mt-3 text-violet-400 text-sm hover:underline font-bold">Add your first product â†’</button>
+            <button onClick={() => setModalProduct("new")} className="mt-3 text-violet-400 text-sm hover:underline font-bold">Add your first product -&gt;</button>
           </div>
         ) : (
           <div className="overflow-x-auto">

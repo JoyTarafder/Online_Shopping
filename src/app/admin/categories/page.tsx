@@ -161,8 +161,8 @@ function CategoryModal({
               rows={3}
               value={form.description}
               onChange={set}
-              placeholder="Brief descriptionâ€¦"
-              className="w-full px-3.5 py-3 rounded-xl text-sm focus:outline-none resize-none" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "#f1f5f9" }}
+              placeholder="Brief description..."
+              className="w-full px-3.5 py-3 rounded-xl text-sm focus:outline-none resize-none admin-dark-input" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "#f1f5f9" }}
             />
           </div>
           <div>
@@ -174,8 +174,8 @@ function CategoryModal({
               type="url"
               value={form.image}
               onChange={set}
-              placeholder="https://â€¦"
-              className="w-full px-3.5 py-3 rounded-xl text-sm focus:outline-none" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "#f1f5f9" }}
+              placeholder="https://example.com/image.jpg"
+              className="w-full px-3.5 py-3 rounded-xl text-sm focus:outline-none admin-dark-input" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "#f1f5f9" }}
             />
             {form.image && (
               <div className="mt-2 w-16 h-16 rounded-xl overflow-hidden" style={{ background: "rgba(255,255,255,0.06)" }}>

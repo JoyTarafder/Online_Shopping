@@ -207,7 +207,7 @@ function PromoCodesContent() {
           <div className="rounded-3xl shadow-2xl  w-full max-w-2xl overflow-hidden my-6 relative z-10 animate-in zoom-in-95 duration-200 border border-white/5" style={{ background: "rgba(15,15,25,0.98)", border: "1px solid rgba(255,255,255,0.08)" }}>
             <div className="px-6 py-5 bg-gradient-to-r from-slate-900 via-purple-950 to-indigo-950 text-white flex items-center justify-between">
               <h2 className="text-lg font-bold">
-                {editTarget ? `Edit Code â€” ${editTarget.code}` : "New Promo Code"}
+                {editTarget ? `Edit Code — ${editTarget.code}` : "New Promo Code"}
               </h2>
               <button onClick={() => setShowForm(false)} className="text-slate-400 hover:text-white transition-colors">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -254,10 +254,10 @@ function PromoCodesContent() {
                   <select
                     value={form.type}
                     onChange={(e) => setForm({ ...form, type: e.target.value as "percentage" | "fixed" })}
-                    className="w-full px-4 py-3 rounded-2xl border border-white/8 text-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 bg-white/[0.01]"
+                    className="w-full px-4 py-3 rounded-2xl border border-white/8 text-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 bg-slate-900"
                   >
-                    <option value="percentage">Percentage (%)</option>
-                    <option value="fixed">Fixed Amount (৳)</option>
+                    <option value="percentage" className="bg-slate-900 text-slate-100">Percentage (%)</option>
+                    <option value="fixed" className="bg-slate-900 text-slate-100">Fixed Amount (৳)</option>
                   </select>
                 </div>
 
