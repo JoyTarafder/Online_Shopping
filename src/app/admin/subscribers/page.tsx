@@ -415,10 +415,10 @@ export default function AdminSubscribersPage() {
 
       {/* ── BROADCAST PROMO MAIL MODAL ── */}
       {showBroadcastModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in overflow-y-auto">
-          <div className="relative w-full max-w-3xl bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl overflow-hidden my-8">
-            {/* Header */}
-            <div className="p-6 border-b border-slate-800 bg-gradient-to-r from-violet-950/40 via-slate-900 to-indigo-950/40 flex items-center justify-between">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-black/80 backdrop-blur-md animate-fade-in">
+          <div className="relative w-full max-w-3xl max-h-[85vh] sm:max-h-[88vh] bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl flex flex-col overflow-hidden">
+            {/* Header (Fixed at Top) */}
+            <div className="p-5 sm:p-6 border-b border-slate-800 bg-gradient-to-r from-violet-950/40 via-slate-900 to-indigo-950/40 flex items-center justify-between shrink-0 z-10">
               <div>
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-500/10 border border-violet-500/20 mb-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
@@ -426,24 +426,24 @@ export default function AdminSubscribersPage() {
                     Bulk Promotional Email Blast
                   </span>
                 </div>
-                <h2 className="text-xl font-bold text-white tracking-tight">
+                <h2 className="text-lg sm:text-xl font-bold text-white tracking-tight">
                   📢 Send Broadcast Email to Subscribers
                 </h2>
               </div>
               <button
                 onClick={() => setShowBroadcastModal(false)}
-                className="w-9 h-9 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition-colors"
+                className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition-colors shrink-0"
               >
                 ✕
               </button>
             </div>
 
-            {/* Navigation Tabs */}
-            <div className="flex border-b border-slate-800 bg-slate-950/60 px-6">
+            {/* Navigation Tabs (Fixed below Header) */}
+            <div className="flex border-b border-slate-800 bg-slate-950/80 px-6 shrink-0 z-10">
               <button
                 type="button"
                 onClick={() => setActiveTab("edit")}
-                className={`py-3.5 px-5 font-bold text-xs border-b-2 transition-all flex items-center gap-2 ${
+                className={`py-3 px-5 font-bold text-xs border-b-2 transition-all flex items-center gap-2 ${
                   activeTab === "edit"
                     ? "border-violet-500 text-violet-400"
                     : "border-transparent text-slate-400 hover:text-slate-200"
@@ -454,7 +454,7 @@ export default function AdminSubscribersPage() {
               <button
                 type="button"
                 onClick={() => setActiveTab("preview")}
-                className={`py-3.5 px-5 font-bold text-xs border-b-2 transition-all flex items-center gap-2 ${
+                className={`py-3 px-5 font-bold text-xs border-b-2 transition-all flex items-center gap-2 ${
                   activeTab === "preview"
                     ? "border-violet-500 text-violet-400"
                     : "border-transparent text-slate-400 hover:text-slate-200"
@@ -464,226 +464,229 @@ export default function AdminSubscribersPage() {
               </button>
             </div>
 
-            {/* Form & Content */}
-            <form onSubmit={handleSendBroadcast} className="p-6 space-y-5">
-              {broadcastResult && (
-                <div className="p-4 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold flex items-center gap-2">
-                  <span>{broadcastResult}</span>
-                </div>
-              )}
-
-              {broadcastError && (
-                <div className="p-4 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-300 text-xs font-semibold flex items-center gap-2">
-                  <span>⚠️ {broadcastError}</span>
-                </div>
-              )}
-
-              {activeTab === "edit" ? (
-                <div className="space-y-4">
-                  {/* Target Audience */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <label
-                      onClick={() => setBroadcastTarget("active")}
-                      className={`p-3.5 rounded-2xl border cursor-pointer flex items-center gap-3 transition-all ${
-                        broadcastTarget === "active"
-                          ? "bg-violet-500/15 border-violet-500/50 text-white"
-                          : "bg-slate-950/60 border-slate-800 text-slate-400"
-                      }`}
-                    >
-                      <input
-                        type="radio"
-                        name="target"
-                        checked={broadcastTarget === "active"}
-                        onChange={() => setBroadcastTarget("active")}
-                        className="text-violet-500 focus:ring-0"
-                      />
-                      <div>
-                        <p className="text-xs font-bold">Active Subscribers Only</p>
-                        <p className="text-[11px] text-slate-400">{activeSubscribers} recipients</p>
-                      </div>
-                    </label>
-
-                    <label
-                      onClick={() => setBroadcastTarget("all")}
-                      className={`p-3.5 rounded-2xl border cursor-pointer flex items-center gap-3 transition-all ${
-                        broadcastTarget === "all"
-                          ? "bg-violet-500/15 border-violet-500/50 text-white"
-                          : "bg-slate-950/60 border-slate-800 text-slate-400"
-                      }`}
-                    >
-                      <input
-                        type="radio"
-                        name="target"
-                        checked={broadcastTarget === "all"}
-                        onChange={() => setBroadcastTarget("all")}
-                        className="text-violet-500 focus:ring-0"
-                      />
-                      <div>
-                        <p className="text-xs font-bold">All Subscribers (Including Inactive)</p>
-                        <p className="text-[11px] text-slate-400">{totalSubscribers} recipients</p>
-                      </div>
-                    </label>
+            {/* Form Wrap with Scrollable Body & Sticky Action Footer */}
+            <form onSubmit={handleSendBroadcast} className="flex-1 flex flex-col min-h-0 overflow-hidden">
+              {/* Scrollable Form Body */}
+              <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-5">
+                {broadcastResult && (
+                  <div className="p-4 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold flex items-center gap-2">
+                    <span>{broadcastResult}</span>
                   </div>
+                )}
 
-                  {/* Email Subject */}
-                  <div>
-                    <label className="block text-xs font-bold text-slate-300 mb-1">
-                      Email Subject Line <span className="text-rose-400">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={broadcastSubject}
-                      onChange={(e) => setBroadcastSubject(e.target.value)}
-                      placeholder="e.g., 🔥 Exclusive 25% Off Spring Sale — ShajSutro"
-                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-violet-500"
-                    />
+                {broadcastError && (
+                  <div className="p-4 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-300 text-xs font-semibold flex items-center gap-2">
+                    <span>⚠️ {broadcastError}</span>
                   </div>
+                )}
 
-                  {/* Badge Text & Title */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-xs font-bold text-slate-300 mb-1">
-                        Pill Badge Text (Optional)
+                {activeTab === "edit" ? (
+                  <div className="space-y-4">
+                    {/* Target Audience */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <label
+                        onClick={() => setBroadcastTarget("active")}
+                        className={`p-3.5 rounded-2xl border cursor-pointer flex items-center gap-3 transition-all ${
+                          broadcastTarget === "active"
+                            ? "bg-violet-500/15 border-violet-500/50 text-white"
+                            : "bg-slate-950/60 border-slate-800 text-slate-400"
+                        }`}
+                      >
+                        <input
+                          type="radio"
+                          name="target"
+                          checked={broadcastTarget === "active"}
+                          onChange={() => setBroadcastTarget("active")}
+                          className="text-violet-500 focus:ring-0"
+                        />
+                        <div>
+                          <p className="text-xs font-bold">Active Subscribers Only</p>
+                          <p className="text-[11px] text-slate-400">{activeSubscribers} recipients</p>
+                        </div>
                       </label>
-                      <input
-                        type="text"
-                        value={broadcastBadge}
-                        onChange={(e) => setBroadcastBadge(e.target.value)}
-                        placeholder="e.g., SPECIAL OFFER or NEW ARRIVAL"
-                        className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-violet-500"
-                      />
+
+                      <label
+                        onClick={() => setBroadcastTarget("all")}
+                        className={`p-3.5 rounded-2xl border cursor-pointer flex items-center gap-3 transition-all ${
+                          broadcastTarget === "all"
+                            ? "bg-violet-500/15 border-violet-500/50 text-white"
+                            : "bg-slate-950/60 border-slate-800 text-slate-400"
+                        }`}
+                      >
+                        <input
+                          type="radio"
+                          name="target"
+                          checked={broadcastTarget === "all"}
+                          onChange={() => setBroadcastTarget("all")}
+                          className="text-violet-500 focus:ring-0"
+                        />
+                        <div>
+                          <p className="text-xs font-bold">All Subscribers (Including Inactive)</p>
+                          <p className="text-[11px] text-slate-400">{totalSubscribers} recipients</p>
+                        </div>
+                      </label>
                     </div>
 
+                    {/* Email Subject */}
                     <div>
                       <label className="block text-xs font-bold text-slate-300 mb-1">
-                        Headline / Main Title <span className="text-rose-400">*</span>
+                        Email Subject Line <span className="text-rose-400">*</span>
                       </label>
                       <input
                         type="text"
                         required
-                        value={broadcastTitle}
-                        onChange={(e) => setBroadcastTitle(e.target.value)}
-                        placeholder="e.g., Elevate Your Wardrobe Today"
-                        className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-violet-500"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Poster Banner Image URL */}
-                  <div>
-                    <label className="block text-xs font-bold text-slate-300 mb-1">
-                      Poster Banner Image URL (Optional)
-                    </label>
-                    <input
-                      type="url"
-                      value={broadcastBannerUrl}
-                      onChange={(e) => setBroadcastBannerUrl(e.target.value)}
-                      placeholder="e.g., https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=1200"
-                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-violet-500"
-                    />
-                  </div>
-
-                  {/* Message Body */}
-                  <div>
-                    <label className="block text-xs font-bold text-slate-300 mb-1">
-                      Message Content Body <span className="text-rose-400">*</span>
-                    </label>
-                    <textarea
-                      required
-                      rows={5}
-                      value={broadcastMessage}
-                      onChange={(e) => setBroadcastMessage(e.target.value)}
-                      placeholder="Write your email body here. New lines will automatically format into paragraphs."
-                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-violet-500 leading-relaxed"
-                    />
-                  </div>
-
-                  {/* CTA Button Label & Link */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-xs font-bold text-slate-300 mb-1">
-                        Call-To-Action Button Text
-                      </label>
-                      <input
-                        type="text"
-                        value={broadcastCtaText}
-                        onChange={(e) => setBroadcastCtaText(e.target.value)}
-                        placeholder="e.g., SHOP THE SALE NOW"
+                        value={broadcastSubject}
+                        onChange={(e) => setBroadcastSubject(e.target.value)}
+                        placeholder="e.g., 🔥 Exclusive 25% Off Spring Sale — ShajSutro"
                         className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-violet-500"
                       />
                     </div>
 
+                    {/* Badge Text & Title */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-bold text-slate-300 mb-1">
+                          Pill Badge Text (Optional)
+                        </label>
+                        <input
+                          type="text"
+                          value={broadcastBadge}
+                          onChange={(e) => setBroadcastBadge(e.target.value)}
+                          placeholder="e.g., SPECIAL OFFER or NEW ARRIVAL"
+                          className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-violet-500"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-bold text-slate-300 mb-1">
+                          Headline / Main Title <span className="text-rose-400">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          value={broadcastTitle}
+                          onChange={(e) => setBroadcastTitle(e.target.value)}
+                          placeholder="e.g., Elevate Your Wardrobe Today"
+                          className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-violet-500"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Poster Banner Image URL */}
                     <div>
                       <label className="block text-xs font-bold text-slate-300 mb-1">
-                        Button Link URL
+                        Poster Banner Image URL (Optional)
                       </label>
                       <input
                         type="url"
-                        value={broadcastCtaUrl}
-                        onChange={(e) => setBroadcastCtaUrl(e.target.value)}
-                        placeholder="e.g., https://shajsutro.com/shop?badge=Sale"
+                        value={broadcastBannerUrl}
+                        onChange={(e) => setBroadcastBannerUrl(e.target.value)}
+                        placeholder="e.g., https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=1200"
                         className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-violet-500"
                       />
                     </div>
-                  </div>
-                </div>
-              ) : (
-                /* LIVE EMAIL PREVIEW CONTAINER */
-                <div className="bg-slate-950 border border-slate-800 rounded-2xl p-6 overflow-hidden">
-                  <div className="max-w-md mx-auto bg-white rounded-2xl shadow-2xl overflow-hidden text-slate-900 border border-slate-200">
-                    {/* Shell Header */}
-                    <div className="bg-gradient-to-r from-zinc-900 to-zinc-950 p-6 text-center">
-                      <span className="text-[9px] font-bold tracking-[0.2em] text-amber-500 uppercase px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 inline-block mb-2">
-                        Official Broadcast
-                      </span>
-                      <h1 className="text-xl font-black text-white tracking-widest uppercase">SHAJSUTRO</h1>
-                      <p className="text-[10px] text-zinc-400 uppercase tracking-widest mt-1">Fashion &bull; Elegance</p>
+
+                    {/* Message Body */}
+                    <div>
+                      <label className="block text-xs font-bold text-slate-300 mb-1">
+                        Message Content Body <span className="text-rose-400">*</span>
+                      </label>
+                      <textarea
+                        required
+                        rows={4}
+                        value={broadcastMessage}
+                        onChange={(e) => setBroadcastMessage(e.target.value)}
+                        placeholder="Write your email body here. New lines will automatically format into paragraphs."
+                        className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-violet-500 leading-relaxed"
+                      />
                     </div>
 
-                    {/* Email Body Preview */}
-                    <div className="p-6">
-                      {broadcastBadge && (
-                        <div className="text-center mb-2">
-                          <span className="inline-block px-3 py-1 bg-amber-100 border border-amber-300 text-amber-900 font-extrabold text-[10px] uppercase tracking-wider rounded-full">
-                            {broadcastBadge}
-                          </span>
-                        </div>
-                      )}
-
-                      <h2 className="text-xl font-black text-center text-slate-900 mb-4 tracking-tight">
-                        {broadcastTitle || "Your Offer Title Here"}
-                      </h2>
-
-                      {broadcastBannerUrl && (
-                        <div className="mb-4 rounded-xl overflow-hidden shadow-md">
-                          <img src={broadcastBannerUrl} alt="Preview" className="w-full h-44 object-cover" />
-                        </div>
-                      )}
-
-                      <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 mb-5 text-xs text-slate-700 leading-relaxed space-y-2">
-                        {(broadcastMessage || "Your promotional message body will appear here...")
-                          .split("\n")
-                          .filter(Boolean)
-                          .map((p, idx) => (
-                            <p key={idx}>{p}</p>
-                          ))}
+                    {/* CTA Button Label & Link */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-bold text-slate-300 mb-1">
+                          Call-To-Action Button Text
+                        </label>
+                        <input
+                          type="text"
+                          value={broadcastCtaText}
+                          onChange={(e) => setBroadcastCtaText(e.target.value)}
+                          placeholder="e.g., SHOP THE SALE NOW"
+                          className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-violet-500"
+                        />
                       </div>
 
-                      {broadcastCtaText && (
-                        <div className="text-center">
-                          <span className="inline-block bg-zinc-900 text-white font-extrabold text-xs uppercase tracking-wider px-6 py-3 rounded-full shadow-lg">
-                            {broadcastCtaText} &rarr;
-                          </span>
-                        </div>
-                      )}
+                      <div>
+                        <label className="block text-xs font-bold text-slate-300 mb-1">
+                          Button Link URL
+                        </label>
+                        <input
+                          type="url"
+                          value={broadcastCtaUrl}
+                          onChange={(e) => setBroadcastCtaUrl(e.target.value)}
+                          placeholder="e.g., https://shajsutro.com/shop?badge=Sale"
+                          className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-violet-500"
+                        />
+                      </div>
                     </div>
                   </div>
-                </div>
-              )}
+                ) : (
+                  /* LIVE EMAIL PREVIEW CONTAINER */
+                  <div className="bg-slate-950 border border-slate-800 rounded-2xl p-6 overflow-hidden">
+                    <div className="max-w-md mx-auto bg-white rounded-2xl shadow-2xl overflow-hidden text-slate-900 border border-slate-200">
+                      {/* Shell Header */}
+                      <div className="bg-gradient-to-r from-zinc-900 to-zinc-950 p-6 text-center">
+                        <span className="text-[9px] font-bold tracking-[0.2em] text-amber-500 uppercase px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 inline-block mb-2">
+                          Official Broadcast
+                        </span>
+                        <h1 className="text-xl font-black text-white tracking-widest uppercase">SHAJSUTRO</h1>
+                        <p className="text-[10px] text-zinc-400 uppercase tracking-widest mt-1">Fashion &bull; Elegance</p>
+                      </div>
 
-              {/* Action Buttons */}
-              <div className="pt-4 border-t border-slate-800 flex items-center justify-end gap-3">
+                      {/* Email Body Preview */}
+                      <div className="p-6">
+                        {broadcastBadge && (
+                          <div className="text-center mb-2">
+                            <span className="inline-block px-3 py-1 bg-amber-100 border border-amber-300 text-amber-900 font-extrabold text-[10px] uppercase tracking-wider rounded-full">
+                              {broadcastBadge}
+                            </span>
+                          </div>
+                        )}
+
+                        <h2 className="text-xl font-black text-center text-slate-900 mb-4 tracking-tight">
+                          {broadcastTitle || "Your Offer Title Here"}
+                        </h2>
+
+                        {broadcastBannerUrl && (
+                          <div className="mb-4 rounded-xl overflow-hidden shadow-md">
+                            <img src={broadcastBannerUrl} alt="Preview" className="w-full h-44 object-cover" />
+                          </div>
+                        )}
+
+                        <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 mb-5 text-xs text-slate-700 leading-relaxed space-y-2">
+                          {(broadcastMessage || "Your promotional message body will appear here...")
+                            .split("\n")
+                            .filter(Boolean)
+                            .map((p, idx) => (
+                              <p key={idx}>{p}</p>
+                            ))}
+                        </div>
+
+                        {broadcastCtaText && (
+                          <div className="text-center">
+                            <span className="inline-block bg-zinc-900 text-white font-extrabold text-xs uppercase tracking-wider px-6 py-3 rounded-full shadow-lg">
+                              {broadcastCtaText} &rarr;
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Action Footer (Fixed at Bottom) */}
+              <div className="p-4 sm:p-5 border-t border-slate-800 bg-slate-950/90 backdrop-blur-md shrink-0 flex items-center justify-end gap-3 z-10">
                 <button
                   type="button"
                   onClick={() => setShowBroadcastModal(false)}
