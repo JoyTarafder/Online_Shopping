@@ -475,48 +475,70 @@ export const sendBroadcastEmail = async (
     .filter((p) => p.trim())
     .map(
       (p) =>
-        `<p style="margin:0 0 14px;font-size:14px;color:#334155;line-height:1.7;">${p.trim()}</p>`
+        `<p style="margin:0 0 14px;font-size:14px;color:#334155;line-height:1.75;">${p.trim()}</p>`
     )
     .join("");
 
   const body = `
-    <!-- Header Badge & Title -->
+    <!-- Header Badge & Celebration Title -->
     <div style="text-align:center;margin-bottom:32px;">
       ${
         badgeText
           ? `
-      <div style="display:inline-block;padding:4px 16px;background:#fef3c7;border:1px solid #fde047;border-radius:100px;margin-bottom:12px;">
-        <span style="font-size:11px;font-weight:800;color:#92400e;text-transform:uppercase;letter-spacing:0.18em;">${badgeText}</span>
+      <div style="display:inline-block;padding:6px 20px;background:linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);border:1px solid #fde047;border-radius:100px;margin-bottom:14px;box-shadow:0 4px 12px rgba(245,158,11,0.12);">
+        <span style="font-size:11px;font-weight:900;color:#b45309;text-transform:uppercase;letter-spacing:0.2em;">✨ ${badgeText}</span>
       </div>
       `
           : ""
       }
-      <h2 style="margin:8px 0 10px;font-size:28px;font-weight:900;color:#0f172a;letter-spacing:-0.5px;line-height:1.2;">${title}</h2>
+      <h2 style="margin:6px 0 10px;font-size:30px;font-weight:900;color:#0f172a;letter-spacing:-0.5px;line-height:1.2;">${title}</h2>
+      <div style="width:40px;height:3px;background:linear-gradient(90deg, #f59e0b, #d97706);margin:0 auto;border-radius:100px;"></div>
     </div>
 
-    <!-- Banner Image (if provided) -->
+    <!-- Banner Image Poster (if provided) -->
     ${
       bannerImageUrl
         ? `
-    <div style="margin-bottom:28px;border-radius:16px;overflow:hidden;box-shadow:0 12px 24px rgba(0,0,0,0.08);">
-      <img src="${bannerImageUrl}" alt="${title}" style="width:100%;max-height:280px;object-fit:cover;display:block;border:0;" />
+    <div style="margin-bottom:32px;border-radius:20px;overflow:hidden;box-shadow:0 16px 32px rgba(0,0,0,0.12);border:1px solid #e2e8f0;">
+      <img src="${bannerImageUrl}" alt="${title}" style="width:100%;max-height:320px;object-fit:cover;display:block;border:0;" />
     </div>
     `
         : ""
     }
 
-    <!-- Main Message Content Body -->
-    <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:16px;padding:24px 28px;margin-bottom:32px;">
+    <!-- Main Message Content Box with Amber Accent -->
+    <div style="background:#f8fafc;border-left:4px solid #f59e0b;border-top:1px solid #e2e8f0;border-right:1px solid #e2e8f0;border-bottom:1px solid #e2e8f0;border-radius:0 16px 16px 0;padding:26px 30px;margin-bottom:32px;box-shadow:0 4px 12px rgba(0,0,0,0.02);">
       ${formattedMessage}
     </div>
 
-    <!-- CTA Button -->
+    <!-- Store Selling Points Grid -->
+    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:32px;background:#ffffff;border:1px solid #f1f5f9;border-radius:16px;padding:16px;">
+      <tr>
+        <td style="text-align:center;width:33.33%;padding:8px 4px;border-right:1px solid #f1f5f9;">
+          <p style="margin:0 0 2px;font-size:16px;">🚚</p>
+          <p style="margin:0;font-size:11px;font-weight:700;color:#0f172a;">Fast Delivery</p>
+          <p style="margin:2px 0 0;font-size:10px;color:#64748b;">3-5 Days Nationwide</p>
+        </td>
+        <td style="text-align:center;width:33.33%;padding:8px 4px;border-right:1px solid #f1f5f9;">
+          <p style="margin:0 0 2px;font-size:16px;">✨</p>
+          <p style="margin:0;font-size:11px;font-weight:700;color:#0f172a;">Premium Quality</p>
+          <p style="margin:2px 0 0;font-size:10px;color:#64748b;">100% Authentic</p>
+        </td>
+        <td style="text-align:center;width:33.33%;padding:8px 4px;">
+          <p style="margin:0 0 2px;font-size:16px;">🔒</p>
+          <p style="margin:0;font-size:11px;font-weight:700;color:#0f172a;">Secure Payment</p>
+          <p style="margin:2px 0 0;font-size:10px;color:#64748b;">COD & Online</p>
+        </td>
+      </tr>
+    </table>
+
+    <!-- Call-To-Action Button -->
     ${
       ctaButtonText && ctaButtonUrl
         ? `
-    <div style="text-align:center;margin-top:32px;margin-bottom:16px;">
-      <a href="${ctaButtonUrl}" style="display:inline-block;background:linear-gradient(135deg, #09090b 0%, #18181b 100%);color:#ffffff;font-size:13px;font-weight:800;letter-spacing:0.12em;text-decoration:none;padding:16px 40px;border-radius:100px;box-shadow:0 12px 24px rgba(15,23,42,0.25);text-transform:uppercase;">
-        ${ctaButtonText} →
+    <div style="text-align:center;margin-top:36px;margin-bottom:16px;">
+      <a href="${ctaButtonUrl}" style="display:inline-block;background:linear-gradient(135deg, #09090b 0%, #1e293b 100%);color:#ffffff;font-size:13px;font-weight:900;letter-spacing:0.15em;text-decoration:none;padding:18px 44px;border-radius:100px;box-shadow:0 14px 28px rgba(15,23,42,0.3);text-transform:uppercase;">
+        ${ctaButtonText} &rarr;
       </a>
     </div>
     `

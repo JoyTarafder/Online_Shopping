@@ -632,39 +632,42 @@ export default function AdminSubscribersPage() {
                   </div>
                 ) : (
                   /* LIVE EMAIL PREVIEW CONTAINER */
-                  <div className="bg-slate-950 border border-slate-800 rounded-2xl p-6 overflow-hidden">
+                  <div className="bg-[#0f172a] border border-slate-800 rounded-2xl p-4 sm:p-6 overflow-hidden">
                     <div className="max-w-md mx-auto bg-white rounded-2xl shadow-2xl overflow-hidden text-slate-900 border border-slate-200">
-                      {/* Shell Header */}
-                      <div className="bg-gradient-to-r from-zinc-900 to-zinc-950 p-6 text-center">
-                        <span className="text-[9px] font-bold tracking-[0.2em] text-amber-500 uppercase px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 inline-block mb-2">
-                          Official Broadcast
-                        </span>
-                        <h1 className="text-xl font-black text-white tracking-widest uppercase">SHAJSUTRO</h1>
-                        <p className="text-[10px] text-zinc-400 uppercase tracking-widest mt-1">Fashion &bull; Elegance</p>
+                      {/* Luxury Shell Header */}
+                      <div className="bg-gradient-to-r from-zinc-950 via-zinc-900 to-zinc-950 p-6 text-center border-b border-zinc-800">
+                        <div className="inline-block px-3 py-1 bg-amber-500/10 border border-amber-500/30 rounded-full mb-2">
+                          <span className="text-[9px] font-extrabold tracking-[0.25em] text-amber-400 uppercase">Official Broadcast</span>
+                        </div>
+                        <h1 className="text-2xl font-black text-white tracking-[0.25em] uppercase font-sans">SHAJSUTRO</h1>
+                        <p className="text-[10px] text-zinc-400 font-medium tracking-[0.18em] uppercase mt-1">Fashion &bull; Elegance &bull; Modern Wardrobe</p>
                       </div>
 
                       {/* Email Body Preview */}
                       <div className="p-6">
                         {broadcastBadge && (
-                          <div className="text-center mb-2">
-                            <span className="inline-block px-3 py-1 bg-amber-100 border border-amber-300 text-amber-900 font-extrabold text-[10px] uppercase tracking-wider rounded-full">
-                              {broadcastBadge}
+                          <div className="text-center mb-3">
+                            <span className="inline-block px-3.5 py-1 bg-gradient-to-r from-amber-50 to-amber-100 border border-amber-300 text-amber-900 font-black text-[10px] uppercase tracking-wider rounded-full shadow-sm">
+                              ✨ {broadcastBadge}
                             </span>
                           </div>
                         )}
 
-                        <h2 className="text-xl font-black text-center text-slate-900 mb-4 tracking-tight">
+                        <h2 className="text-xl font-black text-center text-slate-900 mb-2 tracking-tight leading-tight">
                           {broadcastTitle || "Your Offer Title Here"}
                         </h2>
+                        <div className="w-10 h-0.5 bg-amber-500 mx-auto mb-5 rounded-full" />
 
                         {broadcastBannerUrl && (
-                          <div className="mb-4 rounded-xl overflow-hidden shadow-md">
-                            <img src={broadcastBannerUrl} alt="Preview" className="w-full h-44 object-cover" />
+                          <div className="mb-5 rounded-2xl overflow-hidden shadow-lg border border-slate-200">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img src={broadcastBannerUrl} alt="Preview" className="w-full h-48 object-cover" />
                           </div>
                         )}
 
-                        <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 mb-5 text-xs text-slate-700 leading-relaxed space-y-2">
-                          {(broadcastMessage || "Your promotional message body will appear here...")
+                        {/* Styled Message Body Box */}
+                        <div className="bg-slate-50 border-l-4 border-amber-500 border-t border-r border-b border-slate-200 rounded-r-xl p-4 mb-5 text-xs text-slate-700 leading-relaxed space-y-2">
+                          {(broadcastMessage || "Your promotional offer message body will appear here...")
                             .split("\n")
                             .filter(Boolean)
                             .map((p, idx) => (
@@ -672,9 +675,25 @@ export default function AdminSubscribersPage() {
                             ))}
                         </div>
 
+                        {/* Selling Points Grid */}
+                        <div className="grid grid-cols-3 gap-1 bg-white border border-slate-100 rounded-xl p-2.5 mb-6 text-center text-[10px] text-slate-600 font-medium">
+                          <div className="border-r border-slate-100 pr-1">
+                            <p className="text-sm mb-0.5">🚚</p>
+                            <p className="font-bold text-slate-900">Fast Delivery</p>
+                          </div>
+                          <div className="border-r border-slate-100 px-1">
+                            <p className="text-sm mb-0.5">✨</p>
+                            <p className="font-bold text-slate-900">Premium Quality</p>
+                          </div>
+                          <div className="pl-1">
+                            <p className="text-sm mb-0.5">🔒</p>
+                            <p className="font-bold text-slate-900">Secure Payment</p>
+                          </div>
+                        </div>
+
                         {broadcastCtaText && (
                           <div className="text-center">
-                            <span className="inline-block bg-zinc-900 text-white font-extrabold text-xs uppercase tracking-wider px-6 py-3 rounded-full shadow-lg">
+                            <span className="inline-block bg-gradient-to-r from-zinc-950 to-zinc-900 text-white font-black text-xs uppercase tracking-widest px-7 py-3.5 rounded-full shadow-xl">
                               {broadcastCtaText} &rarr;
                             </span>
                           </div>
