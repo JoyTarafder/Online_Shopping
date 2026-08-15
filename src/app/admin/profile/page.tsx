@@ -407,22 +407,28 @@ export default function AdminProfilePage() {
                 { id: "security", label: "Password & Security" },
                 { id: "team", label: "Team & Permissions" },
               ] as const
-            ).map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`pb-4 text-sm font-bold tracking-tight transition-all duration-200 relative ${
-                  activeTab === tab.id
-                    ? "text-violet-400"
-                    : "text-slate-400 hover:text-slate-200"
-                }`}
-              >
-                {tab.label}
-                {activeTab === tab.id && (
-                  <span className="absolute bottom-0 left-0 w-full h-[2px] bg-violet-500 rounded-full" />
-                )}
-              </button>
-            ))}
+            )
+              .filter(
+                (tab) =>
+                  tab.id !== "team" ||
+                  (admin?.role === "admin" && admin?.adminRole !== "sub_admin")
+              )
+              .map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`pb-4 text-sm font-bold tracking-tight transition-all duration-200 relative ${
+                    activeTab === tab.id
+                      ? "text-violet-400"
+                      : "text-slate-400 hover:text-slate-200"
+                  }`}
+                >
+                  {tab.label}
+                  {activeTab === tab.id && (
+                    <span className="absolute bottom-0 left-0 w-full h-[2px] bg-violet-500 rounded-full" />
+                  )}
+                </button>
+              ))}
           </div>
 
           {/* Main Tab Content Panels */}

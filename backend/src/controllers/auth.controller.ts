@@ -96,7 +96,7 @@ export const login = asyncHandler(
       throw new AppError("Your account has been blocked. Please contact support.", 403);
     }
 
-    if (user.role !== "admin" && !user.isEmailVerified) {
+    if (user.role !== "admin" && user.role !== "sub-admin" && !user.isEmailVerified) {
       throw new AppError("Please verify your email before logging in.", 403);
     }
 

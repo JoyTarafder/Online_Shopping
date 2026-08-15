@@ -34,7 +34,7 @@ interface AdminUser {
   id: string;
   name: string;
   email: string;
-  role: "admin";
+  role: "admin" | "sub-admin" | "sub_admin";
   adminRole?: "root_admin" | "sub_admin";
   permissions?: AdminPermissions;
 }
@@ -131,15 +131,19 @@ export const AdminAuthProvider = ({
         throw new Error(data.message ?? "Login failed");
       }
 
-      if (data.data?.role !== "admin") {
-        throw new Error("Access denied — admin accounts only");
+      if (
+        data.data?.role !== "admin" &&
+        data.data?.role !== "sub-admin" &&
+        data.data?.role !== "sub_admin"
+      ) {
+        throw new Error("Access denied — admin or sub-admin accounts only");
       }
 
       const adminUser: AdminUser = {
         id: data.data.id,
         name: data.data.name,
         email: data.data.email,
-        role: "admin",
+        role: data.data.role as "admin" | "sub-admin" | "sub_admin",
       };
 
       localStorage.setItem("admin_token", data.token!);

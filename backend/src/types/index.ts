@@ -40,7 +40,7 @@ export interface IUser {
   email: string;
   phone?: string;
   password: string;
-  role: "user" | "admin";
+  role: "user" | "admin" | "sub-admin";
   adminRole?: "root_admin" | "sub_admin";
   permissions?: IAdminPermissions;
   addresses?: IUserAddress[];

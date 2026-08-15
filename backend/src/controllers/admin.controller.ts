@@ -223,7 +223,7 @@ export const createUser = asyncHandler(
       name: string;
       email: string;
       password: string;
-      role?: "user" | "admin";
+      role?: "user" | "admin" | "sub-admin";
     };
 
     if (!name || !email || !password) {
@@ -238,6 +238,7 @@ export const createUser = asyncHandler(
       email,
       password,
       role: role ?? "user",
+      adminRole: role === "sub-admin" ? "sub_admin" : "root_admin",
     });
 
     res.status(201).json({
@@ -259,7 +260,7 @@ export const createUser = asyncHandler(
 
 export const updateUser = asyncHandler(
   async (req: AuthRequest, res: Response): Promise<void> => {
-    const { role, name } = req.body as { role?: "user" | "admin"; name?: string };
+    const { role, name } = req.body as { role?: "user" | "admin" | "sub-admin"; name?: string };
 
     if (req.user?._id.toString() === req.params.id && role === "user") {
       throw new AppError("You cannot demote your own admin account", 400);

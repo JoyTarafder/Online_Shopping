@@ -33,6 +33,18 @@
   }
 }
 
+/* Dark mode autofill background override for inputs */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active,
+select:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px #0f172a inset !important;
+  -webkit-text-fill-color: #f1f5f9 !important;
+  caret-color: #f1f5f9;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
 @layer components {
   .btn-primary {
     @apply inline-flex items-center justify-center px-7 py-3.5

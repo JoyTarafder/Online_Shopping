@@ -18,7 +18,7 @@ import {
   getAllAdminUsers,
   updateAdminPermissions,
 } from "../controllers/admin.controller";
-import { protect, adminOnly } from "../middleware/auth.middleware";
+import { protect, adminOnly, rootAdminOnly } from "../middleware/auth.middleware";
 
 const router = Router();
 
@@ -26,7 +26,7 @@ router.use(protect, adminOnly);
 
 router.get("/stats", getDashboardStats);
 router.get("/activity-alerts", getAdminActivityAlerts);
-router.get("/team", getAllAdminUsers);
+router.get("/team", rootAdminOnly, getAllAdminUsers);
 
 // Product management (admin view — includes hidden products)
 router.get("/products", getAdminProducts);
@@ -35,7 +35,7 @@ router.get("/products", getAdminProducts);
 router.get("/users", getAllUsers);
 router.post("/users", createUser);
 router.put("/users/:id", updateUser);
-router.put("/users/:id/permissions", updateAdminPermissions);
+router.put("/users/:id/permissions", rootAdminOnly, updateAdminPermissions);
 router.put("/users/:id/block", blockUser);
 router.delete("/users/:id", deleteUser);
 

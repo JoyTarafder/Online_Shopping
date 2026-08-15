@@ -10,7 +10,7 @@ interface User {
   _id: string;
   name: string;
   email: string;
-  role: "user" | "admin";
+  role: "user" | "admin" | "sub-admin";
   isBlocked: boolean;
   createdAt: string;
 }
@@ -76,7 +76,7 @@ function CreateUserModal({
     name: "",
     email: "",
     password: "",
-    role: "user" as "user" | "admin",
+    role: "user" as "user" | "admin" | "sub-admin",
   });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -108,32 +108,20 @@ function CreateUserModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}>
-      <div className="rounded-3xl w-full max-w-md overflow-hidden" style={{ background: "rgba(15,15,25,0.98)", border: "1px solid rgba(255,255,255,0.08)", boxShadow: "0 24px 80px rgba(0,0,0,0.6)" }}>
-        <div className="flex items-center justify-between px-7 py-5" style={{ borderBottom: "1px solid rgba(255,255,255,0.06)", background: "rgba(124,58,237,0.06)" }}>
+      <div className="w-full max-w-md rounded-3xl overflow-hidden shadow-2xl" style={{ background: "rgba(22,22,35,0.98)", border: "1px solid rgba(255,255,255,0.1)" }}>
+        <div className="flex items-center justify-between px-7 py-5" style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
           <div>
-            <h2 className="text-lg font-bold" style={{ color: "#e2e8f0" }}>Create User</h2>
-            <p className="text-xs mt-0.5" style={{ color: "rgba(148,163,184,0.5)" }}>
+            <h3 className="text-lg font-bold text-slate-100">Create User</h3>
+            <p className="text-xs" style={{ color: "rgba(148,163,184,0.6)" }}>
               Add a new account to the platform
             </p>
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 flex items-center justify-center rounded-xl transition-colors"
-            style={{ background: "rgba(255,255,255,0.06)", color: "rgba(148,163,184,0.8)" }}
+            className="w-8 h-8 rounded-full flex items-center justify-center transition-colors hover:bg-white/10"
+            style={{ color: "rgba(148,163,184,0.6)" }}
           >
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
+            ✕
           </button>
         </div>
 
@@ -154,7 +142,7 @@ function CreateUserModal({
               onChange={set}
               placeholder="e.g. Jane Smith"
               className="w-full px-3.5 py-3 rounded-xl text-sm focus:outline-none"
-              style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "#f1f5f9" }}
+              style={{ background: "#0f172a", border: "1px solid rgba(255,255,255,0.1)", color: "#f1f5f9" }}
             />
           </div>
           <div>
@@ -169,7 +157,7 @@ function CreateUserModal({
               onChange={set}
               placeholder="jane@example.com"
               className="w-full px-3.5 py-3 rounded-xl text-sm focus:outline-none"
-              style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "#f1f5f9" }}
+              style={{ background: "#0f172a", border: "1px solid rgba(255,255,255,0.1)", color: "#f1f5f9" }}
             />
           </div>
           <div>
@@ -186,7 +174,7 @@ function CreateUserModal({
                 onChange={set}
                 placeholder="Min 6 characters"
                 className="w-full px-3.5 py-3 pr-10 rounded-xl text-sm focus:outline-none"
-                style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "#f1f5f9" }}
+                style={{ background: "#0f172a", border: "1px solid rgba(255,255,255,0.1)", color: "#f1f5f9" }}
               />
               <button
                 type="button"
@@ -239,6 +227,7 @@ function CreateUserModal({
               style={{ background: "rgba(15,15,25,0.95)", border: "1px solid rgba(255,255,255,0.1)", color: "#f1f5f9" }}
             >
               <option value="user">Customer</option>
+              <option value="sub-admin">Sub-Admin</option>
               <option value="admin">Admin</option>
             </select>
           </div>
@@ -474,7 +463,12 @@ function UsersContent() {
   };
 
   const handleRoleChange = async (user: User) => {
-    const newRole = user.role === "admin" ? "user" : "admin";
+    const newRole: "user" | "admin" | "sub-admin" =
+      user.role === "user"
+        ? "sub-admin"
+        : user.role === "sub-admin"
+        ? "admin"
+        : "user";
     setActionLoading(user._id + "-role");
     try {
       await apiFetch(`/admin/users/${user._id}`, {
@@ -484,10 +478,13 @@ function UsersContent() {
       setUsers((prev) =>
         prev.map((u) => (u._id === user._id ? { ...u, role: newRole } : u)),
       );
-      showToast(
-        "success",
-        `${user.name} is now a${newRole === "admin" ? "n admin" : " customer"}`,
-      );
+      const roleLabel =
+        newRole === "admin"
+          ? "Admin"
+          : newRole === "sub-admin"
+          ? "Sub-Admin"
+          : "Customer";
+      showToast("success", `${user.name} role updated to ${roleLabel}`);
     } catch (e: unknown) {
       showToast("error", e instanceof Error ? e.message : "Update failed");
     } finally {
@@ -617,9 +614,13 @@ function UsersContent() {
                     <td className="px-6 py-4">
                       <span
                         className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold capitalize"
-                        style={user.role === "admin" 
-                          ? { background: "rgba(167,139,250,0.12)", color: "#a78bfa", border: "1px solid rgba(167,139,250,0.2)" } 
-                          : { background: "rgba(255,255,255,0.06)", color: "rgba(148,163,184,0.7)" }}
+                        style={
+                          user.role === "admin" 
+                            ? { background: "rgba(167,139,250,0.12)", color: "#a78bfa", border: "1px solid rgba(167,139,250,0.2)" } 
+                            : user.role === "sub-admin"
+                            ? { background: "rgba(56,189,248,0.12)", color: "#38bdf8", border: "1px solid rgba(56,189,248,0.2)" }
+                            : { background: "rgba(255,255,255,0.06)", color: "rgba(148,163,184,0.7)" }
+                        }
                       >
                         {user.role === "admin" && (
                           <svg
@@ -634,7 +635,20 @@ function UsersContent() {
                             />
                           </svg>
                         )}
-                        {user.role}
+                        {user.role === "sub-admin" && (
+                          <svg
+                            className="w-3 h-3 mr-1"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        )}
+                        {user.role === "sub-admin" ? "Sub-Admin" : user.role}
                       </span>
                     </td>
                     <td className="px-6 py-4">
@@ -659,7 +673,7 @@ function UsersContent() {
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity justify-end">
-                        {user.role !== "admin" && (
+                        {user.role === "user" && (
                           <button
                             onClick={() => handleBlock(user)}
                             disabled={actionLoading === user._id + "-block"}
@@ -701,11 +715,7 @@ function UsersContent() {
                         <button
                           onClick={() => handleRoleChange(user)}
                           disabled={actionLoading === user._id + "-role"}
-                          title={
-                            user.role === "admin"
-                              ? "Demote to customer"
-                              : "Promote to admin"
-                          }
+                          title="Click to change user role"
                           className="px-3 py-1.5 text-xs font-bold rounded-lg transition-colors disabled:opacity-60"
                           style={{ background: "rgba(255,255,255,0.06)", color: "rgba(226,232,240,0.7)" }}
                         >
@@ -729,10 +739,8 @@ function UsersContent() {
                                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
                               />
                             </svg>
-                          ) : user.role === "admin" ? (
-                            "Demote"
                           ) : (
-                            "Make Admin"
+                            `Role: ${user.role === "sub-admin" ? "Sub-Admin" : user.role === "admin" ? "Admin" : "Customer"}`
                           )}
                         </button>
                         <button

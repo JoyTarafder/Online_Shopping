@@ -41,15 +41,37 @@ export const protect = asyncHandler(
   }
 );
 
-// ─── adminOnly: restrict access to admin role ─────────────────────────────────
+// ─── adminOnly: restrict access to admin or sub-admin roles ───────────────────
 
 export const adminOnly = (
   req: AuthRequest,
   _res: Response,
   next: NextFunction
 ): void => {
-  if (!req.user || req.user.role !== "admin") {
-    return next(new AppError("Access denied — admin only", 403));
+  if (
+    !req.user ||
+    (req.user.role !== "admin" &&
+      req.user.role !== "sub-admin" &&
+      req.user.adminRole !== "sub_admin")
+  ) {
+    return next(new AppError("Access denied — admin or sub-admin only", 403));
+  }
+  next();
+};
+
+// ─── rootAdminOnly: restrict access to full root admin only ───────────────────
+
+export const rootAdminOnly = (
+  req: AuthRequest,
+  _res: Response,
+  next: NextFunction
+): void => {
+  if (
+    !req.user ||
+    req.user.role !== "admin" ||
+    req.user.adminRole === "sub_admin"
+  ) {
+    return next(new AppError("Access denied — root admin privileges required", 403));
   }
   next();
 };
