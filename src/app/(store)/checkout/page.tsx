@@ -460,19 +460,19 @@ export default function CheckoutPage() {
                     {[
                       {
                         id: "bkash",
-                        logo: "/images/bkash.png",
+                        logo: "/images/bkash.svg",
                         alt: "bKash",
                         desc: "Mobile Banking",
                       },
                       {
                         id: "nagad",
-                        logo: "/images/nagad.png",
+                        logo: "/images/nagad.svg",
                         alt: "Nagad",
                         desc: "Mobile Banking",
                       },
                       {
                         id: "rocket",
-                        logo: "/images/rocket.png",
+                        logo: "/images/rocket.svg",
                         alt: "Rocket",
                         desc: "DBBL Mobile Banking",
                       },

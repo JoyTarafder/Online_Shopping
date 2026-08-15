@@ -56,11 +56,7 @@ export default function DemoMfsGatewayModal({
       accentGradient: "from-[#E2136E] via-[#d60e65] to-[#990847]",
       prefix: "BK",
       helpPhone: "16247",
-      logoSvg: (
-        <svg className="w-8 h-8" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-        </svg>
-      ),
+      logoPath: "/images/bkash.svg",
     },
     nagad: {
       name: "Nagad",
@@ -75,11 +71,7 @@ export default function DemoMfsGatewayModal({
       accentGradient: "from-[#F05A28] via-[#e24e1c] to-[#b33509]",
       prefix: "NG",
       helpPhone: "16167",
-      logoSvg: (
-        <svg className="w-8 h-8" viewBox="0 0 24 24" fill="currentColor">
-          <circle cx="12" cy="12" r="10" />
-        </svg>
-      ),
+      logoPath: "/images/nagad.svg",
     },
     rocket: {
       name: "Rocket",
@@ -94,11 +86,7 @@ export default function DemoMfsGatewayModal({
       accentGradient: "from-[#8C3494] via-[#7d2b85] to-[#55165c]",
       prefix: "RK",
       helpPhone: "16216",
-      logoSvg: (
-        <svg className="w-8 h-8" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M12 2L1 21h22L12 2zm0 4l7.5 13h-15L12 6z" />
-        </svg>
-      ),
+      logoPath: "/images/rocket.svg",
     },
   }[method];
 
@@ -179,8 +167,9 @@ export default function DemoMfsGatewayModal({
           {/* Top Brand Info */}
           <div className="flex items-center justify-between mb-3 pr-8">
             <div className="flex items-center gap-2.5">
-              <div className="w-10 h-10 rounded-2xl bg-white/15 backdrop-blur-md flex items-center justify-center text-white border border-white/20 shadow-inner shrink-0">
-                {brand.logoSvg}
+              <div className="w-11 h-11 rounded-2xl bg-white flex items-center justify-center p-1.5 shadow-md shrink-0 border border-white/20">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={brand.logoPath} alt={brand.name} className="w-full h-full object-contain" />
               </div>
               <div>
                 <h2 className="text-lg sm:text-xl font-black tracking-tight leading-tight text-white">{brand.name}</h2>
