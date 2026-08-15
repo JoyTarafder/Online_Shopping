@@ -153,6 +153,7 @@ export default function CheckoutPage() {
 
   const [orderError, setOrderError] = useState("");
   const [placedOrderId, setPlacedOrderId] = useState("");
+  const [placedOrderData, setPlacedOrderData] = useState<{ _id?: string; total?: number } | null>(null);
 
   const handlePlaceOrder = async (overrideTxnId?: string) => {
     const finalTxnId = overrideTxnId || paymentInfo.txnId;
@@ -195,6 +196,7 @@ export default function CheckoutPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message ?? "Failed to place order");
 
+      setPlacedOrderData(data.data);
       setPlacedOrderId(data.data._id ?? "");
       clearCart();
       setOrderPlaced(true);
@@ -212,6 +214,7 @@ export default function CheckoutPage() {
   if (orderPlaced) {
     const isMFS = paymentInfo.method !== "cod";
     const methodLabel = paymentInfo.method === "bkash" ? "bKash" : paymentInfo.method === "nagad" ? "Nagad" : paymentInfo.method === "rocket" ? "Rocket" : "";
+    const confirmedTotal = placedOrderData?.total ?? Math.max(0, total);
     return (
       <div className="min-h-screen bg-warm-50 flex items-center justify-center px-6 py-20">
         <div className="bg-white rounded-3xl shadow-soft border border-charcoal-100 p-10 max-w-lg w-full text-center">
@@ -232,14 +235,14 @@ export default function CheckoutPage() {
                 <p className="text-sm font-bold text-emerald-950">✓ Payment Confirmed (Paid)</p>
               </div>
               <p className="text-xs text-emerald-800 font-light leading-relaxed">
-                Your <strong>{methodLabel}</strong> payment of <strong>৳{total.toFixed(2)}</strong> (TxnID: <strong className="font-mono font-bold text-emerald-950">{paymentInfo.txnId}</strong>) has been successfully received & verified. Your order is now confirmed!
+                Your <strong>{methodLabel}</strong> payment of <strong>৳{confirmedTotal.toFixed(2)}</strong> (TxnID: <strong className="font-mono font-bold text-emerald-950">{paymentInfo.txnId}</strong>) has been successfully received & verified. Your order is now confirmed!
               </p>
             </div>
           ) : (
             <div className="bg-blue-50 border border-blue-200 rounded-2xl px-5 py-4 mb-6 text-left">
               <p className="text-sm font-bold text-blue-900 mb-1">📦 Cash on Delivery Selected</p>
               <p className="text-xs text-blue-700 font-light leading-relaxed">
-                Please have <strong>৳{total.toFixed(2)}</strong> ready when our delivery agent arrives.
+                Please have <strong>৳{confirmedTotal.toFixed(2)}</strong> ready when our delivery agent arrives.
               </p>
             </div>
           )}
