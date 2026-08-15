@@ -104,7 +104,7 @@ const orderSchema = new Schema<IOrderDocument>(
     },
     paymentStatus: {
       type: String,
-      enum: ["pending_verification", "pending_delivery", "paid"],
+      enum: ["pending_verification", "pending_delivery", "paid", "refunded"],
       default: "pending_verification",
     },
     subtotal:     { type: Number, required: true },

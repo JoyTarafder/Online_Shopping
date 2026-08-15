@@ -408,11 +408,18 @@ export const updateOrderStatus = asyncHandler(
       if (status === "delivered") {
         order.paymentStatus = "paid";
       }
+      if ((status === "cancelled" || status === "returned") && order.paymentStatus === "paid") {
+        order.paymentStatus = "refunded";
+      }
       if (!order.statusHistory) order.statusHistory = [];
       order.statusHistory.push({
         status,
         updatedAt: new Date(),
-        note: status === "delivered" ? "Order delivered and payment marked as Paid" : `Status updated to ${status}`,
+        note: status === "delivered"
+          ? "Order delivered and payment marked as Paid"
+          : (status === "cancelled" || status === "returned") && order.paymentStatus === "refunded"
+          ? `Status updated to ${status} and payment refunded`
+          : `Status updated to ${status}`,
       } as any);
       await order.save();
     }
@@ -448,6 +455,9 @@ export const updateExchangeStatus = asyncHandler(
 
     if (markAsReturned || status === "completed") {
       order.status = "returned";
+      if (order.paymentStatus === "paid") {
+        order.paymentStatus = "refunded";
+      }
     }
 
     if (!order.statusHistory) order.statusHistory = [];
@@ -494,6 +504,24 @@ export const confirmPayment = asyncHandler(
     res.status(200).json({
       success: true,
       message: "Payment confirmed successfully",
+      data: order,
+    });
+  }
+);
+
+// ─── PUT /api/admin/orders/:id/refund-payment ─────────────────────────────────
+
+export const refundPayment = asyncHandler(
+  async (req: Request, res: Response): Promise<void> => {
+    const order = await Order.findById(req.params.id).populate("user", "name email");
+    if (!order) throw new AppError("Order not found", 404);
+
+    order.paymentStatus = "refunded";
+    await order.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Payment marked as Refunded",
       data: order,
     });
   }

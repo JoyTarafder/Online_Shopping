@@ -7,7 +7,7 @@ import { useCallback, useEffect, useState } from "react";
 // --- Types ---
 
 type OrderStatus = "pending" | "confirmed" | "shipped" | "delivered" | "cancelled" | "returned";
-type PaymentStatus = "pending_verification" | "pending_delivery" | "paid";
+type PaymentStatus = "pending_verification" | "pending_delivery" | "paid" | "refunded";
 
 interface OrderItem {
   name: string;
@@ -60,6 +60,7 @@ const PAYMENT_STATUS_STYLE: Record<string, { badge: string; dot: string; label: 
   pending_verification: { badge: "bg-amber-900/20 text-amber-400 ring-1 ring-amber-500/30", dot: "bg-amber-400", label: "Verifying Payment" },
   pending_delivery:     { badge: "bg-blue-900/20 text-blue-400 ring-1 ring-blue-500/30",   dot: "bg-blue-400",  label: "Awaiting Delivery" },
   paid:                 { badge: "bg-emerald-900/20 text-emerald-400 ring-1 ring-emerald-500/30", dot: "bg-emerald-500", label: "Paid" },
+  refunded:             { badge: "bg-purple-900/20 text-purple-300 ring-1 ring-purple-500/30", dot: "bg-purple-400", label: "Payment Refunded" },
   cancelled:            { badge: "bg-rose-900/20 text-rose-400 ring-1 ring-rose-500/30", dot: "bg-rose-400", label: "Cancelled" },
   returned:             { badge: "bg-orange-900/20 text-orange-400 ring-1 ring-orange-500/30", dot: "bg-orange-400", label: "Returned" },
 };
@@ -175,18 +176,21 @@ function StatusSelect({
 
 // --- Order Details Modal ---
 
-function OrderDetailsModal({ order, onClose, onStatusUpdate, onConfirmPayment, onExchangeAction }: {
+function OrderDetailsModal({ order, onClose, onStatusUpdate, onConfirmPayment, onExchangeAction, onRefundPayment }: {
   order: Order;
   onClose: () => void;
   onStatusUpdate: (id: string, status: OrderStatus) => Promise<void>;
   onConfirmPayment: (id: string) => Promise<void>;
   onExchangeAction?: (id: string, status: "approved" | "rejected" | "completed", markAsReturned?: boolean) => Promise<void>;
+  onRefundPayment?: (id: string) => Promise<void>;
 }) {
   const addr = order.shippingAddress;
   const fullName = [addr.firstName, addr.lastName].filter(Boolean).join(" ");
   const [confirmingPay, setConfirmingPay] = useState(false);
+  const [refundingPay, setRefundingPay] = useState(false);
   const [actingExchange, setActingExchange] = useState(false);
   const effectivePayStatus =
+    order.paymentStatus === "refunded" ? "refunded" :
     order.status === "cancelled" ? "cancelled" :
     order.status === "returned" ? "returned" :
     (order.status === "delivered" || order.paymentStatus === "paid") ? "paid" :
@@ -196,6 +200,12 @@ function OrderDetailsModal({ order, onClose, onStatusUpdate, onConfirmPayment, o
   const handleConfirmPayment = async () => {
     setConfirmingPay(true);
     try { await onConfirmPayment(order._id); } finally { setConfirmingPay(false); }
+  };
+
+  const handleRefund = async () => {
+    if (!confirm("Are you sure you want to mark this payment as Refunded to the customer?")) return;
+    setRefundingPay(true);
+    try { await onRefundPayment?.(order._id); } finally { setRefundingPay(false); }
   };
 
   const handleExchange = async (status: "approved" | "rejected" | "completed", markAsReturned?: boolean) => {
@@ -273,19 +283,63 @@ function OrderDetailsModal({ order, onClose, onStatusUpdate, onConfirmPayment, o
           )}
 
           {/* Payment / Order Status Banner */}
-          {order.status === "cancelled" ? (
-            <div className="rounded-2xl p-4 flex items-center gap-3" style={{ background: "rgba(244,63,94,0.08)", border: "1px solid rgba(244,63,94,0.25)" }}>
-              <svg className="w-5 h-5 text-rose-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-              <p className="text-sm font-semibold text-rose-400">Order Cancelled</p>
+          {order.paymentStatus === "refunded" ? (
+            <div className="rounded-2xl p-4 flex items-center justify-between gap-3" style={{ background: "rgba(168,85,247,0.08)", border: "1px solid rgba(168,85,247,0.25)" }}>
+              <div className="flex items-center gap-3">
+                <svg className="w-5 h-5 text-purple-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3"/>
+                </svg>
+                <p className="text-sm font-bold text-purple-300">
+                  Payment Refunded ({(order.paymentMethod && order.paymentMethod !== "cod") ? `Returned via ${METHOD_LABEL[order.paymentMethod] ?? order.paymentMethod}` : "Payment Refunded"})
+                </p>
+              </div>
+              {order.txnId && (
+                <span className="font-mono text-xs font-bold text-purple-300 bg-purple-500/10 px-2.5 py-1 rounded-lg border border-purple-500/20">
+                  TxnID: {order.txnId}
+                </span>
+              )}
+            </div>
+          ) : order.status === "cancelled" ? (
+            <div className="rounded-2xl p-4 flex items-center justify-between gap-3" style={{ background: "rgba(244,63,94,0.08)", border: "1px solid rgba(244,63,94,0.25)" }}>
+              <div className="flex items-center gap-3">
+                <svg className="w-5 h-5 text-rose-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                <p className="text-sm font-semibold text-rose-400">Order Cancelled</p>
+              </div>
+              {order.paymentStatus === "paid" && (
+                <button
+                  disabled={refundingPay}
+                  onClick={handleRefund}
+                  className="px-3 py-1.5 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 text-xs font-bold transition-colors border border-purple-500/30 flex items-center gap-1.5 disabled:opacity-50"
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
+                  </svg>
+                  {refundingPay ? "Refunding..." : "Refund Payment"}
+                </button>
+              )}
             </div>
           ) : order.status === "returned" ? (
-            <div className="rounded-2xl p-4 flex items-center gap-3" style={{ background: "rgba(251,146,60,0.08)", border: "1px solid rgba(251,146,60,0.25)" }}>
-              <svg className="w-5 h-5 text-orange-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 15v-1a4 4 0 00-4-4H4m0 0l4-4m-4 4l4 4" />
-              </svg>
-              <p className="text-sm font-semibold text-orange-400">Order Returned</p>
+            <div className="rounded-2xl p-4 flex items-center justify-between gap-3" style={{ background: "rgba(251,146,60,0.08)", border: "1px solid rgba(251,146,60,0.25)" }}>
+              <div className="flex items-center gap-3">
+                <svg className="w-5 h-5 text-orange-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 15v-1a4 4 0 00-4-4H4m0 0l4-4m-4 4l4 4" />
+                </svg>
+                <p className="text-sm font-semibold text-orange-400">Order Returned</p>
+              </div>
+              {order.paymentStatus === "paid" && (
+                <button
+                  disabled={refundingPay}
+                  onClick={handleRefund}
+                  className="px-3 py-1.5 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 text-xs font-bold transition-colors border border-purple-500/30 flex items-center gap-1.5 disabled:opacity-50"
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
+                  </svg>
+                  {refundingPay ? "Refunding..." : "Refund Payment"}
+                </button>
+              )}
             </div>
           ) : (order.status === "delivered" || order.paymentStatus === "paid" || order.paymentMethod !== "cod") ? (
             <div className="rounded-2xl p-4 flex items-center justify-between gap-3" style={{ background: "rgba(52,211,153,0.08)", border: "1px solid rgba(52,211,153,0.2)" }}>
@@ -297,11 +351,25 @@ function OrderDetailsModal({ order, onClose, onStatusUpdate, onConfirmPayment, o
                   Payment Confirmed ({(order.paymentMethod && order.paymentMethod !== "cod") ? `Paid via ${METHOD_LABEL[order.paymentMethod] ?? order.paymentMethod}` : "Paid"})
                 </p>
               </div>
-              {order.txnId && (
-                <span className="font-mono text-xs font-bold text-emerald-300 bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20">
-                  TxnID: {order.txnId}
-                </span>
-              )}
+              <div className="flex items-center gap-2">
+                {order.txnId && (
+                  <span className="font-mono text-xs font-bold text-emerald-300 bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20">
+                    TxnID: {order.txnId}
+                  </span>
+                )}
+                {order.paymentStatus === "paid" && (
+                  <button
+                    disabled={refundingPay}
+                    onClick={handleRefund}
+                    className="px-3 py-1 rounded-lg bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 text-xs font-bold transition-colors border border-purple-500/30 flex items-center gap-1 disabled:opacity-50"
+                  >
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
+                    </svg>
+                    {refundingPay ? "Refunding..." : "Refund"}
+                  </button>
+                )}
+              </div>
             </div>
           ) : (
             <div className="rounded-2xl p-4 flex items-center gap-3" style={{ background: "rgba(96,165,250,0.08)", border: "1px solid rgba(96,165,250,0.2)" }}>
@@ -338,22 +406,42 @@ function OrderDetailsModal({ order, onClose, onStatusUpdate, onConfirmPayment, o
             </div>
           </div>
 
-          {/* Payment method + TxnID */}
+          {/* Payment method + TxnID + Refund Action */}
           {order.paymentMethod && (
-            <div className="flex items-center gap-3 text-sm text-slate-400">
-              {order.paymentMethod !== "cod" || order.paymentStatus === "paid" ? (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                  Paid
-                </span>
-              ) : (
-                <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${payCfg.badge}`}>
-                  <span className={`w-1.5 h-1.5 rounded-full ${payCfg.dot}`}/>
-                  {payCfg.label}
-                </span>
+            <div className="flex items-center justify-between gap-3 text-sm text-slate-400">
+              <div className="flex items-center gap-3">
+                {order.paymentStatus === "refunded" ? (
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                    <span className="w-1.5 h-1.5 rounded-full bg-purple-400" />
+                    Payment Refunded
+                  </span>
+                ) : (order.paymentStatus === "paid" || order.paymentMethod !== "cod") ? (
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                    Paid
+                  </span>
+                ) : (
+                  <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${payCfg.badge}`}>
+                    <span className={`w-1.5 h-1.5 rounded-full ${payCfg.dot}`}/>
+                    {payCfg.label}
+                  </span>
+                )}
+                <span className="font-semibold text-slate-200">{METHOD_LABEL[order.paymentMethod] ?? order.paymentMethod}</span>
+                {order.txnId && <span className="font-mono text-xs font-bold text-slate-200 bg-white/[0.08] px-2.5 py-1 rounded-lg border border-white/10">TxnID: {order.txnId}</span>}
+              </div>
+
+              {order.paymentStatus === "paid" && (
+                <button
+                  disabled={refundingPay}
+                  onClick={handleRefund}
+                  className="px-3 py-1.5 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 text-xs font-bold transition-colors border border-purple-500/30 flex items-center gap-1.5 disabled:opacity-50"
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
+                  </svg>
+                  {refundingPay ? "Refunding..." : "Refund Payment"}
+                </button>
               )}
-              <span className="font-semibold text-slate-200">{METHOD_LABEL[order.paymentMethod] ?? order.paymentMethod}</span>
-              {order.txnId && <span className="font-mono text-xs font-bold text-slate-200 bg-white/[0.08] px-2.5 py-1 rounded-lg border border-white/10">TxnID: {order.txnId}</span>}
             </div>
           )}
 
@@ -482,6 +570,20 @@ function OrdersContent() {
       }
     } catch (e: unknown) {
       showToast("error", e instanceof Error ? e.message : "Failed to confirm payment");
+      throw e;
+    }
+  };
+
+  const handleRefundPayment = async (id: string) => {
+    try {
+      await apiFetch(`/admin/orders/${id}/refund-payment`, { method: "PUT" });
+      showToast("success", "Payment marked as Refunded");
+      setOrders((prev) => prev.map((o) => (o._id === id ? { ...o, paymentStatus: "refunded" } : o)));
+      if (selectedOrder?._id === id) {
+        setSelectedOrder((o) => o ? { ...o, paymentStatus: "refunded" } : o);
+      }
+    } catch (e: unknown) {
+      showToast("error", e instanceof Error ? e.message : "Failed to refund payment");
       throw e;
     }
   };
@@ -728,6 +830,7 @@ function OrdersContent() {
           onStatusUpdate={handleStatusUpdate}
           onConfirmPayment={handleConfirmPayment}
           onExchangeAction={handleExchangeAction}
+          onRefundPayment={handleRefundPayment}
         />
       )}
     </div>

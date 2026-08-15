@@ -64,7 +64,7 @@ interface Order {
   exchangeRequest?: ExchangeRequestData;
   paymentMethod: "bkash" | "nagad" | "rocket" | "cod";
   txnId?: string;
-  paymentStatus: "pending_verification" | "pending_delivery" | "paid";
+  paymentStatus: "pending_verification" | "pending_delivery" | "paid" | "refunded";
   createdAt: string;
 }
 
@@ -78,6 +78,8 @@ const statusConfig: Record<Order["status"], { label: string; classes: string }> 
   cancelled: { label: "Cancelled",       classes: "bg-red-50 text-red-600 border-red-200" },
   returned:  { label: "Returned",        classes: "bg-orange-50 text-orange-700 border-orange-200" },
 };
+
+
 
 function initials(name: string) {
   return name
@@ -510,10 +512,11 @@ function OrdersTab({ orders, onFetch, token }: { orders: Order[]; onFetch: () =>
   );
 }
 
-const paymentStatusConfig = {
+const paymentStatusConfig: Record<string, { label: string; classes: string; dot: string }> = {
   pending_verification: { label: "Verifying Payment", classes: "bg-amber-50 text-amber-700 border-amber-200", dot: "bg-amber-400" },
   pending_delivery:     { label: "Awaiting Delivery",  classes: "bg-blue-50 text-blue-700 border-blue-200",   dot: "bg-blue-400" },
-  paid:                 { label: "Payment Confirmed",  classes: "bg-green-50 text-green-700 border-green-200", dot: "bg-green-500" },
+  paid:                 { label: "Paid",               classes: "bg-green-50 text-green-700 border-green-200", dot: "bg-green-500" },
+  refunded:             { label: "Payment Refunded",   classes: "bg-purple-50 text-purple-700 border-purple-200", dot: "bg-purple-500" },
 };
 
 const methodLabel = (m: Order["paymentMethod"]) =>
@@ -805,14 +808,19 @@ function OrderRow({
             <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold border ${cfg.classes}`}>
               {cfg.label}
             </span>
-            {order.paymentMethod !== "cod" && (
+            {order.paymentStatus === "refunded" ? (
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold border bg-purple-50 text-purple-700 border-purple-200">
+                <span className="w-1.5 h-1.5 rounded-full bg-purple-500" />
+                Payment Refunded
+              </span>
+            ) : order.paymentMethod !== "cod" || order.paymentStatus === "paid" ? (
               <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border ${
                 order.paymentStatus === "paid" ? "bg-green-50 text-green-700 border-green-200" : payCfg.classes
               }`}>
                 <span className={`w-1.5 h-1.5 rounded-full ${order.paymentStatus === "paid" ? "bg-green-500" : payCfg.dot}`} />
                 {order.paymentStatus === "paid" ? "Paid" : payCfg.label}
               </span>
-            )}
+            ) : null}
             {order.exchangeRequest && (
               <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border bg-orange-50 text-orange-700 border-orange-200 capitalize">
                 Exchange: {order.exchangeRequest.status}

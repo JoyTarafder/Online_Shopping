@@ -11,6 +11,7 @@ import {
   getOrderDetails,
   updateOrderStatus,
   confirmPayment,
+  refundPayment,
   updateExchangeStatus,
   getAllContactMessages,
   markContactMessageRead,
@@ -44,6 +45,7 @@ router.get("/orders", getAllOrders);
 router.get("/orders/:id", getOrderDetails);
 router.put("/orders/:id/status", updateOrderStatus);
 router.put("/orders/:id/confirm-payment", confirmPayment);
+router.put("/orders/:id/refund-payment", refundPayment);
 router.put("/orders/:id/exchange", updateExchangeStatus);
 
 // Contact messages
