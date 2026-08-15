@@ -20,7 +20,11 @@ mongoose.plugin((schema) => {
   // 1. Real-time Sync on Document Save (.save())
   schema.post("save", function (doc) {
     if (!secondaryConnection || !secondaryConnection.db) return;
-    const collectionName = this.collection.name;
+    const collectionName =
+      (this as any)?.collection?.name ||
+      (doc as any)?.collection?.name ||
+      (doc as any)?.constructor?.modelName;
+    if (!collectionName) return;
     secondaryConnection.db
       .collection(collectionName)
       .replaceOne({ _id: doc._id as any }, doc.toObject() as any, { upsert: true })
@@ -32,7 +36,10 @@ mongoose.plugin((schema) => {
   // 2. Real-time Sync on insertMany
   schema.post("insertMany", function (docs) {
     if (!secondaryConnection || !secondaryConnection.db) return;
-    const collectionName = this.collection.name;
+    const collectionName =
+      (this as any)?.collection?.name ||
+      (this as any)?.modelName;
+    if (!collectionName) return;
     const rawDocs = Array.isArray(docs)
       ? docs.map((d: any) => (d.toObject ? d.toObject() : d))
       : [];
