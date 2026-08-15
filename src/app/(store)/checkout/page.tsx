@@ -144,9 +144,7 @@ export default function CheckoutPage() {
       errors.method = "Please select a payment method";
     } else if (paymentInfo.method !== "cod") {
       if (!paymentInfo.txnId.trim()) {
-        errors.txnId = "Transaction ID is required";
-      } else if (paymentInfo.txnId.trim().length < 6) {
-        errors.txnId = "Enter a valid Transaction ID";
+        errors.txnId = "Please click 'Pay Now' above to complete the gateway payment";
       }
     }
     setPaymentErrors(errors);
@@ -551,26 +549,33 @@ export default function CheckoutPage() {
                           </button>
                         </div>
 
-                        {/* TxnID input */}
-                        <div>
-                          <label className="block text-xs font-medium text-charcoal-600 mb-2">
-                            Transaction ID (TxnID) <span className="text-red-500">*</span>
-                          </label>
-                          <input
-                            className={`input-field font-mono tracking-wider uppercase ${paymentErrors.txnId ? "border-red-400 focus:ring-red-200 focus:border-red-400" : ""}`}
-                            placeholder="e.g. ABC1234XYZ"
-                            value={paymentInfo.txnId}
-                            onChange={(e) => { setPaymentInfo({...paymentInfo, txnId: e.target.value.toUpperCase()}); setPaymentErrors({...paymentErrors, txnId: ""}); }}
-                          />
-                          {paymentErrors.txnId ? (
-                            <p className="mt-1.5 text-xs text-red-500 flex items-center gap-1">
-                              <svg className="w-3 h-3 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd"/></svg>
+                        {paymentInfo.txnId ? (
+                          <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-sm shadow-sm">
+                                ✓
+                              </div>
+                              <div>
+                                <p className="text-xs font-bold text-emerald-950">{methodLabel} Gateway Payment Verified</p>
+                                <p className="text-[11px] font-mono text-emerald-700 font-semibold">TxnID: {paymentInfo.txnId}</p>
+                              </div>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => setIsGatewayOpen(true)}
+                              className="text-xs font-bold text-emerald-800 hover:text-emerald-950 underline px-3 py-1 rounded-lg bg-emerald-100 hover:bg-emerald-200 transition-colors"
+                            >
+                              Re-open Gateway
+                            </button>
+                          </div>
+                        ) : (
+                          paymentErrors.txnId && (
+                            <p className="text-xs text-red-500 font-medium flex items-center gap-1.5 bg-red-50 border border-red-200 rounded-xl p-3">
+                              <svg className="w-4 h-4 shrink-0 text-red-500" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd"/></svg>
                               {paymentErrors.txnId}
                             </p>
-                          ) : (
-                            <p className="mt-1.5 text-xs text-charcoal-400 font-light">You&apos;ll find the TxnID in the {methodLabel} confirmation SMS or app notification.</p>
-                          )}
-                        </div>
+                          )
+                        )}
                       </div>
                     );
                   })()}
