@@ -516,7 +516,7 @@ const paymentStatusConfig: Record<string, { label: string; classes: string; dot:
   pending_verification: { label: "Verifying Payment", classes: "bg-amber-50 text-amber-700 border-amber-200", dot: "bg-amber-400" },
   pending_delivery:     { label: "Awaiting Delivery",  classes: "bg-blue-50 text-blue-700 border-blue-200",   dot: "bg-blue-400" },
   paid:                 { label: "Paid",               classes: "bg-green-50 text-green-700 border-green-200", dot: "bg-green-500" },
-  refunded:             { label: "Payment Refunded",   classes: "bg-purple-50 text-purple-700 border-purple-200", dot: "bg-purple-500" },
+  refunded:             { label: "Payment Returned",   classes: "bg-purple-50 text-purple-700 border-purple-200", dot: "bg-purple-500" },
 };
 
 const methodLabel = (m: Order["paymentMethod"]) =>
@@ -811,7 +811,7 @@ function OrderRow({
             {order.paymentStatus === "refunded" ? (
               <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold border bg-purple-50 text-purple-700 border-purple-200">
                 <span className="w-1.5 h-1.5 rounded-full bg-purple-500" />
-                Payment Refunded
+                Payment Returned
               </span>
             ) : order.paymentMethod !== "cod" || order.paymentStatus === "paid" ? (
               <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border ${

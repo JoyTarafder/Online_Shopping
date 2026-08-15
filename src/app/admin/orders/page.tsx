@@ -60,7 +60,7 @@ const PAYMENT_STATUS_STYLE: Record<string, { badge: string; dot: string; label: 
   pending_verification: { badge: "bg-amber-900/20 text-amber-400 ring-1 ring-amber-500/30", dot: "bg-amber-400", label: "Verifying Payment" },
   pending_delivery:     { badge: "bg-blue-900/20 text-blue-400 ring-1 ring-blue-500/30",   dot: "bg-blue-400",  label: "Awaiting Delivery" },
   paid:                 { badge: "bg-emerald-900/20 text-emerald-400 ring-1 ring-emerald-500/30", dot: "bg-emerald-500", label: "Paid" },
-  refunded:             { badge: "bg-purple-900/20 text-purple-300 ring-1 ring-purple-500/30", dot: "bg-purple-400", label: "Payment Refunded" },
+  refunded:             { badge: "bg-purple-900/20 text-purple-300 ring-1 ring-purple-500/30", dot: "bg-purple-400", label: "Payment Returned" },
   cancelled:            { badge: "bg-rose-900/20 text-rose-400 ring-1 ring-rose-500/30", dot: "bg-rose-400", label: "Cancelled" },
   returned:             { badge: "bg-orange-900/20 text-orange-400 ring-1 ring-orange-500/30", dot: "bg-orange-400", label: "Returned" },
 };
@@ -290,7 +290,7 @@ function OrderDetailsModal({ order, onClose, onStatusUpdate, onConfirmPayment, o
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3"/>
                 </svg>
                 <p className="text-sm font-bold text-purple-300">
-                  Payment Refunded ({(order.paymentMethod && order.paymentMethod !== "cod") ? `Returned via ${METHOD_LABEL[order.paymentMethod] ?? order.paymentMethod}` : "Payment Refunded"})
+                  Payment Returned ({(order.paymentMethod && order.paymentMethod !== "cod") ? `Returned via ${METHOD_LABEL[order.paymentMethod] ?? order.paymentMethod}` : "Payment Returned"})
                 </p>
               </div>
               {order.txnId && (
@@ -413,7 +413,7 @@ function OrderDetailsModal({ order, onClose, onStatusUpdate, onConfirmPayment, o
                 {order.paymentStatus === "refunded" ? (
                   <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30">
                     <span className="w-1.5 h-1.5 rounded-full bg-purple-400" />
-                    Payment Refunded
+                    Payment Returned
                   </span>
                 ) : (order.paymentStatus === "paid" || order.paymentMethod !== "cod") ? (
                   <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
@@ -769,6 +769,7 @@ function OrdersContent() {
                     <td className="px-6 py-4">
                       {(() => {
                         const statusKey =
+                          order.paymentStatus === "refunded" ? "refunded" :
                           order.status === "cancelled" ? "cancelled" :
                           order.status === "returned" ? "returned" :
                           (order.status === "delivered" || order.paymentStatus === "paid") ? "paid" :
