@@ -106,22 +106,24 @@ app.use(notFound);
 app.use(errorHandler);
 
 // ─── Start server ─────────────────────────────────────────────────────────────
-const PORT = parseInt(process.env.PORT ?? "4000", 10);
-const server = app.listen(PORT, () => {
-  console.log(
-    `✓ Server running on http://localhost:${PORT} [${process.env.NODE_ENV}]`,
-  );
-});
+if (!process.env.VERCEL) {
+  const PORT = parseInt(process.env.PORT ?? "4000", 10);
+  const server = app.listen(PORT, () => {
+    console.log(
+      `✓ Server running on http://localhost:${PORT} [${process.env.NODE_ENV}]`,
+    );
+  });
 
-// Graceful shutdown
-process.on("SIGTERM", () => {
-  console.log("SIGTERM received — shutting down gracefully");
-  server.close(() => process.exit(0));
-});
+  // Graceful shutdown
+  process.on("SIGTERM", () => {
+    console.log("SIGTERM received — shutting down gracefully");
+    server.close(() => process.exit(0));
+  });
 
-process.on("unhandledRejection", (err: Error) => {
-  console.error("Unhandled rejection:", err.message);
-  server.close(() => process.exit(1));
-});
+  process.on("unhandledRejection", (err: Error) => {
+    console.error("Unhandled rejection:", err.message);
+    server.close(() => process.exit(1));
+  });
+}
 
 export default app;
