@@ -528,54 +528,27 @@ export default function CheckoutPage() {
                     const numBg       = paymentInfo.method === "bkash" ? "bg-[#E2136E]" : paymentInfo.method === "nagad" ? "bg-[#F05A28]" : "bg-[#8C3494]";
                     return (
                       <div className="mt-5 space-y-4">
-                        {/* Instant Demo Gateway Action Button */}
-                        <div className="bg-gradient-to-r from-slate-900 to-slate-800 rounded-2xl p-5 border border-slate-700 text-white flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg">
+                        {/* Instant Demo Gateway Action Card */}
+                        <div className="bg-gradient-to-r from-slate-900 to-slate-800 rounded-2xl p-6 border border-slate-700 text-white flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl">
                           <div>
-                            <span className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                              Instant Demo Gateway
+                            <span className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                              Instant Gateway Payment
                             </span>
-                            <h4 className="text-base font-bold text-white mt-1">Pay via {methodLabel} Online Gateway</h4>
+                            <h4 className="text-lg font-bold text-white mt-2">Pay via {methodLabel} Online Gateway</h4>
                             <p className="text-xs text-slate-300 font-light mt-0.5">
-                              Simulate mobile number, OTP, and PIN payment instantly!
+                              Click below to open the official {methodLabel} payment popup & complete transaction.
                             </p>
                           </div>
                           <button
                             type="button"
                             onClick={() => setIsGatewayOpen(true)}
-                            className={`w-full sm:w-auto px-6 py-3 rounded-xl text-white font-bold text-sm shadow-md transition-all ${numBg} hover:opacity-90 flex items-center justify-center gap-2 shrink-0`}
+                            className={`w-full sm:w-auto px-7 py-3.5 rounded-xl text-white font-bold text-sm shadow-lg transition-all ${numBg} hover:opacity-90 flex items-center justify-center gap-2 shrink-0`}
                           >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
                             </svg>
                             Pay ৳{total.toFixed(2)} Now
                           </button>
-                        </div>
-
-                        <div className="relative flex py-1 items-center">
-                          <div className="flex-grow border-t border-charcoal-200"></div>
-                          <span className="flex-shrink mx-3 text-[10px] uppercase tracking-wider text-charcoal-400 font-bold">Or Manual Send Money</span>
-                          <div className="flex-grow border-t border-charcoal-200"></div>
-                        </div>
-
-                        {/* Merchant number card */}
-                        <div className={`rounded-2xl border p-5 ${accentBg}`}>
-                          <p className={`text-xs font-semibold uppercase tracking-wider mb-3 ${accentText}`}>
-                            Send Money to our {methodLabel} Number
-                          </p>
-                          <div className="flex items-center justify-between gap-3">
-                            <div>
-                              <p className="text-[11px] text-charcoal-400 font-light mb-1">{methodLabel} (Send Money)</p>
-                              <p className={`text-2xl font-black tracking-widest ${accentText}`}>{MERCHANT_NUMBER}</p>
-                            </div>
-                            <span className={`px-3 py-1.5 rounded-xl text-xs font-bold text-white ${numBg}`}>{methodLabel}</span>
-                          </div>
-                          <div className={`mt-4 pt-4 border-t ${paymentInfo.method === "bkash" ? "border-[#f9a8ce]" : paymentInfo.method === "nagad" ? "border-[#ffc4a8]" : "border-[#d8b4fe]"} space-y-1.5 text-xs ${accentText}`}>
-                            <p className="flex items-start gap-2"><span className="font-bold shrink-0">1.</span> Open your {methodLabel} app</p>
-                            <p className="flex items-start gap-2"><span className="font-bold shrink-0">2.</span> Go to <strong>Send Money</strong></p>
-                            <p className="flex items-start gap-2"><span className="font-bold shrink-0">3.</span> Send exactly <strong>৳{total.toFixed(2)}</strong> to <strong>{MERCHANT_NUMBER}</strong></p>
-                            <p className="flex items-start gap-2"><span className="font-bold shrink-0">4.</span> Copy the <strong>Transaction ID (TxnID)</strong> from the confirmation message</p>
-                            <p className="flex items-start gap-2"><span className="font-bold shrink-0">5.</span> Paste it in the field below</p>
-                          </div>
                         </div>
 
                         {/* TxnID input */}
