@@ -1,0 +1,173 @@
+"use client";
+
+import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
+
+type HeroStats = {
+  productsCount: number;
+  customersCount: number;
+  avgRating: number;
+};
+
+function formatCompact(n: number) {
+  if (!Number.isFinite(n)) return "0";
+  if (n >= 1_000_000)
+    return `${(n / 1_000_000).toFixed(1).replace(/\.0$/, "")}M+`;
+  if (n >= 1_000) return `${Math.round(n / 1_000)}K+`;
+  return `${n}+`;
+}
+
+export default function HeroSection() {
+  const [stats, setStats] = useState<HeroStats | null>(null);
+
+  useEffect(() => {
+    let alive = true;
+    fetch("/api/stats/hero")
+      .then((r) => {
+        if (!r.ok) throw new Error(`hero stats request failed: ${r.status}`);
+        return r.json();
+      })
+      .then((json) => {
+        if (!alive) return;
+        if (json?.success && json?.data) setStats(json.data as HeroStats);
+      })
+      .catch(() => {})
+      .finally(() => {});
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  const statItems = useMemo(() => {
+    const products = stats ? formatCompact(stats.productsCount) : "120+";
+    const customers = stats ? formatCompact(stats.customersCount) : "15K+";
+    const rating = stats
+      ? `${Math.max(0, Math.min(5, stats.avgRating)).toFixed(1)}★`
+      : "4.9★";
+    return [
+      { value: products, label: "Products" },
+      { value: customers, label: "Customers" },
+      { value: rating, label: "Rating" },
+    ];
+  }, [stats]);
+
+  return (
+    <section className="relative bg-warm-50 overflow-hidden py-10 lg:py-16">
+      {/* Premium Ambient Background Blur Blobs */}
+      <div className="absolute top-[15%] left-[-10%] w-[550px] h-[550px] bg-gradient-to-tr from-accent-200/15 to-transparent rounded-full filter blur-[120px] pointer-events-none animate-float" />
+      <div className="absolute bottom-[10%] right-[-5%] w-[650px] h-[650px] bg-gradient-to-bl from-warm-200/20 to-transparent rounded-full filter blur-[140px] pointer-events-none animate-pulse" style={{ animationDuration: "8s" }} />
+
+      <div className="relative max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 w-full z-10">
+        <div className="grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+          
+          {/* Text content side */}
+          <div className="lg:col-span-6 order-2 lg:order-1 space-y-8 lg:space-y-10 animate-fade-up">
+            
+            {/* Tagline Badge */}
+            <div className="inline-flex items-center gap-2.5 px-4.5 py-2 bg-white/70 backdrop-blur-md rounded-full border border-charcoal-100 shadow-soft transition-colors duration-300 hover:border-charcoal-200">
+              <span className="w-1.5 h-1.5 rounded-full bg-accent-500 animate-ping" />
+              <span className="text-[10px] font-bold text-charcoal-600 tracking-[0.2em] uppercase">
+                Spring / Summer 2026
+              </span>
+            </div>
+
+            {/* Editorial Title */}
+            <h1 className="text-6xl sm:text-7xl lg:text-[5.5rem] font-bold text-charcoal-950 leading-[0.92] tracking-[-0.04em]">
+              Dress with
+              <br />
+              <span className="font-serif italic font-normal text-accent-600 tracking-tight mr-2 relative inline-block">
+                intention.
+                <span className="absolute bottom-1.5 left-0 right-0 h-1.5 bg-accent-200/30 rounded-full blur-[1px]" />
+              </span>
+            </h1>
+
+            {/* Subtext */}
+            <p className="text-base sm:text-lg text-charcoal-500 max-w-md leading-relaxed font-light">
+              Thoughtfully crafted clothing for the modern wardrobe. Minimalist
+              designs, premium materials, and enduring style.
+            </p>
+
+            {/* Action Buttons */}
+            <div className="flex flex-wrap gap-4 pt-2">
+              <Link 
+                href="/shop" 
+                className="btn-primary text-sm px-9 py-4 font-semibold shadow-soft-md hover:shadow-soft-xl"
+              >
+                Shop Now
+              </Link>
+              <Link
+                href="/about"
+                className="btn-secondary text-sm px-9 py-4 font-semibold"
+              >
+                Our Story
+              </Link>
+            </div>
+
+            {/* Premium Stats Widget */}
+            <div className="pt-8 border-t border-charcoal-100/80 max-w-md">
+              <div className="flex gap-8 px-6 py-5 rounded-2xl bg-white/30 backdrop-blur-md border border-white/50 shadow-soft transition-all duration-500 hover:shadow-soft-md hover:border-white/80 hover:bg-white/40">
+                {statItems.map((stat) => (
+                  <div key={stat.label} className="flex-1 text-center sm:text-left">
+                    <p className="text-2.5xl font-bold text-charcoal-900 tracking-tight">
+                      {stat.value}
+                    </p>
+                    <p className="text-[10px] text-charcoal-400 mt-1 font-medium tracking-[0.1em] uppercase">
+                      {stat.label}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Grid visual side */}
+          <div className="lg:col-span-6 order-1 lg:order-2 grid grid-cols-2 gap-4 h-[480px] sm:h-[550px] lg:h-[620px] w-full animate-fade-in">
+            {/* Tall Image */}
+            <div className="relative rounded-[2.5rem] overflow-hidden mt-8 shadow-soft-lg border-4 border-white animate-float">
+              <Image
+                src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=600&q=80"
+                alt="Woman in minimalist outfit"
+                fill
+                className="object-cover transition-transform duration-1000 ease-premium hover:scale-105"
+                priority
+                sizes="(max-width: 1024px) 40vw, 25vw"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
+            </div>
+
+            {/* Split Images */}
+            <div className="space-y-4 h-full flex flex-col justify-between">
+              <div 
+                className="relative rounded-[2rem] overflow-hidden h-[48%] shadow-soft-lg border-4 border-white animate-float"
+                style={{ animationDelay: "1.5s", animationDuration: "7s" }}
+              >
+                <Image
+                  src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=600&q=80"
+                  alt="Man in tailored suit"
+                  fill
+                  className="object-cover transition-transform duration-1000 ease-premium hover:scale-105"
+                  sizes="(max-width: 1024px) 40vw, 25vw"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
+              </div>
+              <div 
+                className="relative rounded-[2rem] overflow-hidden h-[48%] shadow-soft-lg border-4 border-white animate-float"
+                style={{ animationDelay: "3s", animationDuration: "5s" }}
+              >
+                <Image
+                  src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80"
+                  alt="Premium sneakers"
+                  fill
+                  className="object-cover transition-transform duration-1000 ease-premium hover:scale-105"
+                  sizes="(max-width: 1024px) 40vw, 25vw"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
