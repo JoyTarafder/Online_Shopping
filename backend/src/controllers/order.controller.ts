@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import PDFDocument from "pdfkit";
 import Order from "../models/Order";
 import Product from "../models/Product";
+import PromoCode from "../models/PromoCode";
 import { AppError } from "../middleware/error.middleware";
 import { AuthRequest, IShippingAddress } from "../types";
 import { sendOrderConfirmationEmail } from "../services/emailService";
@@ -28,12 +29,14 @@ export const placeOrder = asyncHandler(
       txnId = "",
       items: frontendItems,
       discount = 0,
+      promoCode = "",
     } = req.body as {
       shippingAddress: IShippingAddress;
       paymentMethod: "bkash" | "nagad" | "rocket" | "cod";
       txnId?: string;
       items: FrontendOrderItem[];
       discount?: number;
+      promoCode?: string;
     };
 
     if (!shippingAddress) throw new AppError("Shipping address is required", 400);
@@ -121,6 +124,7 @@ export const placeOrder = asyncHandler(
       shippingCost,
       tax,
       discount: discountAmt,
+      promoCode: promoCode.trim().toUpperCase(),
       total,
       status: "pending",
       statusHistory: [
@@ -134,6 +138,16 @@ export const placeOrder = asyncHandler(
 
     // Decrement stock and increment totalOrdered (only for DB-backed products)
     await Promise.all(stockOps);
+
+    // Increment promo code usage count if a promo code was applied
+    if (promoCode && typeof promoCode === "string" && promoCode.trim()) {
+      await PromoCode.findOneAndUpdate(
+        { code: promoCode.trim().toUpperCase() },
+        { $inc: { usedCount: 1 } }
+      ).catch((err) => {
+        console.error("Failed to increment promo code usage count:", err);
+      });
+    }
 
     // Send Order Confirmation Email asynchronously
     const recipientEmail = shippingAddress.email || req.user?.email;

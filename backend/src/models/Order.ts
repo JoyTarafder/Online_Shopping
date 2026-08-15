@@ -111,6 +111,7 @@ const orderSchema = new Schema<IOrderDocument>(
     shippingCost: { type: Number, required: true, default: 0 },
     tax:          { type: Number, required: true, default: 0 },
     discount:     { type: Number, required: true, default: 0 },
+    promoCode:    { type: String, default: "" },
     total:        { type: Number, required: true },
     status: {
       type: String,

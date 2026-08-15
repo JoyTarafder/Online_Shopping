@@ -201,6 +201,7 @@ export default function CheckoutPage() {
         paymentMethod: paymentInfo.method,
         txnId: finalTxnId,
         discount,
+        promoCode: promoResult?.code ?? "",
         items: state.items
           .filter((i) => Boolean(i && i.product))
           .map((i) => ({

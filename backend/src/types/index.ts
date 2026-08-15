@@ -186,6 +186,7 @@ export interface IOrder {
   shippingCost: number;
   tax: number;
   discount: number;
+  promoCode?: string;
   total: number;
   status:
     | "pending"

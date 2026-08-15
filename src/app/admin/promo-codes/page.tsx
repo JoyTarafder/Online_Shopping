@@ -399,18 +399,18 @@ function PromoCodesContent() {
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-white/5">
                 {codes.map((c) => {
                   const expired = isExpired(c.expiresAt);
                   return (
-                    <tr key={c._id} className="hover:bg-slate-50/80 transition-colors group">
+                    <tr key={c._id} className="hover:bg-white/[0.04] transition-colors group">
                       {/* Code */}
                       <td className="px-4 py-4">
-                        <span className="font-mono font-bold text-violet-700 bg-violet-50 border border-violet-200/60 px-3 py-1.5 rounded-xl text-xs inline-block">
+                        <span className="font-mono font-bold text-purple-300 bg-purple-500/10 border border-purple-500/30 px-3 py-1.5 rounded-xl text-xs inline-block shadow-sm">
                           {c.code}
                         </span>
                         {c.description && (
-                          <p className="text-slate-500 text-xs mt-1 leading-snug">{c.description}</p>
+                          <p className="text-slate-400 text-xs mt-1 leading-snug">{c.description}</p>
                         )}
                       </td>
 
@@ -420,8 +420,8 @@ function PromoCodesContent() {
                           <span
                             className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold uppercase ${
                               c.type === "percentage"
-                                ? "bg-amber-900/30 text-amber-400 border border-amber-500/30"
-                                : "bg-emerald-900/30 text-emerald-400 border border-emerald-500/30"
+                                ? "bg-amber-500/10 text-amber-400 border border-amber-500/25"
+                                : "bg-emerald-500/10 text-emerald-400 border border-emerald-500/25"
                             }`}
                           >
                             {c.type === "percentage" ? "%" : "৳"}
@@ -433,25 +433,25 @@ function PromoCodesContent() {
                       </td>
 
                       {/* Min Order */}
-                      <td className="px-4 py-4 font-medium text-slate-300">
-                        {c.minOrderAmount > 0 ? `৳${c.minOrderAmount}` : <span className="text-slate-400">None</span>}
+                      <td className="px-4 py-4 font-semibold text-slate-300">
+                        {c.minOrderAmount > 0 ? `৳${c.minOrderAmount}` : <span className="text-slate-500 font-normal">None</span>}
                       </td>
 
                       {/* Uses */}
                       <td className="px-4 py-4">
-                        <span className="font-bold text-slate-100">{c.usedCount}</span>
+                        <span className="font-bold text-white text-sm">{c.usedCount}</span>
                         <span className="text-slate-400 font-medium">/{c.maxUses ?? "∞"}</span>
                       </td>
 
                       {/* Expires */}
                       <td className="px-4 py-4">
                         {c.expiresAt ? (
-                          <span className={expired ? "text-rose-600 font-bold text-xs" : "text-slate-400 font-medium text-xs"}>
+                          <span className={expired ? "text-rose-400 font-bold text-xs" : "text-slate-300 font-medium text-xs"}>
                             {new Date(c.expiresAt).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}
                             {expired && " (expired)"}
                           </span>
                         ) : (
-                          <span className="text-slate-400 text-xs font-medium">No expiry</span>
+                          <span className="text-slate-500 text-xs font-medium">No expiry</span>
                         )}
                       </td>
 
@@ -461,7 +461,7 @@ function PromoCodesContent() {
                           type="button"
                           onClick={() => handleToggle(c)}
                           className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${
-                            c.isActive && !expired ? "bg-emerald-500" : "bg-slate-300"
+                            c.isActive && !expired ? "bg-emerald-500" : "bg-slate-700"
                           }`}
                           title={c.isActive ? "Deactivate" : "Activate"}
                         >
@@ -478,14 +478,14 @@ function PromoCodesContent() {
                         <div className="flex items-center gap-2">
                           <button
                             onClick={() => openEdit(c)}
-                            className="px-3 py-1.5 font-bold text-slate-300 bg-white/[0.04] hover:bg-white/[0.06] rounded-xl text-xs transition-colors"
+                            className="px-3 py-1.5 font-bold text-slate-300 bg-white/[0.05] hover:bg-white/[0.09] rounded-xl text-xs transition-colors border border-white/5"
                             title="Edit"
                           >
                             Edit
                           </button>
                           <button
                             onClick={() => handleDelete(c._id)}
-                            className="px-3 py-1.5 font-bold text-rose-600 bg-rose-50 hover:bg-rose-100 rounded-xl text-xs transition-colors"
+                            className="px-3 py-1.5 font-bold text-rose-400 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 rounded-xl text-xs transition-colors"
                             title="Delete"
                           >
                             Delete
