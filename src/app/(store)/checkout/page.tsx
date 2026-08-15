@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
+import DemoMfsGatewayModal from "@/components/checkout/DemoMfsGatewayModal";
 
 import { getApiBase } from "@/lib/apiBase";
 import { DIVISIONS, getDistricts, getThanas } from "@/lib/bangladeshLocations";
@@ -135,6 +136,7 @@ export default function CheckoutPage() {
     txnId: "",
   });
   const [paymentErrors, setPaymentErrors] = useState<{ method?: string; txnId?: string }>({});
+  const [isGatewayOpen, setIsGatewayOpen] = useState(false);
 
   const validatePayment = (): boolean => {
     const errors: { method?: string; txnId?: string } = {};
@@ -526,6 +528,35 @@ export default function CheckoutPage() {
                     const numBg       = paymentInfo.method === "bkash" ? "bg-[#E2136E]" : paymentInfo.method === "nagad" ? "bg-[#F05A28]" : "bg-[#8C3494]";
                     return (
                       <div className="mt-5 space-y-4">
+                        {/* Instant Demo Gateway Action Button */}
+                        <div className="bg-gradient-to-r from-slate-900 to-slate-800 rounded-2xl p-5 border border-slate-700 text-white flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg">
+                          <div>
+                            <span className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                              Instant Demo Gateway
+                            </span>
+                            <h4 className="text-base font-bold text-white mt-1">Pay via {methodLabel} Online Gateway</h4>
+                            <p className="text-xs text-slate-300 font-light mt-0.5">
+                              Simulate mobile number, OTP, and PIN payment instantly!
+                            </p>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => setIsGatewayOpen(true)}
+                            className={`w-full sm:w-auto px-6 py-3 rounded-xl text-white font-bold text-sm shadow-md transition-all ${numBg} hover:opacity-90 flex items-center justify-center gap-2 shrink-0`}
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                            </svg>
+                            Pay ৳{total.toFixed(2)} Now
+                          </button>
+                        </div>
+
+                        <div className="relative flex py-1 items-center">
+                          <div className="flex-grow border-t border-charcoal-200"></div>
+                          <span className="flex-shrink mx-3 text-[10px] uppercase tracking-wider text-charcoal-400 font-bold">Or Manual Send Money</span>
+                          <div className="flex-grow border-t border-charcoal-200"></div>
+                        </div>
+
                         {/* Merchant number card */}
                         <div className={`rounded-2xl border p-5 ${accentBg}`}>
                           <p className={`text-xs font-semibold uppercase tracking-wider mb-3 ${accentText}`}>
@@ -804,6 +835,19 @@ export default function CheckoutPage() {
           </div>
         </div>
       </div>
+
+      <DemoMfsGatewayModal
+        isOpen={isGatewayOpen}
+        method={paymentInfo.method !== "cod" ? paymentInfo.method : ""}
+        amount={total}
+        onSuccess={(txnId) => {
+          setPaymentInfo((prev) => ({ ...prev, txnId }));
+          setPaymentErrors((prev) => ({ ...prev, txnId: "" }));
+          setIsGatewayOpen(false);
+          notifySuccess(`Payment verified! TxnID: ${txnId}`);
+        }}
+        onClose={() => setIsGatewayOpen(false)}
+      />
     </div>
   );
 }
