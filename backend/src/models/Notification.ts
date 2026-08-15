@@ -15,7 +15,7 @@ const notificationSchema = new Schema<INotificationDocument>(
     },
     type: {
       type: String,
-      enum: ["discount", "special_offer", "announcement", "product_discount"],
+      enum: ["discount", "special_offer", "announcement", "product_discount", "hero_banner"],
       default: "special_offer",
     },
     image: {
@@ -24,6 +24,16 @@ const notificationSchema = new Schema<INotificationDocument>(
       default: "",
     },
     link: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+    buttonText: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+    badgeText: {
       type: String,
       trim: true,
       default: "",

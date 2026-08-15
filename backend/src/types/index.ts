@@ -249,9 +249,11 @@ export interface IJobDocument extends IJob, Document {
 export interface INotification {
   title?: string;
   message?: string;
-  type: "discount" | "special_offer" | "announcement" | "product_discount";
+  type: "discount" | "special_offer" | "announcement" | "product_discount" | "hero_banner";
   image?: string;
   link?: string;
+  buttonText?: string;
+  badgeText?: string;
   promoCode?: string;
   duration?: number;
   isActive: boolean;

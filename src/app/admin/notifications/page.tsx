@@ -8,9 +8,11 @@ interface NotificationItem {
   _id: string;
   title?: string;
   message?: string;
-  type: "discount" | "special_offer" | "announcement" | "product_discount";
+  type: "discount" | "special_offer" | "announcement" | "product_discount" | "hero_banner";
   image?: string;
   link?: string;
+  buttonText?: string;
+  badgeText?: string;
   promoCode?: string;
   duration?: number;
   isActive: boolean;
@@ -20,9 +22,11 @@ interface NotificationItem {
 type NotificationForm = {
   title: string;
   message: string;
-  type: "discount" | "special_offer" | "announcement" | "product_discount";
+  type: "discount" | "special_offer" | "announcement" | "product_discount" | "hero_banner";
   image: string;
   link: string;
+  buttonText: string;
+  badgeText: string;
   promoCode: string;
   duration: number;
   isActive: boolean;
@@ -31,15 +35,25 @@ type NotificationForm = {
 const EMPTY_FORM: NotificationForm = {
   title: "",
   message: "",
-  type: "special_offer",
+  type: "hero_banner",
   image: "",
   link: "",
+  buttonText: "",
+  badgeText: "",
   promoCode: "",
   duration: 5,
   isActive: true,
 };
 
 const TYPE_CONFIG = {
+  hero_banner: {
+    label: "Home Banner",
+    sub: "Full-Width Banner",
+    icon: "🖼️",
+    badgeBg: "bg-emerald-900/30 border-emerald-500/30 text-emerald-400",
+    activeBorder: "border-emerald-500 bg-emerald-900/20 ring-2 ring-emerald-500/20",
+    btnBg: "bg-gradient-to-r from-emerald-600 to-teal-600 text-white",
+  },
   special_offer: {
     label: "Special Offer",
     sub: "Special Offer",
@@ -174,6 +188,8 @@ function NotificationsContent() {
       type: item.type,
       image: item.image || "",
       link: item.link || "",
+      buttonText: item.buttonText || "",
+      badgeText: item.badgeText || "",
       promoCode: item.promoCode || "",
       duration: item.duration || 5,
       isActive: item.isActive,
@@ -755,17 +771,45 @@ function NotificationsContent() {
                   )}
                 </div>
 
-                {/* 5. Target Link */}
+                {/* 5. Target Link & Button Text */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-extrabold text-slate-300 uppercase tracking-wider mb-1.5">
+                      5. Button Link
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="e.g. /shop?badge=Sale"
+                      value={form.link}
+                      onChange={(e) => setForm({ ...form, link: e.target.value })}
+                      className="w-full px-4 py-3 rounded-2xl border border-white/10 text-sm focus:outline-none focus:border-violet-500/60 bg-white/[0.05] text-slate-100"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-extrabold text-slate-300 uppercase tracking-wider mb-1.5">
+                      6. Button Label
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="e.g. Shop The Sale"
+                      value={form.buttonText}
+                      onChange={(e) => setForm({ ...form, buttonText: e.target.value })}
+                      className="w-full px-4 py-3 rounded-2xl border border-white/10 text-sm focus:outline-none focus:border-violet-500/60 bg-white/[0.05] text-slate-100"
+                    />
+                  </div>
+                </div>
+
+                {/* Badge Tag Text */}
                 <div>
                   <label className="block text-xs font-extrabold text-slate-300 uppercase tracking-wider mb-1.5">
-                    5. Target Action Link (Optional)
+                    7. Top Tag / Badge Label (Optional)
                   </label>
                   <input
                     type="text"
-                    placeholder="e.g. /shop or /product/black-tshirt"
-                    value={form.link}
-                    onChange={(e) => setForm({ ...form, link: e.target.value })}
-                    className="w-full px-4 py-3 rounded-2xl border border-white/10 text-sm focus:outline-none focus:border-violet-500/60 bg-white/[0.05] text-slate-100"
+                    placeholder="e.g. LIMITED SEASON RELEASE or EID SPECIAL"
+                    value={form.badgeText}
+                    onChange={(e) => setForm({ ...form, badgeText: e.target.value })}
+                    className="w-full px-4 py-3 rounded-2xl border border-white/10 text-sm focus:outline-none focus:border-violet-500/60 bg-white/[0.05] text-slate-100 uppercase tracking-wider"
                   />
                 </div>
 

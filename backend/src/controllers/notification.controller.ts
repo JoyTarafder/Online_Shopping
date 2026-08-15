@@ -32,7 +32,7 @@ export const getNotifications = asyncHandler(
 // ─── POST /api/notifications (Admin Only) ────────────────────────────────────
 export const createNotification = asyncHandler(
   async (req: Request, res: Response): Promise<void> => {
-    const { title, message, type, image, link, promoCode, duration, isActive } = req.body;
+    const { title, message, type, image, link, buttonText, badgeText, promoCode, duration, isActive } = req.body;
 
     const hasTitle = Boolean(title && title.trim());
     const hasMessage = Boolean(message && message.trim());
@@ -48,6 +48,8 @@ export const createNotification = asyncHandler(
       type: type || "special_offer",
       image: image || "",
       link: link || "",
+      buttonText: buttonText ? buttonText.trim() : "",
+      badgeText: badgeText ? badgeText.trim() : "",
       promoCode: promoCode ? promoCode.trim() : "",
       duration: duration || 5,
       isActive: isActive !== undefined ? isActive : true,
@@ -71,13 +73,15 @@ export const updateNotification = asyncHandler(
       throw new AppError("Notification not found", 404);
     }
 
-    const { title, message, type, image, link, promoCode, duration, isActive } = req.body;
+    const { title, message, type, image, link, buttonText, badgeText, promoCode, duration, isActive } = req.body;
 
     if (title !== undefined) notification.title = title;
     if (message !== undefined) notification.message = message;
     if (type !== undefined) notification.type = type;
     if (image !== undefined) notification.image = image;
     if (link !== undefined) notification.link = link;
+    if (buttonText !== undefined) notification.buttonText = buttonText;
+    if (badgeText !== undefined) notification.badgeText = badgeText;
     if (promoCode !== undefined) notification.promoCode = promoCode;
     if (duration !== undefined) notification.duration = duration;
     if (isActive !== undefined) notification.isActive = isActive;
