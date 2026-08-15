@@ -5,6 +5,8 @@ import connectDB from "./config/db";
 import { errorHandler, notFound } from "./middleware/error.middleware";
 
 // ─── Route imports ────────────────────────────────────────────────────────────
+import fs from "fs";
+import os from "os";
 import path from "path";
 import adminRoutes from "./routes/admin.routes";
 import authRoutes from "./routes/auth.routes";
@@ -58,7 +60,21 @@ app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 
 // Static uploads (CV files)
-app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
+const isServerless = Boolean(
+  process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME,
+);
+const uploadsBaseDir = isServerless ? os.tmpdir() : process.cwd();
+const uploadsPath = path.join(uploadsBaseDir, "uploads");
+
+try {
+  if (!fs.existsSync(uploadsPath)) {
+    fs.mkdirSync(uploadsPath, { recursive: true });
+  }
+} catch {
+  // Ignore filesystem error in read-only environment
+}
+
+app.use("/uploads", express.static(uploadsPath));
 
 // ─── Health check ─────────────────────────────────────────────────────────────
 app.get("/api/health", (_req, res) => {
