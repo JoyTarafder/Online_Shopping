@@ -141,8 +141,8 @@ function CreateUserModal({
               value={form.name}
               onChange={set}
               placeholder="e.g. Jane Smith"
-              className="w-full px-3.5 py-3 rounded-xl text-sm focus:outline-none"
-              style={{ background: "#0f172a", border: "1px solid rgba(255,255,255,0.1)", color: "#f1f5f9" }}
+              className="w-full px-3.5 py-3 rounded-xl text-sm focus:outline-none admin-dark-input"
+              style={{ backgroundColor: "#0f172a", border: "1px solid rgba(255,255,255,0.1)", color: "#f1f5f9", colorScheme: "dark" }}
             />
           </div>
           <div>
@@ -156,8 +156,8 @@ function CreateUserModal({
               value={form.email}
               onChange={set}
               placeholder="jane@example.com"
-              className="w-full px-3.5 py-3 rounded-xl text-sm focus:outline-none"
-              style={{ background: "#0f172a", border: "1px solid rgba(255,255,255,0.1)", color: "#f1f5f9" }}
+              className="w-full px-3.5 py-3 rounded-xl text-sm focus:outline-none admin-dark-input"
+              style={{ backgroundColor: "#0f172a", border: "1px solid rgba(255,255,255,0.1)", color: "#f1f5f9", colorScheme: "dark" }}
             />
           </div>
           <div>
@@ -173,8 +173,8 @@ function CreateUserModal({
                 value={form.password}
                 onChange={set}
                 placeholder="Min 6 characters"
-                className="w-full px-3.5 py-3 pr-10 rounded-xl text-sm focus:outline-none"
-                style={{ background: "#0f172a", border: "1px solid rgba(255,255,255,0.1)", color: "#f1f5f9" }}
+                className="w-full px-3.5 py-3 pr-10 rounded-xl text-sm focus:outline-none admin-dark-input"
+                style={{ backgroundColor: "#0f172a", border: "1px solid rgba(255,255,255,0.1)", color: "#f1f5f9", colorScheme: "dark" }}
               />
               <button
                 type="button"
