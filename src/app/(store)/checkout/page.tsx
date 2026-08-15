@@ -802,7 +802,7 @@ export default function CheckoutPage() {
                 </div>
                 {promoResult && (
                   <div className="flex justify-between text-green-600">
-                    <span className="font-medium">Discount</span>
+                    <span className="font-medium">Discount (Promo)</span>
                     <span className="font-semibold">−৳{promoResult.discount.toFixed(2)}</span>
                   </div>
                 )}

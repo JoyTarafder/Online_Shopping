@@ -380,10 +380,10 @@ function OrderDetailsModal({ order, onClose, onStatusUpdate, onConfirmPayment, o
                 <span className="font-medium text-slate-200">{order.shippingCost === 0 ? "Free" : `৳${order.shippingCost.toFixed(2)}`}</span>
               </div>
             )}
-            {order.tax !== undefined && order.tax > 0 && (
-              <div className="flex justify-between text-sm text-slate-400">
-                <span>Tax</span>
-                <span className="font-medium text-slate-200">৳{order.tax.toFixed(2)}</span>
+            {order.discount !== undefined && order.discount > 0 && (
+              <div className="flex justify-between text-sm text-emerald-400 font-medium">
+                <span>Discount (Promo)</span>
+                <span>−৳{order.discount.toFixed(2)}</span>
               </div>
             )}
             <div className="flex justify-between text-base font-bold text-slate-100 pt-2 mt-2" style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}>

@@ -98,12 +98,11 @@ export const placeOrder = asyncHandler(
       );
     }
 
-    // Calculate totals
     const subtotal     = parseFloat(orderItems.reduce((s, i) => s + i.price * i.quantity, 0).toFixed(2));
     const shippingCost = subtotal >= 1200 ? 0 : 9.99;
-    const tax          = parseFloat((subtotal * 0.08).toFixed(2));
+    const tax          = 0;
     const discountAmt  = parseFloat(Math.min(discount, subtotal).toFixed(2));
-    const total        = parseFloat((subtotal + shippingCost + tax - discountAmt).toFixed(2));
+    const total        = parseFloat((subtotal + shippingCost - discountAmt).toFixed(2));
 
     const paymentStatus = paymentMethod === "cod" ? "pending_delivery" : "pending_verification";
 
@@ -283,11 +282,8 @@ export const getOrderInvoice = asyncHandler(
       `Shipping: ${order.shippingCost === 0 ? "Free" : `৳${order.shippingCost.toFixed(2)}`}`,
       { align: "right" }
     );
-    if (order.tax && order.tax > 0) {
-      doc.text(`Tax: ৳${order.tax.toFixed(2)}`, { align: "right" });
-    }
     if (order.discount && order.discount > 0) {
-      doc.text(`Discount: -৳${order.discount.toFixed(2)}`, {
+      doc.text(`Discount (Promo): -৳${order.discount.toFixed(2)}`, {
         align: "right",
       });
     }

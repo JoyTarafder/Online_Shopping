@@ -927,9 +927,11 @@ function OrderRow({
             </div>
           ))}
 
-          <div className="mt-3 pt-3 border-t border-charcoal-50 space-y-2 text-xs text-charcoal-500">
-            {order.discount > 0 && <div className="flex justify-between"><span>Discount</span><span className="text-green-600 font-medium">−৳{order.discount.toFixed(2)}</span></div>}
-            <div className="flex justify-between font-semibold text-charcoal-950"><span>Total</span><span>৳{order.total.toFixed(2)}</span></div>
+          <div className="mt-3 pt-3 border-t border-charcoal-100 space-y-2 text-xs text-charcoal-500">
+            <div className="flex justify-between"><span>Subtotal</span><span>৳{(order.subtotal ?? order.total).toFixed(2)}</span></div>
+            <div className="flex justify-between"><span>Shipping</span><span>{order.shippingCost === 0 ? <span className="text-green-600 font-medium">Free</span> : `৳${(order.shippingCost ?? 0).toFixed(2)}`}</span></div>
+            {order.discount > 0 && <div className="flex justify-between text-green-600 font-medium"><span>Discount (Promo)</span><span>−৳{order.discount.toFixed(2)}</span></div>}
+            <div className="flex justify-between font-bold text-sm text-charcoal-950 pt-1.5 border-t border-charcoal-100"><span>Total</span><span>৳{order.total.toFixed(2)}</span></div>
             <button
               onClick={async () => {
                 try {
