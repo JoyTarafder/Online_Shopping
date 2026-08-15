@@ -123,7 +123,7 @@ export default function CategorySection() {
                       {category.productCount} Items
                     </p>
                   </div>
-                  
+
                   {/* Shop now label reveals on hover */}
                   <div className="flex items-center gap-1.5 mt-4 text-white text-xs font-semibold opacity-0 h-0 group-hover:opacity-100 group-hover:h-auto transition-all duration-500 ease-premium transform translate-y-2 group-hover:translate-y-0">
                     <span>Shop now</span>

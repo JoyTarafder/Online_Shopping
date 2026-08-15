@@ -1,9 +1,9 @@
 "use client";
 
+import { getApiBase } from "@/lib/apiBase";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { getApiBase } from "@/lib/apiBase";
 
 interface ApiProduct {
   _id: string;
@@ -54,9 +54,15 @@ export default function PromoGrid() {
         const products = json.data as ApiProduct[];
 
         // Filter products to secure one featured product per target category in exact priority order
-        const mensProduct = products.find((p) => p.category?.slug === "mens" && p.images?.length);
-        const womensProduct = products.find((p) => p.category?.slug === "womens" && p.images?.length);
-        const kidsProduct = products.find((p) => p.category?.slug === "kids" && p.images?.length);
+        const mensProduct = products.find(
+          (p) => p.category?.slug === "mens" && p.images?.length,
+        );
+        const womensProduct = products.find(
+          (p) => p.category?.slug === "womens" && p.images?.length,
+        );
+        const kidsProduct = products.find(
+          (p) => p.category?.slug === "kids" && p.images?.length,
+        );
 
         const orderedItems: PromoItem[] = [];
         if (mensProduct) orderedItems.push(toPromoItem(mensProduct));
@@ -74,29 +80,36 @@ export default function PromoGrid() {
   const mainItem = items[0] ?? {
     id: "featured-1",
     title: "The Editorial Collection",
-    subtitle: "Enduring silhouettes tailored in breathable, organically grown flax linen.",
+    subtitle:
+      "Enduring silhouettes tailored in breathable, organically grown flax linen.",
     href: "/shop",
-    image: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800&q=80",
+    image:
+      "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800&q=80",
     cta: "Explore Piece",
   };
-  const sideItems = items.slice(1).length > 0 ? items.slice(1) : [
-    {
-      id: "featured-2",
-      title: "Premium Knits",
-      subtitle: "Finely spun lightweight layers.",
-      href: "/shop",
-      image: "https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=800&q=80",
-      cta: "Shop Now",
-    },
-    {
-      id: "featured-3",
-      title: "Sleek Tailoring",
-      subtitle: "Structure meets everyday ease.",
-      href: "/shop",
-      image: "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=800&q=80",
-      cta: "Shop Now",
-    },
-  ];
+  const sideItems =
+    items.slice(1).length > 0
+      ? items.slice(1)
+      : [
+          {
+            id: "featured-2",
+            title: "Premium Knits",
+            subtitle: "Finely spun lightweight layers.",
+            href: "/shop",
+            image:
+              "https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=800&q=80",
+            cta: "Shop Now",
+          },
+          {
+            id: "featured-3",
+            title: "Sleek Tailoring",
+            subtitle: "Structure meets everyday ease.",
+            href: "/shop",
+            image:
+              "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=800&q=80",
+            cta: "Shop Now",
+          },
+        ];
 
   return (
     <section className="py-12 sm:py-16 bg-white relative overflow-hidden">
@@ -107,7 +120,9 @@ export default function PromoGrid() {
         <div className="mb-8 sm:mb-10">
           <span className="section-label">Featured Spotlight</span>
           <h2 className="section-title">Curated For You</h2>
-          <p className="section-subtitle sm:mt-2">Handpicked essentials crafted for modern living</p>
+          <p className="section-subtitle sm:mt-2">
+            Handpicked essentials crafted for modern living
+          </p>
         </div>
 
         {loading && items.length === 0 ? (
@@ -134,7 +149,7 @@ export default function PromoGrid() {
                 />
                 {/* Visual rich vignette overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-charcoal-950/80 via-charcoal-950/30 to-transparent" />
-                
+
                 <div className="absolute bottom-0 left-0 right-0 p-8 sm:p-10 z-10">
                   <p className="text-xs font-medium text-accent-200 tracking-widest uppercase mb-2">
                     Spotlight Card
@@ -147,8 +162,18 @@ export default function PromoGrid() {
                   </p>
                   <span className="inline-flex items-center gap-2 px-6 py-3 bg-white/90 backdrop-blur-md text-charcoal-950 text-xs font-bold rounded-full transition-all duration-300 group-hover:bg-white group-hover:shadow-soft-lg group-hover:scale-102">
                     <span>{mainItem.cta}</span>
-                    <svg className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    <svg
+                      className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5l7 7-7 7"
+                      />
                     </svg>
                   </span>
                 </div>
@@ -170,7 +195,7 @@ export default function PromoGrid() {
                   sizes="(max-width: 768px) 100vw, 50vw"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-charcoal-950/80 via-charcoal-950/20 to-transparent" />
-                
+
                 <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8 z-10">
                   <h3 className="text-2xl font-bold text-white mb-2 tracking-tight">
                     {item.title}
@@ -180,8 +205,18 @@ export default function PromoGrid() {
                   </p>
                   <span className="inline-flex items-center gap-1.5 text-xs font-bold text-white group-hover:gap-2.5 transition-all duration-300">
                     <span>{item.cta}</span>
-                    <svg className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    <svg
+                      className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5l7 7-7 7"
+                      />
                     </svg>
                   </span>
                 </div>

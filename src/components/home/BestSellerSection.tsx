@@ -61,7 +61,8 @@ export default function BestSellerSection() {
           return fetch(`${getApiBase()}/api/products?limit=4`)
             .then((r) => r.json())
             .then((fj) => {
-              if (fj.success && fj.data) setProducts((fj.data as ApiProduct[]).map(mapProduct));
+              if (fj.success && fj.data)
+                setProducts((fj.data as ApiProduct[]).map(mapProduct));
             });
         }
       })
@@ -122,8 +123,8 @@ export default function BestSellerSection() {
         )}
 
         <div className="mt-14 text-center sm:hidden">
-          <Link 
-            href="/shop?badge=Best+Seller" 
+          <Link
+            href="/shop?badge=Best+Seller"
             className="btn-secondary w-full sm:w-auto font-semibold px-8 py-3.5"
           >
             See All Best Sellers

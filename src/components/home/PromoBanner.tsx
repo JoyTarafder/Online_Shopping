@@ -50,48 +50,56 @@ export default function PromoBanner() {
   const promoCode = banner?.promoCode || "SPRING25";
   const buttonText = banner?.buttonText || "Shop The Sale";
   const linkUrl = banner?.link || "/shop?badge=Sale";
-  const bgImage = banner?.image || "";
+  const posterImage =
+    banner?.image ||
+    "https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=1920&auto=format&fit=crop";
 
   return (
-    <section className="bg-charcoal-950 py-10 sm:py-12 overflow-hidden relative border-y border-charcoal-900 shadow-soft-xl">
-      {/* Dynamic Background Image Overlay if provided */}
-      {bgImage && (
-        <div
-          className="absolute inset-0 bg-cover bg-center opacity-20 mix-blend-overlay pointer-events-none transition-opacity duration-700"
-          style={{ backgroundImage: `url(${bgImage})` }}
+    <section className="relative w-full overflow-hidden bg-charcoal-950 py-16 sm:py-20 lg:py-24 border-y border-charcoal-900 shadow-2xl group">
+      {/* Full-Width Poster Image Background */}
+      <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden">
+        <img
+          src={posterImage}
+          alt={title}
+          className="w-full h-full object-cover object-center transition-transform duration-1000 ease-out group-hover:scale-105"
         />
-      )}
+        {/* Full-width gradient overlays for text readability and premium aesthetic */}
+        <div className="absolute inset-0 bg-gradient-to-r from-charcoal-950/95 via-charcoal-950/80 to-charcoal-950/40 sm:from-charcoal-950/95 sm:via-charcoal-950/70 sm:to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-charcoal-950/80 via-transparent to-charcoal-950/30" />
+      </div>
 
-      {/* High-end OLED Backlight Glows */}
-      <div className="absolute top-[-50%] left-[-10%] w-[500px] h-[500px] bg-accent-600/10 rounded-full blur-[100px] pointer-events-none" />
-      <div className="absolute bottom-[-50%] right-[-10%] w-[500px] h-[500px] bg-warm-500/10 rounded-full blur-[100px] pointer-events-none" />
+      {/* High-end OLED Glow Accents */}
+      <div className="absolute top-[-30%] left-[-10%] w-[450px] h-[450px] bg-accent-500/15 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[-30%] right-[5%] w-[450px] h-[450px] bg-warm-500/10 rounded-full blur-[120px] pointer-events-none" />
 
-      {/* Modern dotted mesh background detail */}
-      <div className="absolute inset-0 bg-[radial-gradient(rgba(255,255,255,0.015)_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none" />
+      {/* Dotted mesh grid overlay */}
+      <div className="absolute inset-0 bg-[radial-gradient(rgba(255,255,255,0.03)_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none" />
 
       <div className="relative max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 z-10">
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-10">
-          {/* Offer text */}
-          <div className="text-center lg:text-left space-y-3.5 max-w-xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.06] border border-white/10">
-              <span className="w-1.5 h-1.5 rounded-full bg-accent-400 animate-pulse" />
-              <span className="text-[9px] font-bold text-accent-400 uppercase tracking-[0.25em]">
-                {badgeText}
-              </span>
-            </div>
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8 lg:gap-12">
+          {/* Main Poster Content */}
+          <div className="text-left space-y-4 max-w-2xl">
+            {badgeText && (
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-lg">
+                <span className="w-2 h-2 rounded-full bg-accent-400 animate-pulse" />
+                <span className="text-[10px] font-extrabold text-accent-300 uppercase tracking-[0.25em]">
+                  {badgeText}
+                </span>
+              </div>
+            )}
 
-            <h2 className="text-4xl sm:text-5xl lg:text-5.5xl font-bold text-white tracking-tight leading-none">
+            <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.1] drop-shadow-md">
               {title}
             </h2>
 
-            <p className="text-charcoal-300 text-sm sm:text-base font-light leading-relaxed">
+            <p className="text-charcoal-200 text-sm sm:text-base lg:text-lg font-light leading-relaxed max-w-xl">
               {message}
               {promoCode && (
                 <button
                   type="button"
                   onClick={() => handleCopyCode(promoCode)}
                   title="Click to copy promo code"
-                  className="inline-flex items-center gap-1.5 ml-2.5 px-3.5 py-1 rounded-xl bg-white/[0.06] border border-white/15 font-mono text-xs font-semibold text-white shadow-soft transition-all hover:bg-white/[0.12] hover:border-white/30 active:scale-95"
+                  className="inline-flex items-center gap-1.5 ml-2 px-3 py-1 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 font-mono text-xs font-bold text-white shadow-md transition-all hover:bg-white/20 hover:border-white/40 active:scale-95"
                 >
                   <svg
                     className="w-3.5 h-3.5 text-accent-400"
@@ -112,7 +120,7 @@ export default function PromoBanner() {
                       Copied!
                     </span>
                   ) : (
-                    <span className="text-[9px] text-charcoal-400 uppercase ml-1">
+                    <span className="text-[9px] text-charcoal-300 uppercase ml-1">
                       Copy
                     </span>
                   )}
@@ -122,17 +130,16 @@ export default function PromoBanner() {
           </div>
 
           {/* Action CTA Button */}
-          <div className="flex-shrink-0 relative group">
-            {/* Pulsing button shadow */}
-            <div className="absolute inset-0 bg-white/20 rounded-full blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+          <div className="flex-shrink-0 relative group/btn pt-2 lg:pt-0">
+            <div className="absolute -inset-1 bg-gradient-to-r from-accent-500 to-warm-400 rounded-full blur-md opacity-40 group-hover/btn:opacity-90 transition duration-500 pointer-events-none" />
 
             <Link
               href={linkUrl}
-              className="relative inline-flex items-center gap-2.5 px-10 py-4.5 bg-white text-charcoal-950 font-bold text-sm rounded-full transition-all duration-300 hover:scale-[1.03] hover:bg-warm-50 shadow-soft-lg group-hover:shadow-[0_0_30px_rgba(255,255,255,0.2)]"
+              className="relative inline-flex items-center gap-3 px-8 sm:px-10 py-4 sm:py-4.5 bg-white text-charcoal-950 font-extrabold text-sm sm:text-base rounded-full transition-all duration-300 hover:scale-[1.03] hover:bg-warm-50 shadow-2xl"
             >
               <span>{buttonText}</span>
               <svg
-                className="w-4 h-4 transition-transform duration-300 ease-premium group-hover:translate-x-1"
+                className="w-4 h-4 transition-transform duration-300 ease-out group-hover/btn:translate-x-1"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -145,11 +152,6 @@ export default function PromoBanner() {
                 />
               </svg>
             </Link>
-          </div>
-
-          {/* Luxury background huge stamp text */}
-          <div className="absolute right-[-20px] top-1/2 -translate-y-1/2 text-[140px] font-black text-white/[0.015] pointer-events-none select-none leading-none hidden lg:block tracking-tighter uppercase font-sans">
-            BANNER
           </div>
         </div>
       </div>

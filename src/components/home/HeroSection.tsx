@@ -56,14 +56,15 @@ export default function HeroSection() {
     <section className="relative bg-warm-50 overflow-hidden py-10 lg:py-16">
       {/* Premium Ambient Background Blur Blobs */}
       <div className="absolute top-[15%] left-[-10%] w-[550px] h-[550px] bg-gradient-to-tr from-accent-200/15 to-transparent rounded-full filter blur-[120px] pointer-events-none animate-float" />
-      <div className="absolute bottom-[10%] right-[-5%] w-[650px] h-[650px] bg-gradient-to-bl from-warm-200/20 to-transparent rounded-full filter blur-[140px] pointer-events-none animate-pulse" style={{ animationDuration: "8s" }} />
+      <div
+        className="absolute bottom-[10%] right-[-5%] w-[650px] h-[650px] bg-gradient-to-bl from-warm-200/20 to-transparent rounded-full filter blur-[140px] pointer-events-none animate-pulse"
+        style={{ animationDuration: "8s" }}
+      />
 
       <div className="relative max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 w-full z-10">
         <div className="grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
-          
           {/* Text content side */}
           <div className="lg:col-span-6 order-2 lg:order-1 space-y-8 lg:space-y-10 animate-fade-up">
-            
             {/* Tagline Badge */}
             <div className="inline-flex items-center gap-2.5 px-4.5 py-2 bg-white/70 backdrop-blur-md rounded-full border border-charcoal-100 shadow-soft transition-colors duration-300 hover:border-charcoal-200">
               <span className="w-1.5 h-1.5 rounded-full bg-accent-500 animate-ping" />
@@ -90,8 +91,8 @@ export default function HeroSection() {
 
             {/* Action Buttons */}
             <div className="flex flex-wrap gap-4 pt-2">
-              <Link 
-                href="/shop" 
+              <Link
+                href="/shop"
                 className="btn-primary text-sm px-9 py-4 font-semibold shadow-soft-md hover:shadow-soft-xl"
               >
                 Shop Now
@@ -108,7 +109,10 @@ export default function HeroSection() {
             <div className="pt-8 border-t border-charcoal-100/80 max-w-md">
               <div className="flex gap-8 px-6 py-5 rounded-2xl bg-white/30 backdrop-blur-md border border-white/50 shadow-soft transition-all duration-500 hover:shadow-soft-md hover:border-white/80 hover:bg-white/40">
                 {statItems.map((stat) => (
-                  <div key={stat.label} className="flex-1 text-center sm:text-left">
+                  <div
+                    key={stat.label}
+                    className="flex-1 text-center sm:text-left"
+                  >
                     <p className="text-2.5xl font-bold text-charcoal-900 tracking-tight">
                       {stat.value}
                     </p>
@@ -138,7 +142,7 @@ export default function HeroSection() {
 
             {/* Split Images */}
             <div className="space-y-4 h-full flex flex-col justify-between">
-              <div 
+              <div
                 className="relative rounded-[2rem] overflow-hidden h-[48%] shadow-soft-lg border-4 border-white animate-float"
                 style={{ animationDelay: "1.5s", animationDuration: "7s" }}
               >
@@ -151,7 +155,7 @@ export default function HeroSection() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
               </div>
-              <div 
+              <div
                 className="relative rounded-[2rem] overflow-hidden h-[48%] shadow-soft-lg border-4 border-white animate-float"
                 style={{ animationDelay: "3s", animationDuration: "5s" }}
               >
