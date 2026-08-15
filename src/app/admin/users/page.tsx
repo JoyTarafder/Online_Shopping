@@ -683,16 +683,29 @@ function UserDetailsModal({
                             <td className="py-2.5 px-3 text-slate-400">{new Date(o.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</td>
                             <td className="py-2.5 px-3 text-slate-400">{o.itemsCount} items</td>
                             <td className="py-2.5 px-3">
-                              <span className="capitalize font-bold text-[11px] text-slate-200 px-2 py-0.5 rounded-full bg-white/[0.06]">
+                              <span className={`capitalize font-bold text-[11px] px-2.5 py-0.5 rounded-full border ${
+                                o.status === "delivered" ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/30" :
+                                o.status === "shipped" ? "bg-blue-500/20 text-blue-300 border-blue-500/30" :
+                                o.status === "confirmed" ? "bg-violet-500/20 text-violet-300 border-violet-500/30" :
+                                o.status === "cancelled" ? "bg-rose-500/20 text-rose-300 border-rose-500/30" :
+                                o.status === "returned" ? "bg-orange-500/20 text-orange-300 border-orange-500/30" :
+                                "bg-amber-500/20 text-amber-300 border-amber-500/30"
+                              }`}>
                                 {o.status}
                               </span>
                             </td>
                             <td className="py-2.5 px-3">
-                              <span className={`font-bold text-[11px] px-2 py-0.5 rounded-full ${
-                                o.paymentStatus === "refunded" ? "bg-purple-500/20 text-purple-300" :
-                                o.paymentStatus === "paid" ? "bg-emerald-500/20 text-emerald-300" : "bg-amber-500/20 text-amber-300"
+                              <span className={`font-bold text-[11px] px-2.5 py-0.5 rounded-full border ${
+                                o.paymentStatus === "refunded" || o.status === "returned" ? "bg-purple-500/20 text-purple-300 border-purple-500/30" :
+                                o.paymentStatus === "cancelled" || o.status === "cancelled" ? "bg-rose-500/20 text-rose-300 border-rose-500/30" :
+                                o.paymentStatus === "paid" ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/30" :
+                                "bg-amber-500/20 text-amber-300 border-amber-500/30"
                               }`}>
-                                {o.paymentStatus === "refunded" ? "Payment Returned" : o.paymentStatus === "paid" ? "Paid" : "Verifying"}
+                                {
+                                  o.paymentStatus === "refunded" || o.status === "returned" ? "Payment Returned" :
+                                  o.paymentStatus === "cancelled" || o.status === "cancelled" ? "Cancelled" :
+                                  o.paymentStatus === "paid" ? "Paid" : "Verifying"
+                                }
                               </span>
                             </td>
                             <td className="py-2.5 px-3 text-right font-black text-slate-100">৳{o.total.toFixed(2)}</td>

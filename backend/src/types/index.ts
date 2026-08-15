@@ -181,7 +181,7 @@ export interface IOrder {
   shippingAddress: IShippingAddress;
   paymentMethod: "bkash" | "nagad" | "rocket" | "cod";
   txnId?: string;
-  paymentStatus: "pending_verification" | "pending_delivery" | "paid" | "refunded";
+  paymentStatus: "pending_verification" | "pending_delivery" | "paid" | "refunded" | "cancelled";
   subtotal: number;
   shippingCost: number;
   tax: number;

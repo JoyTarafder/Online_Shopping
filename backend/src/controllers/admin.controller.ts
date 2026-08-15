@@ -238,20 +238,29 @@ export const getUserDetails = asyncHandler(
       if (statusCounts[o.status] !== undefined) {
         statusCounts[o.status]++;
       }
-      if (o.status !== "cancelled") {
+      if (o.status !== "cancelled" && o.status !== "returned" && o.paymentStatus !== "refunded") {
         totalSpent += o.total;
       }
     });
 
-    const recentOrders = userOrders.slice(0, 10).map((o) => ({
-      _id: o._id,
-      total: o.total,
-      status: o.status,
-      paymentStatus: o.paymentStatus,
-      paymentMethod: o.paymentMethod,
-      createdAt: o.createdAt,
-      itemsCount: o.items ? o.items.length : 0,
-    }));
+    const recentOrders = userOrders.slice(0, 10).map((o) => {
+      let paymentStatus = o.paymentStatus;
+      if (o.status === "returned" || o.paymentStatus === "refunded") {
+        paymentStatus = "refunded";
+      } else if (o.status === "cancelled") {
+        paymentStatus = "cancelled";
+      }
+
+      return {
+        _id: o._id,
+        total: o.total,
+        status: o.status,
+        paymentStatus,
+        paymentMethod: o.paymentMethod,
+        createdAt: o.createdAt,
+        itemsCount: o.items ? o.items.length : 0,
+      };
+    });
 
     // Collect all unique addresses & phone numbers from user profile AND order history
     const allAddresses: Array<{
