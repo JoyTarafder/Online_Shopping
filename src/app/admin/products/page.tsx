@@ -182,6 +182,7 @@ function ProductModal({
       : { ...EMPTY_FORM, category: defaultCategoryId ?? "" },
   );
   const [saving, setSaving] = useState(false);
+  const [activeTab, setActiveTab] = useState<"general" | "pricing" | "media">("general");
 
   const set = (
     e: React.ChangeEvent<
@@ -191,6 +192,35 @@ function ProductModal({
     const { name, value } = e.target;
     setForm((p) => ({ ...p, [name]: value }));
   };
+
+  const toggleSizeTag = (size: string) => {
+    const current = form.sizes.split(",").map((s) => s.trim()).filter(Boolean);
+    const exists = current.includes(size);
+    const updated = exists ? current.filter((s) => s !== size) : [...current, size];
+    setForm((p) => ({ ...p, sizes: updated.join(", ") }));
+  };
+
+  const toggleColorTag = (color: string) => {
+    const current = form.colors.split(",").map((c) => c.trim()).filter(Boolean);
+    const exists = current.includes(color);
+    const updated = exists ? current.filter((c) => c !== color) : [...current, color];
+    setForm((p) => ({ ...p, colors: updated.join(", ") }));
+  };
+
+  const imageList = form.images
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+
+  const selectedCategoryName =
+    categories.find((c) => c._id === form.category)?.name || "Select Category";
+
+  const numPrice = Number(form.price) || 0;
+  const numOrig = Number(form.originalPrice) || 0;
+  const discountPercent =
+    numOrig > numPrice && numPrice > 0
+      ? Math.round(((numOrig - numPrice) / numOrig) * 100)
+      : 0;
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -230,261 +260,481 @@ function ProductModal({
     }
   };
 
+  const presetSizes = ["S", "M", "L", "XL", "XXL", "Free Size"];
+  const presetColors = ["Black", "White", "Red", "Navy Blue", "Emerald", "Pink", "Gold"];
+
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm  p-4"
-      style={{ background: "rgba(0,0,0,0.7)" }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 backdrop-blur-md transition-all animate-fade-in"
+      style={{ background: "rgba(3, 7, 18, 0.82)" }}
     >
       <div
-        className="rounded-3xl shadow-2xl  w-full max-w-lg flex flex-col max-h-[92vh]"
+        className="rounded-3xl shadow-2xl w-full max-w-5xl flex flex-col max-h-[94vh] overflow-hidden border border-white/10"
         style={{
-          background: "rgba(15,15,25,0.98)",
-          border: "1px solid rgba(255,255,255,0.08)",
+          background: "linear-gradient(145deg, rgba(15, 23, 42, 0.98) 0%, rgba(3, 7, 18, 0.99) 100%)",
         }}
       >
-        <div className="flex items-center justify-between px-7 py-5 border-b border-white/5">
-          <div>
-            <h2 className="text-lg font-bold text-slate-100">
-              {product ? "Edit Product" : "New Product"}
-            </h2>
-            <p className="text-xs text-slate-500 mt-0.5">
-              {product
-                ? "Update product details"
-                : "Add a product to your store"}
-            </p>
+        {/* Luxury Modal Header */}
+        <div className="flex items-center justify-between px-6 sm:px-8 py-5 border-b border-white/8 bg-white/[0.01]">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-violet-600 to-indigo-500 text-white flex items-center justify-center shadow-lg shadow-violet-500/20 text-lg font-bold">
+              {product ? "✏️" : "✨"}
+            </div>
+            <div>
+              <h2 className="text-lg font-extrabold text-white tracking-wide">
+                {product ? "Edit Product Details" : "Create New Product"}
+              </h2>
+              <p className="text-xs text-slate-400 font-medium">
+                {product
+                  ? `Editing: ${product.name}`
+                  : "Add a luxury product to your storefront catalog"}
+              </p>
+            </div>
           </div>
-          <button
-            onClick={onClose}
-            className="w-8 h-8 flex items-center justify-center rounded-xl text-slate-500 hover:text-slate-300 hover:bg-white/[0.04] transition-colors"
-          >
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+
+          <div className="flex items-center gap-2">
+            {/* Quick Tab Selectors for Mobile/Desktop */}
+            <div className="hidden sm:flex items-center bg-white/[0.04] border border-white/8 p-1 rounded-2xl gap-1">
+              <button
+                type="button"
+                onClick={() => setActiveTab("general")}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                  activeTab === "general"
+                    ? "bg-violet-600 text-white shadow-md"
+                    : "text-slate-400 hover:text-slate-200"
+                }`}
+              >
+                1. General Specs
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab("pricing")}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                  activeTab === "pricing"
+                    ? "bg-violet-600 text-white shadow-md"
+                    : "text-slate-400 hover:text-slate-200"
+                }`}
+              >
+                2. Price & Stock
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab("media")}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                  activeTab === "media"
+                    ? "bg-violet-600 text-white shadow-md"
+                    : "text-slate-400 hover:text-slate-200"
+                }`}
+              >
+                3. Media & Variants
+              </button>
+            </div>
+
+            <button
+              onClick={onClose}
+              className="w-9 h-9 flex items-center justify-center rounded-2xl text-slate-400 hover:text-white bg-white/[0.04] hover:bg-rose-500/20 hover:border-rose-500/30 border border-white/8 transition-all"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </button>
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
         </div>
 
-        <form
-          id="product-form"
-          onSubmit={submit}
-          className="flex-1 overflow-y-auto px-7 py-5"
-        >
-          <div className="space-y-4">
-            <Field label="Product Name *">
-              <input
-                name="name"
-                required
-                value={form.name}
-                onChange={set}
-                placeholder="e.g. Classic Linen Shirt"
-                className="px-3.5 py-3 rounded-xl text-sm bg-white/[0.05] border border-white/10 text-slate-100 focus:outline-none focus:border-violet-500/60"
-              />
-            </Field>
-            <Field label="Description *">
-              <textarea
-                name="description"
-                required
-                rows={3}
-                value={form.description}
-                onChange={set}
-                className="px-3.5 py-3 rounded-xl text-sm bg-white/[0.05] border border-white/10 text-slate-100 focus:outline-none focus:border-violet-500/60 resize-none"
-              />
-            </Field>
-            <div className="grid grid-cols-2 gap-3">
-              <Field label="Price ($) *">
-                <input
-                  name="price"
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  required
-                  value={form.price}
-                  onChange={set}
-                  className="px-3.5 py-3 rounded-xl text-sm bg-white/[0.05] border border-white/10 text-slate-100 focus:outline-none focus:border-violet-500/60"
-                />
-              </Field>
-              <Field label="Original Price ($)">
-                <input
-                  name="originalPrice"
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  value={form.originalPrice}
-                  onChange={set}
-                  placeholder="Leave blank if none"
-                  className="px-3.5 py-3 rounded-xl text-sm bg-white/[0.05] border border-white/10 text-slate-100 focus:outline-none focus:border-violet-500/60 placeholder-gray-300"
-                />
-              </Field>
-              <Field label="Category *">
-                <select
-                  name="category"
-                  required
-                  value={form.category}
-                  onChange={set}
-                  disabled={categoriesLoading || categories.length === 0}
-                  className="px-3.5 py-3 rounded-xl text-sm bg-slate-900 border border-white/10 text-slate-100 focus:outline-none focus:border-violet-500/60 disabled:opacity-60 disabled:cursor-not-allowed admin-dark-input"
-                >
-                  {categoriesLoading ? (
-                    <option value="" className="bg-slate-900 text-slate-100">
-                      Loading categories...
-                    </option>
-                  ) : categories.length === 0 ? (
-                    <option value="" className="bg-slate-900 text-slate-100">
-                      No categories found
-                    </option>
-                  ) : (
-                    <>
-                      <option value="" className="bg-slate-900 text-slate-100">
-                        Select a category...
-                      </option>
-                      {categories.map((c) => (
-                        <option
-                          key={c._id}
-                          value={c._id}
-                          className="bg-slate-900 text-slate-100"
-                        >
-                          {c.name}
+        {/* Modal Form Body — 2 Column Split Grid */}
+        <form id="product-form" onSubmit={submit} className="flex-1 overflow-y-auto p-6 sm:p-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            {/* Left Column: Form Fields (7 cols) */}
+            <div className="lg:col-span-7 space-y-6">
+              {/* Basic Info Group */}
+              <div className="p-5 rounded-2xl bg-white/[0.02] border border-white/5 space-y-4">
+                <div className="flex items-center justify-between pb-2 border-b border-white/5">
+                  <h3 className="text-xs font-extrabold text-violet-400 uppercase tracking-wider flex items-center gap-1.5">
+                    <span>📦</span> Product Identity
+                  </h3>
+                  <span className="text-[11px] text-slate-500 font-medium">Required *</span>
+                </div>
+
+                <Field label="Product Name *">
+                  <input
+                    name="name"
+                    required
+                    value={form.name}
+                    onChange={set}
+                    placeholder="e.g. Premium Silk Saree - Royal Blue"
+                    className="w-full px-4 py-3 rounded-2xl text-sm bg-slate-900/90 border border-white/10 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500/50 transition-all font-medium"
+                  />
+                </Field>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <Field label="Category *">
+                    <select
+                      name="category"
+                      required
+                      value={form.category}
+                      onChange={set}
+                      disabled={categoriesLoading || categories.length === 0}
+                      className="w-full px-4 py-3 rounded-2xl text-sm bg-slate-900 border border-white/10 text-slate-100 focus:outline-none focus:border-violet-500 disabled:opacity-60 font-medium cursor-pointer"
+                    >
+                      {categoriesLoading ? (
+                        <option value="" className="bg-slate-900 text-slate-100">
+                          Loading categories...
                         </option>
-                      ))}
-                    </>
+                      ) : categories.length === 0 ? (
+                        <option value="" className="bg-slate-900 text-slate-100">
+                          No categories found
+                        </option>
+                      ) : (
+                        <>
+                          <option value="" className="bg-slate-900 text-slate-100">
+                            Select Category...
+                          </option>
+                          {categories.map((c) => (
+                            <option key={c._id} value={c._id} className="bg-slate-900 text-slate-100">
+                              {c.name}
+                            </option>
+                          ))}
+                        </>
+                      )}
+                    </select>
+                  </Field>
+
+                  <Field label="Product Badge">
+                    <select
+                      name="badge"
+                      value={form.badge}
+                      onChange={set}
+                      className="w-full px-4 py-3 rounded-2xl text-sm bg-slate-900 border border-white/10 text-slate-100 focus:outline-none focus:border-violet-500 font-medium cursor-pointer"
+                    >
+                      <option value="" className="bg-slate-900 text-slate-100">None (Regular)</option>
+                      <option value="New" className="bg-slate-900 text-slate-100">🔥 New Arrival</option>
+                      <option value="Sale" className="bg-slate-900 text-slate-100">🏷️ On Sale</option>
+                      <option value="Best Seller" className="bg-slate-900 text-slate-100">⭐ Best Seller</option>
+                    </select>
+                  </Field>
+                </div>
+
+                <Field label="Product Description *">
+                  <textarea
+                    name="description"
+                    required
+                    rows={3}
+                    value={form.description}
+                    onChange={set}
+                    placeholder="Write a compelling, elegant description highlighting fabric, design, and details..."
+                    className="w-full px-4 py-3 rounded-2xl text-sm bg-slate-900/90 border border-white/10 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-violet-500 resize-none font-medium leading-relaxed"
+                  />
+                </Field>
+              </div>
+
+              {/* Pricing & Stock Group */}
+              <div className="p-5 rounded-2xl bg-white/[0.02] border border-white/5 space-y-4">
+                <div className="flex items-center justify-between pb-2 border-b border-white/5">
+                  <h3 className="text-xs font-extrabold text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
+                    <span>💰</span> Pricing & Inventory
+                  </h3>
+                  {discountPercent > 0 && (
+                    <span className="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-amber-500/20 text-amber-300 border border-amber-500/30 animate-pulse">
+                      {discountPercent}% OFF Calculated
+                    </span>
                   )}
-                </select>
-                {!categoriesLoading && categories.length === 0 && (
-                  <p className="text-xs text-amber-600 mt-1.5 flex items-center gap-1">
-                    <svg
-                      className="w-3.5 h-3.5 flex-shrink-0"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <Field label="Selling Price (৳) *">
+                    <input
+                      name="price"
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      required
+                      value={form.price}
+                      onChange={set}
+                      placeholder="e.g. 2490"
+                      className="w-full px-4 py-3 rounded-2xl text-sm bg-slate-900/90 border border-white/10 text-amber-400 font-extrabold focus:outline-none focus:border-amber-500"
+                    />
+                  </Field>
+
+                  <Field label="Original Price (৳) [For Discount Slash]">
+                    <input
+                      name="originalPrice"
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      value={form.originalPrice}
+                      onChange={set}
+                      placeholder="e.g. 3200 (optional)"
+                      className="w-full px-4 py-3 rounded-2xl text-sm bg-slate-900/90 border border-white/10 text-slate-300 font-medium focus:outline-none focus:border-violet-500 placeholder-slate-600"
+                    />
+                  </Field>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+                  <Field label="Available Stock Qty">
+                    <div className="flex items-center gap-2">
+                      <input
+                        name="stock"
+                        type="number"
+                        min="0"
+                        step="1"
+                        value={form.stock}
+                        onChange={set}
+                        placeholder="0"
+                        className="w-full px-4 py-3 rounded-2xl text-sm bg-slate-900/90 border border-white/10 text-slate-100 font-bold focus:outline-none focus:border-violet-500"
                       />
-                    </svg>
-                    No categories yet.{" "}
-                    <a
-                      href="/admin/categories"
-                      target="_blank"
-                      className="underline font-semibold hover:text-amber-700"
-                    >
-                      Create one first -&gt;
-                    </a>
+                      <button
+                        type="button"
+                        onClick={() => setForm((p) => ({ ...p, stock: String((Number(p.stock) || 0) + 10) }))}
+                        className="px-3 py-3 rounded-2xl bg-white/[0.05] hover:bg-white/10 text-xs font-bold text-slate-300 border border-white/8 transition-colors whitespace-nowrap"
+                      >
+                        +10
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setForm((p) => ({ ...p, stock: String((Number(p.stock) || 0) + 50) }))}
+                        className="px-3 py-3 rounded-2xl bg-white/[0.05] hover:bg-white/10 text-xs font-bold text-slate-300 border border-white/8 transition-colors whitespace-nowrap"
+                      >
+                        +50
+                      </button>
+                    </div>
+                  </Field>
+
+                  {/* Badges / Visibility Toggles */}
+                  <div className="flex flex-col justify-end gap-2">
+                    <Toggle
+                      checked={form.inStock}
+                      onChange={() => setForm((p) => ({ ...p, inStock: !p.inStock }))}
+                      label="In Stock Status"
+                    />
+                    <Toggle
+                      checked={form.isFeatured}
+                      onChange={() => setForm((p) => ({ ...p, isFeatured: !p.isFeatured }))}
+                      label="Featured on Homepage"
+                    />
+                    <Toggle
+                      checked={form.isVisible}
+                      onChange={() => setForm((p) => ({ ...p, isVisible: !p.isVisible }))}
+                      label="Visible in Catalog"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Sizes & Colors Quick Chips */}
+              <div className="p-5 rounded-2xl bg-white/[0.02] border border-white/5 space-y-4">
+                <h3 className="text-xs font-extrabold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5 pb-2 border-b border-white/5">
+                  <span>🎨</span> Variant Presets
+                </h3>
+
+                <div>
+                  <Field label="Sizes (Comma Separated)">
+                    <input
+                      name="sizes"
+                      value={form.sizes}
+                      onChange={set}
+                      placeholder="e.g. S, M, L, XL"
+                      className="w-full px-4 py-3 rounded-2xl text-sm bg-slate-900/90 border border-white/10 text-slate-100 placeholder-slate-600 focus:outline-none focus:border-emerald-500 font-medium mb-2"
+                    />
+                  </Field>
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <span className="text-[11px] font-bold text-slate-400 mr-1">Quick Select:</span>
+                    {presetSizes.map((s) => {
+                      const active = form.sizes.split(",").map((x) => x.trim()).includes(s);
+                      return (
+                        <button
+                          key={s}
+                          type="button"
+                          onClick={() => toggleSizeTag(s)}
+                          className={`px-2.5 py-1 rounded-xl text-xs font-bold transition-all border ${
+                            active
+                              ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/40 shadow-sm"
+                              : "bg-white/[0.03] text-slate-400 border-white/8 hover:bg-white/[0.06]"
+                          }`}
+                        >
+                          {active ? `✓ ${s}` : `+ ${s}`}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div>
+                  <Field label="Colors (Comma Separated)">
+                    <input
+                      name="colors"
+                      value={form.colors}
+                      onChange={set}
+                      placeholder="e.g. Black, White, Navy Blue"
+                      className="w-full px-4 py-3 rounded-2xl text-sm bg-slate-900/90 border border-white/10 text-slate-100 placeholder-slate-600 focus:outline-none focus:border-emerald-500 font-medium mb-2"
+                    />
+                  </Field>
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <span className="text-[11px] font-bold text-slate-400 mr-1">Quick Select:</span>
+                    {presetColors.map((c) => {
+                      const active = form.colors.split(",").map((x) => x.trim()).includes(c);
+                      return (
+                        <button
+                          key={c}
+                          type="button"
+                          onClick={() => toggleColorTag(c)}
+                          className={`px-2.5 py-1 rounded-xl text-xs font-bold transition-all border ${
+                            active
+                              ? "bg-purple-500/20 text-purple-300 border-purple-500/40 shadow-sm"
+                              : "bg-white/[0.03] text-slate-400 border-white/8 hover:bg-white/[0.06]"
+                          }`}
+                        >
+                          {active ? `✓ ${c}` : `+ ${c}`}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+
+              {/* Image URLs input */}
+              <div className="p-5 rounded-2xl bg-white/[0.02] border border-white/5 space-y-3">
+                <h3 className="text-xs font-extrabold text-blue-400 uppercase tracking-wider flex items-center gap-1.5">
+                  <span>🖼️</span> Image URLs
+                </h3>
+                <Field label="Image Links (comma-separated URLs) *">
+                  <textarea
+                    name="images"
+                    required
+                    rows={2}
+                    value={form.images}
+                    onChange={set}
+                    placeholder="https://images.unsplash.com/photo-1..., https://..."
+                    className="w-full px-4 py-3 rounded-2xl text-xs font-mono bg-slate-900/90 border border-white/10 text-slate-200 placeholder-slate-600 focus:outline-none focus:border-blue-500 resize-none leading-relaxed"
+                  />
+                </Field>
+              </div>
+            </div>
+
+            {/* Right Column: Live Storefront Card Preview & Image Thumbnails (5 cols) */}
+            <div className="lg:col-span-5 flex flex-col gap-6">
+              {/* Live Preview Header Card */}
+              <div className="p-5 rounded-2xl bg-gradient-to-b from-white/[0.03] to-white/[0.01] border border-white/8 space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xs font-extrabold text-violet-300 uppercase tracking-wider flex items-center gap-1.5">
+                    <span>👁️</span> Live Storefront Card Preview
+                  </h3>
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                    Real-Time
+                  </span>
+                </div>
+
+                {/* Mock Card Preview Container */}
+                <div className="w-full bg-slate-900/90 border border-white/10 rounded-2xl overflow-hidden shadow-2xl group">
+                  {/* Image aspect ratio container */}
+                  <div className="relative aspect-[3/4] w-full bg-slate-950 flex items-center justify-center overflow-hidden">
+                    {imageList.length > 0 ? (
+                      <img
+                        src={imageList[0]}
+                        alt="Preview"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src =
+                            "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600&auto=format&fit=crop&q=60";
+                        }}
+                      />
+                    ) : (
+                      <div className="flex flex-col items-center gap-2 text-slate-600">
+                        <span className="text-3xl">🖼️</span>
+                        <span className="text-xs font-bold">No Image Provided</span>
+                      </div>
+                    )}
+
+                    {/* Badge */}
+                    {form.badge && (
+                      <span className="absolute top-3 left-3 px-3 py-1 rounded-full text-[10px] font-extrabold uppercase bg-amber-500 text-slate-950 shadow-md">
+                        {form.badge}
+                      </span>
+                    )}
+
+                    {/* Out of stock overlay */}
+                    {!form.inStock && (
+                      <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-xs flex items-center justify-center">
+                        <span className="px-3 py-1 rounded-full text-xs font-extrabold uppercase bg-rose-500/20 text-rose-300 border border-rose-500/30">
+                          Out of Stock
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Card Details */}
+                  <div className="p-4 space-y-2 bg-slate-900/95">
+                    <p className="text-[11px] font-bold text-violet-400 uppercase tracking-wider">
+                      {selectedCategoryName}
+                    </p>
+                    <h4 className="text-sm font-bold text-white line-clamp-1">
+                      {form.name || "Product Title Goes Here"}
+                    </h4>
+                    <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed">
+                      {form.description || "Product description preview..."}
+                    </p>
+
+                    <div className="flex items-center justify-between pt-2 border-t border-white/5">
+                      <div className="flex items-baseline gap-2">
+                        <span className="text-base font-extrabold text-amber-400">
+                          ৳{numPrice > 0 ? numPrice : "0.00"}
+                        </span>
+                        {numOrig > numPrice && (
+                          <span className="text-xs text-slate-500 line-through">
+                            ৳{numOrig}
+                          </span>
+                        )}
+                      </div>
+                      {form.stock && (
+                        <span className="text-[11px] font-bold text-slate-400">
+                          Qty: {form.stock}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Thumbnails Gallery Preview */}
+              {imageList.length > 0 && (
+                <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/5 space-y-3">
+                  <p className="text-xs font-bold text-slate-300">
+                    Uploaded Images ({imageList.length})
                   </p>
-                )}
-              </Field>
-              <Field label="Badge">
-                <select
-                  name="badge"
-                  value={form.badge}
-                  onChange={set}
-                  className="px-3.5 py-3 rounded-xl text-sm bg-slate-900 border border-white/10 text-slate-100 focus:outline-none focus:border-violet-500/60 admin-dark-input"
-                >
-                  <option value="" className="bg-slate-900 text-slate-100">
-                    None
-                  </option>
-                  <option value="New" className="bg-slate-900 text-slate-100">
-                    New
-                  </option>
-                  <option value="Sale" className="bg-slate-900 text-slate-100">
-                    Sale
-                  </option>
-                  <option
-                    value="Best Seller"
-                    className="bg-slate-900 text-slate-100"
-                  >
-                    Best Seller
-                  </option>
-                </select>
-              </Field>
-            </div>
-            <Field label="Image URLs (comma-separated) *">
-              <input
-                name="images"
-                required
-                value={form.images}
-                onChange={set}
-                placeholder="https://domain.com/img1.jpg, https://domain.com/img2.jpg"
-                className="px-3.5 py-3 rounded-xl text-sm bg-white/[0.05] border border-white/10 text-slate-100 focus:outline-none focus:border-violet-500/60 placeholder-gray-400 admin-dark-input"
-              />
-            </Field>
-            <div className="grid grid-cols-2 gap-3">
-              <Field label="Sizes">
-                <input
-                  name="sizes"
-                  value={form.sizes}
-                  onChange={set}
-                  placeholder="S, M, L, XL"
-                  className="px-3.5 py-3 rounded-xl text-sm bg-white/[0.05] border border-white/10 text-slate-100 focus:outline-none focus:border-violet-500/60 placeholder-gray-300"
-                />
-              </Field>
-              <Field label="Colors">
-                <input
-                  name="colors"
-                  value={form.colors}
-                  onChange={set}
-                  placeholder="Black, White"
-                  className="px-3.5 py-3 rounded-xl text-sm bg-white/[0.05] border border-white/10 text-slate-100 focus:outline-none focus:border-violet-500/60 placeholder-gray-300"
-                />
-              </Field>
-            </div>
-
-            <Field label="Stock Quantity">
-              <input
-                name="stock"
-                type="number"
-                min="0"
-                step="1"
-                value={form.stock}
-                onChange={set}
-                placeholder="0"
-                className="px-3.5 py-3 rounded-xl text-sm bg-white/[0.05] border border-white/10 text-slate-100 focus:outline-none focus:border-violet-500/60"
-              />
-              <p className="text-[11px] text-slate-500 mt-1">
-                How many units are currently available
-              </p>
-            </Field>
-
-            <div className="pt-1 space-y-3 border-t border-white/5">
-              <Toggle
-                checked={form.inStock}
-                onChange={() => setForm((p) => ({ ...p, inStock: !p.inStock }))}
-                label="In Stock"
-              />
-              <Toggle
-                checked={form.isFeatured}
-                onChange={() =>
-                  setForm((p) => ({ ...p, isFeatured: !p.isFeatured }))
-                }
-                label="Featured Product"
-              />
-              <Toggle
-                checked={form.isVisible}
-                onChange={() =>
-                  setForm((p) => ({ ...p, isVisible: !p.isVisible }))
-                }
-                label="Visible on Frontend"
-              />
+                  <div className="grid grid-cols-4 gap-2">
+                    {imageList.map((url, idx) => (
+                      <div
+                        key={idx}
+                        className="relative aspect-square rounded-xl overflow-hidden border border-white/10 bg-slate-900"
+                      >
+                        <img
+                          src={url}
+                          alt={`Thumbnail ${idx}`}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src =
+                              "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=200&auto=format&fit=crop&q=60";
+                          }}
+                        />
+                        {idx === 0 && (
+                          <span className="absolute top-1 left-1 px-1.5 py-0.5 rounded bg-violet-600 text-white text-[9px] font-extrabold">
+                            Main
+                          </span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </form>
 
-        <div className="flex gap-3 px-7 py-5 border-t border-white/5">
+        {/* Modal Action Buttons Footer */}
+        <div className="flex items-center justify-end gap-3 px-6 sm:px-8 py-4 border-t border-white/8 bg-slate-950">
           <button
             type="button"
             onClick={onClose}
-            className="flex-1 px-5 py-3 border border-white/8 rounded-2xl text-sm font-semibold text-slate-300 hover:bg-white/[0.02] transition-colors"
+            className="px-6 py-3 border border-white/10 rounded-2xl text-xs font-bold text-slate-300 hover:bg-white/[0.04] transition-colors"
           >
             Cancel
           </button>
@@ -492,30 +742,21 @@ function ProductModal({
             type="submit"
             form="product-form"
             disabled={saving}
-            className="flex-1 px-5 py-3 bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-2xl text-sm font-bold hover:from-violet-700 hover:to-indigo-700 transition-all disabled:opacity-60 flex items-center justify-center gap-2"
+            className="flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white text-xs font-extrabold rounded-2xl shadow-lg shadow-violet-600/30 transition-all disabled:opacity-60"
           >
-            {saving && (
-              <svg
-                className="w-4 h-4 animate-spin"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                />
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                />
-              </svg>
+            {saving ? (
+              <>
+                <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+                Saving Product...
+              </>
+            ) : (
+              <>
+                <span>✨</span> {product ? "Save Changes" : "Publish Product"}
+              </>
             )}
-            {product ? "Save Changes" : "Create Product"}
           </button>
         </div>
       </div>
