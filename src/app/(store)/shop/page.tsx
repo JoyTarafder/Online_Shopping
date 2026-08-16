@@ -389,32 +389,32 @@ function ShopContent() {
       <div className="absolute top-[25%] right-[-10%] w-[40%] h-[40%] bg-teal-200/10 rounded-full blur-[100px] pointer-events-none" />
 
       {/* ─── Premium Upgraded Hero Section ─── */}
-      <div className="relative overflow-hidden border-b border-emerald-100/50 bg-gradient-to-r from-emerald-50/70 via-emerald-100/40 to-teal-50/50 py-16 md:py-20">
+      <div className="relative overflow-hidden border-b border-emerald-100/50 bg-gradient-to-r from-emerald-50/70 via-emerald-100/40 to-teal-50/50 py-6 md:py-20">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
         
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 relative flex flex-col md:flex-row md:items-center md:justify-between gap-8 animate-fade-in">
-          <div className="max-w-2xl space-y-4">
-            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200/80 bg-white/70 px-3 py-1 text-xs font-semibold text-emerald-700 backdrop-blur-sm shadow-soft/30">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 relative flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-8 animate-fade-in">
+          <div className="max-w-2xl space-y-2 md:space-y-4">
+            <div className="hidden md:inline-flex items-center gap-2 rounded-full border border-emerald-200/80 bg-white/70 px-3 py-1 text-xs font-semibold text-emerald-700 backdrop-blur-sm shadow-soft/30">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
               Curated Collection
             </div>
-            <h1 className="text-4xl md:text-5xl font-semibold tracking-tight text-emerald-950 leading-tight">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight text-emerald-950 leading-tight">
               {headingText}
-              <span className="block text-emerald-600 font-light text-2xl md:text-3xl mt-2 tracking-wide font-sans">
+              <span className="hidden md:block text-emerald-600 font-light text-2xl md:text-3xl mt-2 tracking-wide font-sans">
                 Elevated essentials for everyday living.
               </span>
             </h1>
-            <p className="text-emerald-900/60 text-sm md:text-base font-light max-w-lg leading-relaxed">
+            <p className="hidden md:block text-emerald-900/60 text-sm md:text-base font-light max-w-lg leading-relaxed">
               Explore ShajSutro&apos;s premium lineup of products designed to combine style, longevity, and exceptional quality checks.
             </p>
           </div>
           
           {/* Floating glassmorphic stat card */}
-          <div className="flex-shrink-0 bg-white/40 backdrop-blur-md border border-white/60 shadow-glass rounded-3xl p-6 md:w-80 flex flex-col gap-4">
+          <div className="hidden md:flex flex-shrink-0 bg-white/40 backdrop-blur-md border border-white/60 shadow-glass rounded-3xl p-6 md:w-80 flex-col gap-4">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
                 <svg className="w-5 h-5 text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
                 </svg>
               </div>
               <div>
