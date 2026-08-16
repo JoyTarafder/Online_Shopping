@@ -28,9 +28,10 @@ export default function ProductCard({ product }: ProductCardProps) {
     setTimeout(() => setIsAddingToCart(false), 1000);
   };
 
-  const discount = product.originalPrice
-    ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
-    : null;
+  const discount =
+    product.originalPrice && product.originalPrice > product.price
+      ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
+      : null;
 
   return (
     <div
@@ -48,21 +49,21 @@ export default function ProductCard({ product }: ProductCardProps) {
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
           />
 
-          {product.badge && (
+          {(discount && discount > 0) || product.badge ? (
             <div className="absolute top-4 left-4">
               <span
                 className={`px-3 py-1.5 text-[10px] font-semibold tracking-wider uppercase rounded-full backdrop-blur-sm ${
-                  product.badge === "New"
+                  discount && discount > 0
+                    ? "bg-rose-600 text-white"
+                    : product.badge === "New"
                     ? "bg-accent-600/90 text-white"
-                    : product.badge === "Sale"
-                    ? "bg-red-500/90 text-white"
                     : "bg-warm-500/90 text-white"
                 }`}
               >
-                {product.badge === "Sale" && discount ? `-${discount}%` : product.badge}
+                {discount && discount > 0 ? `-${discount}%` : product.badge}
               </span>
             </div>
-          )}
+          ) : null}
 
           <div
             className={`absolute inset-x-0 bottom-0 p-3 sm:p-4 transition-all duration-300 ease-premium ${
@@ -140,14 +141,21 @@ export default function ProductCard({ product }: ProductCardProps) {
             <span className="text-xs text-charcoal-300">({product.reviews})</span>
           </div>
 
-          <div className="flex items-center gap-2.5">
-            <span className="text-sm font-semibold text-charcoal-900">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-sm font-bold text-charcoal-900">
               ৳{product.price}
             </span>
-            {product.originalPrice && (
-              <span className="text-sm text-charcoal-300 line-through">
-                ৳{product.originalPrice}
-              </span>
+            {product.originalPrice && product.originalPrice > product.price && (
+              <>
+                <span className="text-xs text-charcoal-300 line-through">
+                  ৳{product.originalPrice}
+                </span>
+                {discount && discount > 0 && (
+                  <span className="text-[10px] font-extrabold text-rose-600 bg-rose-50 px-1.5 py-0.5 rounded-md border border-rose-100">
+                    {discount}% OFF
+                  </span>
+                )}
+              </>
             )}
           </div>
 

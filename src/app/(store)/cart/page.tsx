@@ -193,14 +193,15 @@ export default function CartPage() {
                         <p className="text-base font-semibold text-charcoal-900">
                           ৳{(item.product.price * item.quantity).toFixed(2)}
                         </p>
-                        {item.product.originalPrice && (
-                          <p className="text-sm text-charcoal-300 line-through font-light">
-                            ৳
-                            {(
-                              item.product.originalPrice * item.quantity
-                            ).toFixed(2)}
-                          </p>
-                        )}
+                        {item.product.originalPrice &&
+                          item.product.originalPrice > item.product.price && (
+                            <p className="text-sm text-charcoal-300 line-through font-light">
+                              ৳
+                              {(
+                                item.product.originalPrice * item.quantity
+                              ).toFixed(2)}
+                            </p>
+                          )}
                       </div>
                     </div>
 

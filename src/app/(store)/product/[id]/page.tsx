@@ -164,11 +164,12 @@ export default function ProductDetailPage() {
     }, 1500);
   };
 
-  const discount = product?.originalPrice
-    ? Math.round(
-        ((product.originalPrice - product.price) / product.originalPrice) * 100,
-      )
-    : null;
+  const discount =
+    product?.originalPrice && product.originalPrice > product.price
+      ? Math.round(
+          ((product.originalPrice - product.price) / product.originalPrice) * 100,
+        )
+      : null;
 
   // ── Loading skeleton ──
   if (loading) {
@@ -367,17 +368,17 @@ export default function ProductDetailPage() {
             </div>
 
             {/* Price */}
-            <div className="flex items-end gap-3">
+            <div className="flex items-center gap-3">
               <span className="text-3xl font-bold text-charcoal-950">
                 ৳{product.price}
               </span>
-              {product.originalPrice && (
+              {product.originalPrice && product.originalPrice > product.price && (
                 <>
                   <span className="text-xl text-charcoal-300 line-through">
                     ৳{product.originalPrice}
                   </span>
-                  {discount && (
-                    <span className="px-2.5 py-1 text-xs font-semibold text-red-600 bg-red-50 rounded-lg">
+                  {discount && discount > 0 && (
+                    <span className="px-2.5 py-1 text-xs font-bold text-rose-600 bg-rose-50 border border-rose-100 rounded-lg">
                       {discount}% OFF
                     </span>
                   )}

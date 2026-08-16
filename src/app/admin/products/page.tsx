@@ -674,14 +674,21 @@ function ProductModal({
                     </p>
 
                     <div className="flex items-center justify-between pt-2 border-t border-white/5">
-                      <div className="flex items-baseline gap-2">
+                      <div className="flex items-baseline gap-2 flex-wrap">
                         <span className="text-base font-extrabold text-amber-400">
                           ৳{numPrice > 0 ? numPrice : "0.00"}
                         </span>
                         {numOrig > numPrice && (
-                          <span className="text-xs text-slate-500 line-through">
-                            ৳{numOrig}
-                          </span>
+                          <>
+                            <span className="text-xs text-slate-500 line-through">
+                              ৳{numOrig}
+                            </span>
+                            {discountPercent > 0 && (
+                              <span className="text-[10px] font-bold text-rose-400 bg-rose-950/40 px-1.5 py-0.5 rounded border border-rose-500/30">
+                                {discountPercent}% OFF
+                              </span>
+                            )}
+                          </>
                         )}
                       </div>
                       {form.stock && (
@@ -1087,10 +1094,15 @@ function ProductsContent() {
                       <span className="text-sm font-black text-slate-100">
                         ৳{p.price}
                       </span>
-                      {p.originalPrice && (
-                        <span className="text-xs text-slate-500 line-through ml-1.5">
-                          ৳{p.originalPrice}
-                        </span>
+                      {p.originalPrice && p.originalPrice > p.price && (
+                        <>
+                          <span className="text-xs text-slate-500 line-through ml-1.5">
+                            ৳{p.originalPrice}
+                          </span>
+                          <span className="ml-1.5 text-[10px] font-extrabold text-rose-400 bg-rose-950/40 px-1.5 py-0.5 rounded border border-rose-500/30">
+                            {Math.round(((p.originalPrice - p.price) / p.originalPrice) * 100)}% OFF
+                          </span>
+                        </>
                       )}
                     </td>
                     <td className="px-5 py-4">
