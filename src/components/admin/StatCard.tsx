@@ -42,49 +42,42 @@ export default function StatCard({
 
   return (
     <div
-      className={`rounded-2xl p-5 sm:p-6 border transition-all duration-300 hover:-translate-y-1 ${cfg.border} flex flex-col items-center justify-center text-center relative overflow-hidden`}
+      className={`rounded-3xl p-5 sm:p-6 border transition-all duration-300 hover:-translate-y-1 ${cfg.border} flex items-center gap-4 relative overflow-hidden group shadow-xl`}
       style={{
-        background: "rgba(255, 255, 255, 0.03)",
-        borderColor: "rgba(255, 255, 255, 0.07)",
-        backdropFilter: "blur(16px)",
+        background: "rgba(15, 15, 25, 0.75)",
+        borderColor: "rgba(255, 255, 255, 0.08)",
+        backdropFilter: "blur(20px)",
       }}
     >
-      {/* Icon + Amount side-by-side row */}
-      <div className="flex items-center justify-center gap-3.5 mb-2">
-        <div
-          className={`w-11 h-11 rounded-2xl bg-gradient-to-br ${cfg.gradient} flex items-center justify-center text-white shadow-lg ${cfg.glow} shrink-0`}
-        >
-          {icon}
-        </div>
-        <p
-          className="text-2xl sm:text-3xl font-black tracking-tight leading-none"
-          style={{ color: "#f1f5f9" }}
-        >
-          {value}
-        </p>
+      {/* Background Ambient Glow */}
+      <div
+        className={`absolute -right-6 -bottom-6 w-24 h-24 rounded-full bg-gradient-to-br ${cfg.gradient} opacity-10 blur-xl group-hover:opacity-30 transition-opacity duration-500 pointer-events-none`}
+      />
+
+      {/* Icon Badge */}
+      <div
+        className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${cfg.gradient} flex items-center justify-center text-white shadow-lg ${cfg.glow} shrink-0 group-hover:scale-105 transition-transform duration-300 ring-1 ring-white/15`}
+      >
+        {icon}
       </div>
 
-      {/* Title */}
-      <p
-        className="text-xs sm:text-sm font-semibold tracking-wide text-center"
-        style={{ color: "rgba(148, 163, 184, 0.7)" }}
-      >
-        {title}
-      </p>
-
-      {sub && (
-        <p
-          className="text-xs mt-1 text-center"
-          style={{ color: "rgba(148, 163, 184, 0.4)" }}
-        >
-          {sub}
+      {/* Content */}
+      <div className="flex-1 min-w-0">
+        <p className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 mb-1">
+          {title}
         </p>
-      )}
+        <p className="text-2xl sm:text-3xl font-black tracking-tight text-slate-100 leading-none truncate">
+          {value}
+        </p>
+        {sub && (
+          <p className="text-xs text-slate-400 mt-1 font-medium">{sub}</p>
+        )}
+      </div>
 
       {/* Trend Badge */}
       {trend && (
         <div
-          className="mt-2.5 inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-0.5 rounded-full"
+          className="shrink-0 flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-full"
           style={
             trend.value >= 0
               ? {
@@ -110,7 +103,7 @@ export default function StatCard({
               clipRule="evenodd"
             />
           </svg>
-          {Math.abs(trend.value)}% {trend.label}
+          {Math.abs(trend.value)}%
         </div>
       )}
     </div>
