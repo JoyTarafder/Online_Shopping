@@ -2,6 +2,65 @@ import transporter from "../config/mailer";
 
 const YEAR = new Date().getFullYear();
 
+// ─── Anti-Spam Plain Text Stripper ─────────────────────────────────────────────
+
+function stripHtmlToText(html: string): string {
+  return html
+    .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "")
+    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, "")
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<\/p>/gi, "\n\n")
+    .replace(/<\/tr>/gi, "\n")
+    .replace(/<\/td>/gi, " ")
+    .replace(/<[^>]+>/g, "")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/\n\s*\n/g, "\n\n")
+    .trim();
+}
+
+// ─── Central Anti-Spam Email Delivery Helper ────────────────────────────────────
+
+async function sendMailWithAntiSpam(options: {
+  to: string;
+  subject: string;
+  html: string;
+  text?: string;
+  isBroadcast?: boolean;
+}): Promise<void> {
+  const senderEmail = process.env.EMAIL_USER || "info@shajsutro.com";
+  const senderName = process.env.EMAIL_FROM_NAME || "ShajSutro";
+  const fromHeader = `"${senderName}" <${senderEmail}>`;
+
+  const plainText = options.text || stripHtmlToText(options.html);
+
+  const headers: Record<string, string> = {
+    "X-Mailer": "ShajSutro Transactional Mailer v1.0",
+    "X-Priority": "3",
+    "X-MSMail-Priority": "Normal",
+    "Importance": "Normal",
+    "Auto-Submitted": "auto-generated",
+  };
+
+  if (options.isBroadcast) {
+    headers["List-Unsubscribe"] = `<mailto:unsubscribe@shajsutro.com?subject=unsubscribe>, <https://shajsutro.com/unsubscribe>`;
+    headers["List-Unsubscribe-Post"] = "List-Unsubscribe=One-Click";
+    headers["Precedence"] = "bulk";
+  }
+
+  await transporter.sendMail({
+    from: fromHeader,
+    replyTo: senderEmail,
+    to: options.to,
+    subject: options.subject,
+    text: plainText,
+    html: options.html,
+    headers,
+  });
+}
+
 // ─── Shared Ultra-Modern Luxury Layout Shell ───────────────────────────────────
 
 function emailShell(bodyContent: string, previewText = ""): string {
@@ -13,9 +72,11 @@ function emailShell(bodyContent: string, previewText = ""): string {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>ShajSutro</title>
-  ${previewText ? `<span style="display:none;max-height:0;overflow:hidden;mso-hide:all;">${previewText}</span>` : ""}
 </head>
 <body style="margin:0;padding:0;background-color:#f1f5f9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;">
+
+  <!-- Preheader text for inbox preview without spam flags -->
+  ${previewText ? `<div style="display:none;font-size:1px;color:#f1f5f9;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;">${previewText}</div>` : ""}
 
   <!-- Outer Canvas Wrapper -->
   <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f1f5f9;padding:48px 16px;">
@@ -72,11 +133,11 @@ function emailShell(bodyContent: string, previewText = ""): string {
               <table width="100%" cellpadding="0" cellspacing="0">
                 <tr>
                   <td style="text-align:center;padding-bottom:16px;">
-                    <a href="#" style="font-size:11px;color:#a1a1aa;text-decoration:none;margin:0 12px;font-weight:500;">Privacy Policy</a>
+                    <a href="https://shajsutro.com/privacy-policy" style="font-size:11px;color:#a1a1aa;text-decoration:none;margin:0 12px;font-weight:500;">Privacy Policy</a>
                     <span style="color:#3f3f46;font-size:11px;">•</span>
-                    <a href="#" style="font-size:11px;color:#a1a1aa;text-decoration:none;margin:0 12px;font-weight:500;">Terms of Service</a>
+                    <a href="https://shajsutro.com/terms-of-service" style="font-size:11px;color:#a1a1aa;text-decoration:none;margin:0 12px;font-weight:500;">Terms of Service</a>
                     <span style="color:#3f3f46;font-size:11px;">•</span>
-                    <a href="#" style="font-size:11px;color:#a1a1aa;text-decoration:none;margin:0 12px;font-weight:500;">Unsubscribe</a>
+                    <a href="https://shajsutro.com/unsubscribe" style="font-size:11px;color:#a1a1aa;text-decoration:none;margin:0 12px;font-weight:500;">Unsubscribe</a>
                   </td>
                 </tr>
                 <tr>
@@ -194,8 +255,7 @@ export const sendVerificationEmail = async (
     ${securityNoticeBox("ShajSutro will never request your password or confidential details over email. If you did not sign up for an account, please ignore this email.")}
   `;
 
-  await transporter.sendMail({
-    from: `"ShajSutro" <${process.env.EMAIL_USER}>`,
+  await sendMailWithAntiSpam({
     to: email,
     subject: "Verify your ShajSutro account",
     html: emailShell(
@@ -238,8 +298,7 @@ export const sendPasswordResetEmail = async (
     ${securityNoticeBox("If you did not request a password reset, your account is safe. No changes will be made unless you confirm with this passcode.")}
   `;
 
-  await transporter.sendMail({
-    from: `"ShajSutro" <${process.env.EMAIL_USER}>`,
+  await sendMailWithAntiSpam({
     to: email,
     subject: "Reset your ShajSutro password",
     html: emailShell(
@@ -400,8 +459,7 @@ export const sendOrderConfirmationEmail = async (
   `;
 
   try {
-    await transporter.sendMail({
-      from: `"ShajSutro" <${process.env.EMAIL_USER}>`,
+    await sendMailWithAntiSpam({
       to: recipientEmail,
       subject: `✨ Order Confirmation #${orderId} — ShajSutro`,
       html: emailShell(
@@ -432,8 +490,7 @@ export const sendNewsletterWelcomeEmail = async (email: string): Promise<void> =
     </div>
   `;
   try {
-    await transporter.sendMail({
-      from: `"ShajSutro" <${process.env.EMAIL_USER}>`,
+    await sendMailWithAntiSpam({
       to: email,
       subject: "Welcome to ShajSutro Newsletter!",
       html: emailShell(body, "Welcome to ShajSutro! You are now subscribed to VIP updates."),
@@ -556,11 +613,11 @@ export const sendBroadcastEmail = async (
     await Promise.all(
       batch.map(async (email) => {
         try {
-          await transporter.sendMail({
-            from: `"ShajSutro" <${process.env.EMAIL_USER}>`,
+          await sendMailWithAntiSpam({
             to: email,
             subject: subject,
             html: emailShell(body, `${title} — ${badgeText}`),
+            isBroadcast: true,
           });
           sentCount++;
         } catch (err) {
