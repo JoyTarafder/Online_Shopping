@@ -612,7 +612,7 @@ export default function Navbar() {
 
               <button
                 onClick={openCart}
-                className="relative flex p-2.5 text-charcoal-400 hover:text-charcoal-900 rounded-full hover:bg-charcoal-50 transition-all duration-300"
+                className="relative hidden md:flex p-2.5 text-charcoal-400 hover:text-charcoal-900 rounded-full hover:bg-charcoal-50 transition-all duration-300"
                 aria-label={`Cart (${totalItems} items)`}
               >
                 <svg
