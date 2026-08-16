@@ -160,8 +160,8 @@ export default function HeroSection() {
                 style={{ animationDelay: "3s", animationDuration: "5s" }}
               >
                 <Image
-                  src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80"
-                  alt="Premium sneakers"
+                  src="https://images.unsplash.com/photo-1503919545889-aef636e10ad4?w=600&q=80"
+                  alt="Kids traditional and luxury wear"
                   fill
                   className="object-cover transition-transform duration-1000 ease-premium hover:scale-105"
                   sizes="(max-width: 1024px) 40vw, 25vw"
