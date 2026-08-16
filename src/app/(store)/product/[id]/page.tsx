@@ -683,9 +683,9 @@ export default function ProductDetailPage() {
               </div>
 
               {!canUserReview && (
-                <div className="p-3.5 rounded-2xl bg-charcoal-50/80 border border-charcoal-100/80 text-[11.5px] text-charcoal-500 font-light flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0 animate-pulse" />
-                  <span>Only verified customers who have purchased and received this item can write a review. All visitors can browse verified customer feedback below.</span>
+                <div>
+                  {/* <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0 animate-pulse" />
+                  <span>Only verified customers who have purchased and received this item can write a review. All visitors can browse verified customer feedback below.</span> */}
                 </div>
               )}
 
@@ -773,7 +773,7 @@ export default function ProductDetailPage() {
               {/* Reviews List */}
               {dbReviews.length === 0 ? (
                 <p className="text-xs text-charcoal-400 font-light italic py-2">
-                  No verified customer reviews yet for this product.
+                  {/* No verified customer reviews yet for this product. */}
                 </p>
               ) : (
                 <div className="space-y-3 max-h-[350px] overflow-y-auto pr-1">

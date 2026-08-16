@@ -60,7 +60,7 @@ export default function AboutPage() {
           <div className="grid lg:grid-cols-2 gap-20 items-center">
             <div className="space-y-7">
               <p className="text-lg text-charcoal-500 leading-relaxed font-light">
-                ShajSutro was founded in 2019 with a simple frustration: fashion had become too fast, too disposable, too loud. We wanted to build something different &mdash; a clothing brand that respects your intelligence, your wardrobe, and the planet.
+                ShajSutro was founded in 2026 with a simple frustration: fashion had become too fast, too disposable, too loud. We wanted to build something different &mdash; a clothing brand that respects your intelligence, your wardrobe, and the planet.
               </p>
               <p className="text-charcoal-500 leading-relaxed font-light">
                 The name &ldquo;ShajSutro&rdquo; comes from the Bengali word for &ldquo;artful thread&rdquo; &mdash; a nod to our belief that great clothing is about craftsmanship, not logos. We started with a small collection of ten essentials, made in a family-run Portuguese factory we&apos;d been visiting for two years before placing a single order.
@@ -108,7 +108,7 @@ export default function AboutPage() {
         <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-10 text-center">
             {[
-              { value: "2019", label: "Founded" },
+              { value: "2026", label: "Founded" },
               { value: "50K+", label: "Happy Customers" },
               { value: "12", label: "Factory Partners" },
               { value: "50+", label: "Countries Shipped" },
