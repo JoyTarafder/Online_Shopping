@@ -10,6 +10,8 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
+import { notifyError, notifySuccess } from "@/lib/notify";
+
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 interface ApiProduct {
@@ -29,6 +31,14 @@ interface ApiProduct {
   stock?: number;
   totalOrdered?: number;
   tags?: string[];
+}
+
+interface ProductReviewItem {
+  _id: string;
+  user?: { name?: string };
+  rating: number;
+  comment: string;
+  createdAt: string;
 }
 
 function mapProduct(p: ApiProduct): Product {
@@ -106,6 +116,34 @@ export default function ProductDetailPage() {
   const [adding, setAdding] = useState(false);
   const [added, setAdded] = useState(false);
 
+  // Dynamic reviews state
+  const [dbReviews, setDbReviews] = useState<ProductReviewItem[]>([]);
+  const [showReviewForm, setShowReviewForm] = useState(false);
+  const [newRating, setNewRating] = useState(5);
+  const [newComment, setNewComment] = useState("");
+  const [orderIdInput, setOrderIdInput] = useState("");
+  const [submittingReview, setSubmittingReview] = useState(false);
+
+  const fetchDynamicReviews = (productId: string) => {
+    fetch(`${getApiBase()}/api/reviews/product/${productId}`)
+      .then((r) => r.json())
+      .then((rj) => {
+        if (rj.success && Array.isArray(rj.data) && rj.data.length > 0) {
+          const revs: ProductReviewItem[] = rj.data;
+          setDbReviews(revs);
+          const count = revs.length;
+          const avg =
+            Math.round(
+              (revs.reduce((sum, r) => sum + r.rating, 0) / count) * 10,
+            ) / 10;
+          setProduct((prev) =>
+            prev ? { ...prev, rating: avg, reviews: count } : prev,
+          );
+        }
+      })
+      .catch(() => {});
+  };
+
   // Fetch product
   useEffect(() => {
     if (!id) return;
@@ -125,6 +163,8 @@ export default function ProductDetailPage() {
         setProduct(p);
         setSelectedSize(p.sizes[0] ?? "");
         setSelectedColor(p.colors[0] ?? "");
+        fetchDynamicReviews(p.id);
+
         // Fetch related
         return fetch(
           `${getApiBase()}/api/products?category=${p.category}&limit=4`,
@@ -152,6 +192,48 @@ export default function ProductDetailPage() {
       })
       .finally(() => setLoading(false));
   }, [id]);
+
+  const handleReviewSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const token = localStorage.getItem("token");
+    if (!token) {
+      notifyError("Please log in to submit a review.");
+      router.push("/login");
+      return;
+    }
+    if (!orderIdInput.trim()) {
+      notifyError("Please provide your delivered Order ID.");
+      return;
+    }
+    setSubmittingReview(true);
+    try {
+      const res = await fetch(`${getApiBase()}/api/reviews`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          productId: id,
+          orderId: orderIdInput.trim(),
+          rating: newRating,
+          comment: newComment.trim(),
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Failed to submit review");
+
+      notifySuccess("Thank you! Your review has been submitted and published.");
+      setShowReviewForm(false);
+      setNewComment("");
+      setOrderIdInput("");
+      fetchDynamicReviews(id);
+    } catch (err: unknown) {
+      notifyError(err instanceof Error ? err.message : "Review submission failed");
+    } finally {
+      setSubmittingReview(false);
+    }
+  };
 
   const handleAddToCart = () => {
     if (!product) return;
@@ -540,6 +622,149 @@ export default function ProductDetailPage() {
                 ))}
               </div>
             )}
+
+            {/* Customer Reviews Section */}
+            <div className="pt-8 border-t border-charcoal-100 space-y-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-base font-bold text-charcoal-900">
+                    Customer Reviews
+                  </h3>
+                  <p className="text-xs text-charcoal-400 mt-0.5 font-light">
+                    {product.reviews} verified review{product.reviews !== 1 ? "s" : ""} · {product.rating.toFixed(1)} out of 5 stars
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowReviewForm(!showReviewForm)}
+                  className="px-4 py-2 text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200/80 rounded-xl hover:bg-emerald-100 transition-colors"
+                >
+                  {showReviewForm ? "Close Form" : "✍️ Write a Review"}
+                </button>
+              </div>
+
+              {/* Review Submission Form */}
+              {showReviewForm && (
+                <form
+                  onSubmit={handleReviewSubmit}
+                  className="p-5 rounded-2xl bg-emerald-50/40 border border-emerald-100 space-y-4 animate-in fade-in duration-200"
+                >
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-900">
+                    Submit Your Review
+                  </h4>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-charcoal-700 mb-1">
+                      Delivered Order ID *
+                    </label>
+                    <input
+                      type="text"
+                      value={orderIdInput}
+                      onChange={(e) => setOrderIdInput(e.target.value)}
+                      placeholder="e.g. 64aef..."
+                      required
+                      className="w-full px-3.5 py-2.5 text-xs rounded-xl bg-white border border-charcoal-200 focus:outline-none focus:border-emerald-500 font-medium"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-charcoal-700 mb-1">
+                      Your Rating (1 to 5 Stars) *
+                    </label>
+                    <div className="flex items-center gap-1.5">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <button
+                          key={star}
+                          type="button"
+                          onClick={() => setNewRating(star)}
+                          className="p-1 text-amber-400 hover:scale-125 transition-transform"
+                        >
+                          <svg
+                            className={`w-6 h-6 ${star <= newRating ? "fill-amber-400" : "fill-charcoal-200 text-charcoal-200"}`}
+                            viewBox="0 0 20 20"
+                          >
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                          </svg>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-charcoal-700 mb-1">
+                      Review Comment
+                    </label>
+                    <textarea
+                      rows={3}
+                      value={newComment}
+                      onChange={(e) => setNewComment(e.target.value)}
+                      placeholder="Tell other shoppers about your experience with this product..."
+                      className="w-full px-3.5 py-2.5 text-xs rounded-xl bg-white border border-charcoal-200 focus:outline-none focus:border-emerald-500 font-light"
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={submittingReview}
+                    className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all shadow-xs disabled:opacity-50"
+                  >
+                    {submittingReview ? "Publishing Review..." : "Submit Review"}
+                  </button>
+                </form>
+              )}
+
+              {/* Reviews List */}
+              {dbReviews.length === 0 ? (
+                <p className="text-xs text-charcoal-400 font-light italic py-2">
+                  No verified customer reviews yet for this product.
+                </p>
+              ) : (
+                <div className="space-y-3 max-h-[350px] overflow-y-auto pr-1">
+                  {dbReviews.map((rev) => (
+                    <div
+                      key={rev._id}
+                      className="p-4 rounded-2xl bg-charcoal-50/60 border border-charcoal-100 space-y-2"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-7 h-7 rounded-full bg-emerald-600 text-white font-bold text-[11px] flex items-center justify-center shadow-xs">
+                            {rev.user?.name?.charAt(0).toUpperCase() || "U"}
+                          </div>
+                          <div>
+                            <p className="text-xs font-bold text-charcoal-900 leading-none">
+                              {rev.user?.name || "Verified Customer"}
+                            </p>
+                            <div className="flex items-center gap-0.5 text-amber-500 mt-1">
+                              {[...Array(5)].map((_, i) => (
+                                <svg
+                                  key={i}
+                                  className={`w-3 h-3 ${i < rev.rating ? "fill-current" : "text-charcoal-200 fill-charcoal-200"}`}
+                                  viewBox="0 0 20 20"
+                                >
+                                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                        <span className="text-[10px] text-charcoal-400 font-medium">
+                          {new Date(rev.createdAt).toLocaleDateString("en-US", {
+                            month: "short",
+                            day: "numeric",
+                            year: "numeric",
+                          })}
+                        </span>
+                      </div>
+                      {rev.comment && (
+                        <p className="text-xs text-charcoal-600 font-light leading-relaxed pl-9">
+                          &quot;{rev.comment}&quot;
+                        </p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
