@@ -246,7 +246,7 @@ const NAV_ITEMS = [
 
 export default function AdminSidebar() {
   const pathname = usePathname();
-  const { admin, logout } = useAdminAuth();
+  const { admin, logout, isMobileSidebarOpen, closeMobileSidebar } = useAdminAuth();
   const isProductsSection =
     pathname === "/admin/products" ||
     pathname.startsWith("/admin/products/") ||
@@ -269,10 +269,21 @@ export default function AdminSidebar() {
   });
 
   return (
-    <aside
-      className="w-64 h-screen flex flex-col flex-shrink-0 border-r border-slate-800/80 shadow-2xl relative z-40"
-      style={{ background: "#09090b" }}
-    >
+    <>
+      {/* Mobile Drawer Backdrop */}
+      {isMobileSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 md:hidden transition-opacity"
+          onClick={closeMobileSidebar}
+        />
+      )}
+
+      <aside
+        className={`fixed md:static top-0 bottom-0 left-0 z-50 w-72 md:w-64 h-screen flex flex-col flex-shrink-0 border-r border-slate-800/80 shadow-2xl transition-transform duration-300 ease-in-out ${
+          isMobileSidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+        }`}
+        style={{ background: "#09090b" }}
+      >
       {/* Brand */}
       <div className="px-5 py-5 border-b border-white/10 relative overflow-hidden bg-gradient-to-r from-violet-950/30 via-slate-900 to-indigo-950/30">
         <Link
@@ -309,6 +320,7 @@ export default function AdminSidebar() {
               <div key={item.href} className="space-y-1">
                 <Link
                   href={item.href}
+                  onClick={closeMobileSidebar}
                   className={`relative flex items-center gap-3 px-3 py-2.5 rounded-2xl text-sm font-semibold transition-all duration-200 group ${
                     isActive
                       ? item.activeBg
@@ -348,6 +360,7 @@ export default function AdminSidebar() {
                 {item.href === "/admin/jobs" && isJobsSection && (
                   <Link
                     href="/admin/applications"
+                    onClick={closeMobileSidebar}
                     className={`relative flex items-center gap-2.5 pl-11 pr-3 py-2 rounded-xl text-xs font-semibold transition-all duration-200 ${
                       pathname === "/admin/applications" ||
                       pathname.startsWith("/admin/applications/")
@@ -378,6 +391,7 @@ export default function AdminSidebar() {
                 {item.href === "/admin/products" && isProductsSection && (
                   <Link
                     href="/admin/promo-codes"
+                    onClick={closeMobileSidebar}
                     className={`relative flex items-center gap-2.5 pl-11 pr-3 py-2 rounded-xl text-xs font-semibold transition-all duration-200 ${
                       pathname === "/admin/promo-codes" ||
                       pathname.startsWith("/admin/promo-codes/")
@@ -417,6 +431,7 @@ export default function AdminSidebar() {
         <div className="space-y-1">
           <Link
             href="/admin/profile"
+            onClick={closeMobileSidebar}
             className={`flex items-center gap-3 px-3 py-2.5 rounded-2xl text-xs font-bold transition-all duration-200 ${
               pathname === "/admin/profile"
                 ? "bg-violet-500/20 text-violet-300 border-l-2 border-violet-400"
@@ -443,6 +458,7 @@ export default function AdminSidebar() {
           <Link
             href="/"
             target="_blank"
+            onClick={closeMobileSidebar}
             className="flex items-center gap-3 px-3 py-2.5 rounded-2xl text-xs font-bold text-slate-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-all duration-200"
           >
             <div className="w-7 h-7 rounded-xl bg-emerald-500/15 border border-emerald-500/20 text-emerald-400 flex items-center justify-center">
@@ -463,7 +479,10 @@ export default function AdminSidebar() {
             View Store
           </Link>
           <button
-            onClick={logout}
+            onClick={() => {
+              closeMobileSidebar();
+              logout();
+            }}
             className="w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl text-xs font-bold text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-all duration-200"
           >
             <div className="w-7 h-7 rounded-xl bg-rose-500/15 border border-rose-500/20 text-rose-400 flex items-center justify-center">
@@ -484,9 +503,8 @@ export default function AdminSidebar() {
             Sign Out
           </button>
         </div>
-
-
       </div>
     </aside>
+    </>
   );
 }

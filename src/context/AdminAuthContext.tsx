@@ -43,6 +43,9 @@ interface AdminAuthContextType {
   token: string | null;
   admin: AdminUser | null;
   isLoading: boolean;
+  isMobileSidebarOpen: boolean;
+  toggleMobileSidebar: () => void;
+  closeMobileSidebar: () => void;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
   apiFetch: <T>(path: string, options?: RequestInit) => Promise<T>;
@@ -65,7 +68,16 @@ export const AdminAuthProvider = ({
   const [token, setToken] = useState<string | null>(null);
   const [admin, setAdmin] = useState<AdminUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const router = useRouter();
+
+  const toggleMobileSidebar = useCallback(() => {
+    setIsMobileSidebarOpen((prev) => !prev);
+  }, []);
+
+  const closeMobileSidebar = useCallback(() => {
+    setIsMobileSidebarOpen(false);
+  }, []);
 
   // Rehydrate from localStorage on mount
   useEffect(() => {
@@ -174,7 +186,18 @@ export const AdminAuthProvider = ({
 
   return (
     <AdminAuthContext.Provider
-      value={{ token, admin, isLoading, login, logout, apiFetch, updateAdmin }}
+      value={{
+        token,
+        admin,
+        isLoading,
+        isMobileSidebarOpen,
+        toggleMobileSidebar,
+        closeMobileSidebar,
+        login,
+        logout,
+        apiFetch,
+        updateAdmin,
+      }}
     >
       {children}
     </AdminAuthContext.Provider>

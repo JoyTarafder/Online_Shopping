@@ -120,7 +120,7 @@ function HeaderAvatar({ name }: { name: string }) {
 export default function AdminHeader() {
   const pathname = usePathname();
   const router = useRouter();
-  const { admin, token } = useAdminAuth();
+  const { admin, token, toggleMobileSidebar } = useAdminAuth();
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const [alerts, setAlerts] = useState<ActivityAlert[]>([]);
@@ -177,17 +177,29 @@ export default function AdminHeader() {
 
   return (
     <header
-      className="h-[60px] flex items-center justify-between px-8 flex-shrink-0 sticky top-0 z-30"
+      className="h-[60px] flex items-center justify-between px-4 sm:px-8 flex-shrink-0 sticky top-0 z-30"
       style={{
         background: "rgba(10, 10, 15, 0.75)",
         backdropFilter: "blur(16px)",
         borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
       }}
     >
-      {/* Page title */}
+      {/* Page title & Mobile Menu Toggle */}
       <div className="flex items-center gap-3">
+        {/* Mobile Hamburger Button */}
+        <button
+          type="button"
+          onClick={toggleMobileSidebar}
+          className="md:hidden p-2 rounded-xl text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 transition-colors"
+          aria-label="Toggle Admin Sidebar"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+          </svg>
+        </button>
+
         <div>
-          <h1 className="text-[15px] font-bold leading-none" style={{ color: "#f1f5f9" }}>
+          <h1 className="text-[14px] sm:text-[15px] font-bold leading-none" style={{ color: "#f1f5f9" }}>
             {meta.title}
           </h1>
           {meta.desc && (

@@ -487,7 +487,7 @@ function JobsContent() {
   };
 
   return (
-    <div className="p-8 space-y-6">
+    <div className="p-4 sm:p-8 space-y-6">
       {toast && <Toast msg={toast.msg} type={toast.type} />}
 
       {/* Header */}

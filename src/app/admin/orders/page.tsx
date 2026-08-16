@@ -1171,7 +1171,7 @@ function OrdersContent() {
   };
 
   return (
-    <div className="p-8 space-y-6">
+    <div className="p-4 sm:p-8 space-y-6">
       {toast && <Toast msg={toast.msg} type={toast.type} />}
 
       <div>
@@ -1183,13 +1183,13 @@ function OrdersContent() {
       {/* Filters Row */}
       <div className="flex flex-col lg:flex-row gap-3 items-start lg:items-center">
         {/* Status Tabs */}
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2 overflow-x-auto pb-1 max-w-full">
           <button
             onClick={() => {
               setStatusFilter("all");
               setPage(1);
             }}
-            className="px-4 py-2 rounded-xl text-sm font-bold transition-all"
+            className="px-4 py-2 rounded-xl text-sm font-bold transition-all shrink-0"
             style={
               statusFilter === "all"
                 ? {
@@ -1216,7 +1216,7 @@ function OrdersContent() {
                   setStatusFilter(s);
                   setPage(1);
                 }}
-                className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold capitalize transition-all"
+                className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold capitalize transition-all shrink-0"
                 style={
                   active
                     ? {
@@ -1292,7 +1292,7 @@ function OrdersContent() {
 
       {/* Table */}
       <div
-        className="rounded-2xl overflow-hidden"
+        className="rounded-2xl overflow-x-auto"
         style={{
           background: "rgba(255,255,255,0.025)",
           border: "1px solid rgba(255,255,255,0.06)",
