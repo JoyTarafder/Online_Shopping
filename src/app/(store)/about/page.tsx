@@ -7,33 +7,6 @@ export const metadata: Metadata = {
   description: "Learn about ShajSutro's story, values, and the team behind the brand.",
 };
 
-const team = [
-  {
-    name: "Aria Chen",
-    role: "Co-Founder & Creative Director",
-    image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&q=80",
-    bio: "Former RISD graduate with 12 years in luxury fashion. Believes clothing should be both beautiful and built to last.",
-  },
-  {
-    name: "Marcus Elias",
-    role: "Co-Founder & CEO",
-    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&q=80",
-    bio: "Ex-McKinsey consultant turned entrepreneur. Passionate about building brands with purpose and integrity.",
-  },
-  {
-    name: "Lena Park",
-    role: "Head of Design",
-    image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&q=80",
-    bio: "Cut her teeth at C\u00e9line and Acne Studios before joining ShajSutro to lead our seasonal collections.",
-  },
-  {
-    name: "James Okafor",
-    role: "Head of Sustainability",
-    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&q=80",
-    bio: "Environmental scientist and supply chain expert ensuring every garment meets our strict ethical standards.",
-  },
-];
-
 const values = [
   {
     icon: "\u2726",
@@ -149,33 +122,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="py-28">
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-          <div className="text-center mb-16">
-            <span className="section-label">Our People</span>
-            <h2 className="section-title">Meet the Team</h2>
-            <p className="section-subtitle">The people who bring ShajSutro to life every day</p>
-          </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
-            {team.map((member) => (
-              <div key={member.name} className="group text-center">
-                <div className="relative w-44 h-44 mx-auto rounded-full overflow-hidden mb-6 bg-warm-50 shadow-soft">
-                  <Image
-                    src={member.image}
-                    alt={member.name}
-                    fill
-                    className="object-cover transition-transform duration-700 ease-premium group-hover:scale-110"
-                    sizes="176px"
-                  />
-                </div>
-                <h3 className="text-[15px] font-semibold text-charcoal-900">{member.name}</h3>
-                <p className="text-sm text-accent-600 mt-1 mb-3 font-medium">{member.role}</p>
-                <p className="text-sm text-charcoal-400 leading-relaxed font-light">{member.bio}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       <section className="py-28 bg-charcoal-950 text-center relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(90,127,160,0.08),transparent_60%)]" />
