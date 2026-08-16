@@ -33,18 +33,18 @@ export default function Footer() {
   return (
     <footer className="bg-charcoal-50 border-t border-charcoal-100">
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-20">
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-10 lg:gap-16">
-          <div className="col-span-2 md:col-span-1">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-10 lg:gap-16 text-center sm:text-left">
+          <div className="col-span-2 md:col-span-1 flex flex-col items-center sm:items-start text-center sm:text-left">
             <Link
               href="/"
               className="text-xl font-bold text-charcoal-950 hover:opacity-70 transition-opacity duration-300"
             >
               ShajSutro
             </Link>
-            <p className="mt-4 text-sm text-charcoal-400 leading-relaxed font-light">
+            <p className="mt-4 text-sm text-charcoal-400 leading-relaxed font-light max-w-sm sm:max-w-none">
               Thoughtfully crafted clothing for the modern wardrobe. Quality over quantity.
             </p>
-            <div className="flex gap-2 mt-6">
+            <div className="flex justify-center sm:justify-start gap-2 mt-6">
               {[
                 {
                   label: "Instagram",
@@ -74,7 +74,7 @@ export default function Footer() {
           </div>
 
           {Object.entries(footerLinks).map(([title, links]) => (
-            <div key={title}>
+            <div key={title} className="text-center sm:text-left">
               <h3 className="text-[13px] font-semibold text-charcoal-900 mb-5 tracking-wide">{title}</h3>
               <ul className="space-y-3">
                 {links.map((link) => (
