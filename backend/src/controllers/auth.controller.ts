@@ -529,54 +529,66 @@ export const resetPassword = asyncHandler(
 import https from "https";
 import crypto from "crypto";
 
-const verifyGoogleToken = (accessToken: string): Promise<any> => {
+const fetchJsonFromUrl = (url: string): Promise<any> => {
   return new Promise((resolve, reject) => {
     https
-      .get(
-        `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${accessToken}`,
-        (res) => {
-          let data = "";
-          res.on("data", (chunk) => {
-            data += chunk;
-          });
-          res.on("end", () => {
-            if (res.statusCode && res.statusCode >= 200 && res.statusCode < 300) {
-              try {
-                resolve(JSON.parse(data));
-              } catch (err) {
-                reject(new Error("Failed to parse Google user info response"));
-              }
-            } else {
-              reject(
-                new Error(
-                  `Google verification failed with status code ${res.statusCode}`
-                )
-              );
+      .get(url, (res) => {
+        let data = "";
+        res.on("data", (chunk) => {
+          data += chunk;
+        });
+        res.on("end", () => {
+          if (res.statusCode && res.statusCode >= 200 && res.statusCode < 300) {
+            try {
+              resolve(JSON.parse(data));
+            } catch {
+              reject(new Error("Failed to parse Google response"));
             }
-          });
-        }
-      )
+          } else {
+            reject(
+              new Error(`Google verification failed with status code ${res.statusCode}`)
+            );
+          }
+        });
+      })
       .on("error", (err) => {
         reject(err);
       });
   });
 };
 
+const verifyGoogleToken = async (token: string): Promise<any> => {
+  try {
+    return await fetchJsonFromUrl(
+      `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${token}`
+    );
+  } catch {
+    return await fetchJsonFromUrl(
+      `https://oauth2.googleapis.com/tokeninfo?id_token=${token}`
+    );
+  }
+};
+
 // ─── POST /api/auth/google ────────────────────────────────────────────────────
 
 export const googleLogin = asyncHandler(
   async (req: AuthRequest, res: Response): Promise<void> => {
-    const { accessToken } = req.body as { accessToken: string };
+    const { accessToken, credential, idToken } = req.body as {
+      accessToken?: string;
+      credential?: string;
+      idToken?: string;
+    };
+    const googleToken = accessToken || credential || idToken;
 
-    if (!accessToken) {
-      throw new AppError("Google access token is required", 400);
+    if (!googleToken) {
+      throw new AppError("Google token or credential is required", 400);
     }
 
     let googleUser;
     try {
-      googleUser = await verifyGoogleToken(accessToken);
+      googleUser = await verifyGoogleToken(googleToken);
     } catch (err: any) {
-      throw new AppError(err.message || "Invalid Google access token", 400);
+      throw new AppError(err.message || "Invalid Google token", 400);
     }
 
     const { email, name, email_verified } = googleUser as {

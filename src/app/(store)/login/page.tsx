@@ -310,22 +310,45 @@ function SocialButtons() {
   const router = useRouter();
   const [googleLoading, setGoogleLoading] = useState(false);
 
-  const handleGoogleLogin = () => {
-    const google = typeof window !== "undefined" ? (window as any).google : null;
-    if (!google) {
-      notifyError("Google Sign-In is still loading. Please try again in a moment.");
-      return;
-    }
+  const ensureGoogleScript = (): Promise<any> => {
+    return new Promise((resolve, reject) => {
+      const g = typeof window !== "undefined" ? (window as any).google : null;
+      if (g?.accounts?.oauth2) {
+        return resolve(g);
+      }
+      const existing = document.getElementById("google-jssdk");
+      if (existing) {
+        existing.addEventListener("load", () => resolve((window as any).google));
+        existing.addEventListener("error", () => reject(new Error("Failed to load Google SDK")));
+        return;
+      }
+      const script = document.createElement("script");
+      script.id = "google-jssdk";
+      script.src = "https://accounts.google.com/gsi/client";
+      script.async = true;
+      script.defer = true;
+      script.onload = () => {
+        setTimeout(() => resolve((window as any).google), 150);
+      };
+      script.onerror = () => reject(new Error("Failed to load Google SDK script"));
+      document.head.appendChild(script);
+    });
+  };
 
-    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
-    if (!clientId) {
-      console.error("NEXT_PUBLIC_GOOGLE_CLIENT_ID is not configured");
-      notifyError("Google Login is not configured. Please contact the administrator.");
-      return;
-    }
+  const handleGoogleLogin = async () => {
+    const clientId =
+      process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ||
+      "30233845656-lmb96sgoph6u4ug4olhedr5bmcfp5jr8.apps.googleusercontent.com";
 
     try {
       setGoogleLoading(true);
+      const google = await ensureGoogleScript();
+      if (!google?.accounts?.oauth2) {
+        notifyError("Google Sign-In is unavailable. Please try again in a moment.");
+        setGoogleLoading(false);
+        return;
+      }
+
       const tokenClient = google.accounts.oauth2.initTokenClient({
         client_id: clientId,
         scope: "email profile",
@@ -345,7 +368,8 @@ function SocialButtons() {
           }
 
           try {
-            const res = await fetch(`${API}/api/auth/google`, {
+            const apiBase = getApiBase();
+            const res = await fetch(`${apiBase}/api/auth/google`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ accessToken }),
