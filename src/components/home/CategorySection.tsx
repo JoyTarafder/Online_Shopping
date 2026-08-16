@@ -92,6 +92,14 @@ export default function CategorySection() {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-7 auto-rows-max">
           {categories.map((category, index) => {
             const gridClass = getGridClasses(index);
+            const isShoesOrKids =
+              category.slug === "kids" ||
+              category.name.toLowerCase().includes("kid") ||
+              category.image?.includes("1542291026");
+
+            const categoryImage = isShoesOrKids
+              ? "https://images.unsplash.com/photo-1503919545889-aef636e10ad4?q=80&w=800"
+              : category.image;
 
             return (
               <Link
@@ -99,9 +107,9 @@ export default function CategorySection() {
                 href={`/shop?category=${category.slug}`}
                 className={`group relative overflow-hidden rounded-[2.2rem] bg-warm-50 shadow-soft border border-charcoal-100/40 transition-all duration-500 hover:shadow-soft-lg ${gridClass}`}
               >
-                {category.image ? (
+                {categoryImage ? (
                   <Image
-                    src={category.image}
+                    src={categoryImage}
                     alt={category.name}
                     fill
                     className="object-cover transition-transform duration-[1200ms] ease-premium group-hover:scale-[1.06]"
