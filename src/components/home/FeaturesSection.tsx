@@ -71,7 +71,7 @@ export default function FeaturesSection() {
           {features.map((item, idx) => (
             <div
               key={item.title}
-              className="group relative flex flex-col p-6 sm:p-8 rounded-3xl bg-gradient-to-br border border-charcoal-100/60 shadow-soft transition-all duration-500 ease-premium hover:shadow-soft-lg hover:-translate-y-1 hover:border-charcoal-200"
+              className="group relative flex flex-col items-center text-center p-6 sm:p-8 rounded-3xl bg-gradient-to-br border border-charcoal-100/60 shadow-soft transition-all duration-500 ease-premium hover:shadow-soft-lg hover:-translate-y-1 hover:border-charcoal-200"
               style={{
                 background: `linear-gradient(135deg, rgba(255,255,255,0.8), rgba(250,248,245,0.9))`,
               }}
@@ -84,7 +84,7 @@ export default function FeaturesSection() {
                 }}
               />
 
-              <div className="flex items-center gap-4 mb-4">
+              <div className="flex items-center justify-center gap-3 mb-4">
                 <div className="flex-shrink-0 w-12 h-12 rounded-2xl bg-white border border-charcoal-100/80 flex items-center justify-center shadow-soft transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3">
                   <svg
                     className="w-5.5 h-5.5 text-accent-600"
@@ -98,11 +98,11 @@ export default function FeaturesSection() {
                 <div className="w-1.5 h-1.5 rounded-full bg-accent-200 opacity-50 transition-all duration-500 group-hover:scale-150 group-hover:bg-accent-500 group-hover:opacity-100" />
               </div>
 
-              <div>
-                <h3 className="text-base font-semibold text-charcoal-900 tracking-tight">
+              <div className="text-center">
+                <h3 className="text-base font-bold text-charcoal-900 tracking-tight text-center">
                   {item.title}
                 </h3>
-                <p className="text-sm text-charcoal-400 mt-1 font-light leading-relaxed">
+                <p className="text-xs sm:text-sm text-charcoal-500 mt-1 font-light leading-relaxed text-center">
                   {item.desc}
                 </p>
               </div>

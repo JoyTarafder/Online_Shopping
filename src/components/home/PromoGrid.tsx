@@ -180,12 +180,12 @@ export default function PromoGrid() {
               </Link>
             )}
 
-            {/* Side landscape featured pieces */}
+            {/* Side featured pieces */}
             {sideItems.map((item) => (
               <Link
                 key={item.id}
                 href={item.href}
-                className="group relative overflow-hidden rounded-[2.2rem] aspect-video bg-warm-50 border border-charcoal-100/30 shadow-soft transition-all duration-500 hover:shadow-soft-lg"
+                className="group relative overflow-hidden rounded-[2.2rem] min-h-[300px] sm:min-h-[260px] sm:aspect-video bg-warm-50 border border-charcoal-100/30 shadow-soft transition-all duration-500 hover:shadow-soft-lg flex flex-col justify-end"
               >
                 <Image
                   src={item.image}
@@ -194,14 +194,14 @@ export default function PromoGrid() {
                   className="object-cover transition-transform duration-[1200ms] ease-premium group-hover:scale-[1.04]"
                   sizes="(max-width: 768px) 100vw, 50vw"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-charcoal-950/80 via-charcoal-950/20 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-charcoal-950/90 via-charcoal-950/50 to-transparent" />
 
-                <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8 z-10">
-                  <h3 className="text-2xl font-bold text-white mb-2 tracking-tight">
+                <div className="relative p-6 sm:p-8 z-10 pt-16">
+                  <h3 className="text-xl sm:text-2xl font-bold text-white mb-2 tracking-tight line-clamp-2 leading-tight">
                     {item.title}
                   </h3>
-                  <p className="text-xs font-light text-white/70 mb-4 leading-relaxed max-w-xs">
-                    {trimText(item.subtitle, 70)}
+                  <p className="text-xs font-light text-white/80 mb-4 leading-relaxed max-w-xs line-clamp-2">
+                    {trimText(item.subtitle, 80)}
                   </p>
                   <span className="inline-flex items-center gap-1.5 text-xs font-bold text-white group-hover:gap-2.5 transition-all duration-300">
                     <span>{item.cta}</span>
