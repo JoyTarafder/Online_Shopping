@@ -19,16 +19,15 @@ export function getApiBase(): string {
     }
 
     // 2. If running on live Vercel or production domain (e.g. *.vercel.app or custom domain)
-    //    If envUrl is valid (not localhost), use it. Otherwise use relative route ""
     if (hostname.endsWith("vercel.app") || hostname.includes("shajsutro")) {
       if (envUrl && !envUrl.includes("localhost")) {
         return envUrl.replace(/\/api\/?$/, "").replace(/\/$/, "");
       }
-      return "";
+      return "https://online-shopping-backend-liart.vercel.app";
     }
   }
 
-  const raw = envUrl || "http://localhost:5000";
+  const raw = envUrl || "https://online-shopping-backend-liart.vercel.app";
   const cleaned = raw.replace(/\/api\/?$/, "").replace(/\/$/, "");
   return cleaned === "" || cleaned === "/" ? "" : cleaned;
 }
