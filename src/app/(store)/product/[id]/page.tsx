@@ -1,6 +1,7 @@
 "use client";
 
 import ProductGrid from "@/components/product/ProductGrid";
+import { products as fallbackProducts } from "@/data/products";
 import { useCart } from "@/context/CartContext";
 import { getApiBase } from "@/lib/apiBase";
 import { Product } from "@/types";
@@ -112,8 +113,12 @@ export default function ProductDetailPage() {
     fetch(`${getApiBase()}/api/products/${id}`)
       .then((r) => r.json())
       .then((j) => {
-        if (!j.success) {
-          setNotFound(true);
+        if (!j.success || !j.data) {
+          const fb = fallbackProducts.find((p) => p.id === id) || fallbackProducts[0];
+          setProduct(fb);
+          setSelectedSize(fb.sizes[0] ?? "");
+          setSelectedColor(fb.colors[0] ?? "");
+          setRelated(fallbackProducts.filter((rp) => rp.id !== fb.id).slice(0, 4));
           return;
         }
         const p = mapProduct(j.data as ApiProduct);
@@ -126,17 +131,25 @@ export default function ProductDetailPage() {
         )
           .then((r) => r.json())
           .then((rj) => {
-            if (rj.success) {
+            if (rj.success && rj.data && rj.data.length > 0) {
               setRelated(
                 (rj.data as ApiProduct[])
                   .map(mapProduct)
                   .filter((rp) => rp.id !== p.id)
                   .slice(0, 4),
               );
+            } else {
+              setRelated(fallbackProducts.filter((rp) => rp.id !== p.id).slice(0, 4));
             }
           });
       })
-      .catch(() => setNotFound(true))
+      .catch(() => {
+        const fb = fallbackProducts.find((p) => p.id === id) || fallbackProducts[0];
+        setProduct(fb);
+        setSelectedSize(fb.sizes[0] ?? "");
+        setSelectedColor(fb.colors[0] ?? "");
+        setRelated(fallbackProducts.filter((rp) => rp.id !== fb.id).slice(0, 4));
+      })
       .finally(() => setLoading(false));
   }, [id]);
 

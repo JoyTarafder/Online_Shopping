@@ -1,6 +1,7 @@
 "use client";
 
 import ProductGrid from "@/components/product/ProductGrid";
+import { products as fallbackProducts } from "@/data/products";
 import { getApiBase } from "@/lib/apiBase";
 import { Product } from "@/types";
 import Link from "next/link";
@@ -61,12 +62,20 @@ export default function BestSellerSection() {
           return fetch(`${getApiBase()}/api/products?limit=4`)
             .then((r) => r.json())
             .then((fj) => {
-              if (fj.success && fj.data)
+              if (fj.success && fj.data && fj.data.length > 0) {
                 setProducts((fj.data as ApiProduct[]).map(mapProduct));
+              } else {
+                setProducts(fallbackProducts.slice(4, 8));
+              }
+            })
+            .catch(() => {
+              setProducts(fallbackProducts.slice(4, 8));
             });
         }
       })
-      .catch(() => {})
+      .catch(() => {
+        setProducts(fallbackProducts.slice(4, 8));
+      })
       .finally(() => setLoading(false));
   }, []);
 

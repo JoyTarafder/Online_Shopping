@@ -1,6 +1,7 @@
 "use client";
 
 import ProductGrid from "@/components/product/ProductGrid";
+import { products as fallbackProducts } from "@/data/products";
 import { getApiBase } from "@/lib/apiBase";
 import { Product } from "@/types";
 import Link from "next/link";
@@ -58,16 +59,23 @@ export default function NewArrivalsSection() {
         if (j.success && j.data && j.data.length > 0) {
           setProducts((j.data as ApiProduct[]).map(mapProduct));
         } else {
-          // Fallback to latest products if no specific 'New' badge items found
           return fetch(`${getApiBase()}/api/products?limit=4`)
             .then((r) => r.json())
             .then((fj) => {
-              if (fj.success && fj.data)
+              if (fj.success && fj.data && fj.data.length > 0) {
                 setProducts((fj.data as ApiProduct[]).map(mapProduct));
+              } else {
+                setProducts(fallbackProducts.slice(0, 4));
+              }
+            })
+            .catch(() => {
+              setProducts(fallbackProducts.slice(0, 4));
             });
         }
       })
-      .catch(() => {})
+      .catch(() => {
+        setProducts(fallbackProducts.slice(0, 4));
+      })
       .finally(() => setLoading(false));
   }, []);
 

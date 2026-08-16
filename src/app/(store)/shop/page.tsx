@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { Product, SortOption } from "@/types";
 import ProductCard from "@/components/product/ProductCard";
 import { getApiBase } from "@/lib/apiBase";
+import { products as fallbackProducts } from "@/data/products";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -128,9 +129,15 @@ function ShopContent() {
     fetch(`${getApiBase()}/api/products?${params.toString()}`)
       .then((r) => r.json())
       .then((j) => {
-        if (j.success) setAllProducts((j.data as ApiProduct[]).map(mapProduct));
+        if (j.success && Array.isArray(j.data) && j.data.length > 0) {
+          setAllProducts((j.data as ApiProduct[]).map(mapProduct));
+        } else {
+          setAllProducts(fallbackProducts);
+        }
       })
-      .catch(() => {})
+      .catch(() => {
+        setAllProducts(fallbackProducts);
+      })
       .finally(() => setLoading(false));
   }, [initialBadge]);
 

@@ -19,12 +19,12 @@ export function getApiBase(): string {
     }
 
     // 2. If running on live Vercel or production domain (e.g. *.vercel.app or custom domain)
-    //    and envUrl is empty or points to localhost, fallback to Vercel backend
-    if (
-      (hostname.endsWith("vercel.app") || hostname.includes("shajsutro")) &&
-      (!envUrl || envUrl.includes("localhost"))
-    ) {
-      return "https://shajsutro-backend.vercel.app";
+    //    If envUrl is valid (not localhost), use it. Otherwise use relative route ""
+    if (hostname.endsWith("vercel.app") || hostname.includes("shajsutro")) {
+      if (envUrl && !envUrl.includes("localhost")) {
+        return envUrl.replace(/\/api\/?$/, "").replace(/\/$/, "");
+      }
+      return "";
     }
   }
 
