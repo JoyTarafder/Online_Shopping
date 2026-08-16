@@ -65,21 +65,21 @@ export default function ProductCard({ product }: ProductCardProps) {
           )}
 
           <div
-            className={`absolute inset-x-0 bottom-0 p-4 transition-all duration-400 ease-premium ${
-              isHovered ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"
+            className={`absolute inset-x-0 bottom-0 p-3 sm:p-4 transition-all duration-300 ease-premium ${
+              isHovered ? "opacity-100 translate-y-0" : "opacity-100 sm:opacity-0 translate-y-0 sm:translate-y-3"
             }`}
           >
             <button
               onClick={handleAddToCart}
               disabled={isAddingToCart}
-              className={`w-full py-3 text-sm font-medium rounded-xl transition-all duration-300 ${
+              className={`w-full py-2.5 sm:py-3 text-xs sm:text-sm font-bold rounded-xl transition-all duration-300 ${
                 isAddingToCart
-                  ? "bg-green-600 text-white"
-                  : "bg-white/90 backdrop-blur-md text-charcoal-900 hover:bg-charcoal-950 hover:text-white shadow-soft-md"
+                  ? "bg-emerald-600 text-white"
+                  : "bg-white/95 backdrop-blur-md text-charcoal-950 hover:bg-charcoal-950 hover:text-white shadow-md active:scale-95"
               }`}
             >
               {isAddingToCart ? (
-                <span className="flex items-center justify-center gap-2">
+                <span className="flex items-center justify-center gap-1.5">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
@@ -92,9 +92,9 @@ export default function ProductCard({ product }: ProductCardProps) {
           </div>
 
           <button
-            className={`absolute top-4 right-4 p-2.5 bg-white/90 backdrop-blur-sm rounded-full shadow-soft transition-all duration-300 ${
-              isHovered ? "opacity-100 scale-100" : "opacity-0 scale-90"
-            } ${favored ? "text-red-500" : "text-charcoal-300 hover:text-red-500"}`}
+            className={`absolute top-3 right-3 sm:top-4 sm:right-4 p-2 sm:p-2.5 bg-white/95 backdrop-blur-sm rounded-full shadow-md transition-all duration-300 ${
+              isHovered ? "opacity-100 scale-100" : "opacity-100 sm:opacity-0 scale-100 sm:scale-90"
+            } ${favored ? "text-red-500" : "text-charcoal-400 hover:text-red-500"}`}
             aria-label={favored ? "Remove from favorites" : "Add to favorites"}
             onClick={(e) => {
               e.preventDefault();
