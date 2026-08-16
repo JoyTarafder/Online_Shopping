@@ -123,6 +123,42 @@ export default function ProductDetailPage() {
   const [newComment, setNewComment] = useState("");
   const [orderIdInput, setOrderIdInput] = useState("");
   const [submittingReview, setSubmittingReview] = useState(false);
+  const [canUserReview, setCanUserReview] = useState(false);
+  const [userDeliveredOrderId, setUserDeliveredOrderId] = useState("");
+
+  const checkPurchaseStatus = (productId: string) => {
+    const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+    if (!token) {
+      setCanUserReview(false);
+      return;
+    }
+
+    fetch(`${getApiBase()}/api/orders?limit=50`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((r) => r.json())
+      .then((j) => {
+        if (j.success && Array.isArray(j.data)) {
+          const matchingOrder = j.data.find((ord: any) => {
+            const isDelivered = ord.status === "delivered";
+            const hasProduct = ord.items?.some((item: any) => {
+              const pId = typeof item.product === "object" ? item.product?._id : item.product;
+              return String(pId) === String(productId);
+            });
+            return isDelivered && hasProduct;
+          });
+
+          if (matchingOrder) {
+            setCanUserReview(true);
+            setUserDeliveredOrderId(matchingOrder._id);
+            setOrderIdInput(matchingOrder._id);
+          } else {
+            setCanUserReview(false);
+          }
+        }
+      })
+      .catch(() => setCanUserReview(false));
+  };
 
   const fetchDynamicReviews = (productId: string) => {
     fetch(`${getApiBase()}/api/reviews/product/${productId}`)
@@ -164,6 +200,7 @@ export default function ProductDetailPage() {
         setSelectedSize(p.sizes[0] ?? "");
         setSelectedColor(p.colors[0] ?? "");
         fetchDynamicReviews(p.id);
+        checkPurchaseStatus(p.id);
 
         // Fetch related
         return fetch(
@@ -625,7 +662,7 @@ export default function ProductDetailPage() {
 
             {/* Customer Reviews Section */}
             <div className="pt-8 border-t border-charcoal-100 space-y-6">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between flex-wrap gap-3">
                 <div>
                   <h3 className="text-base font-bold text-charcoal-900">
                     Customer Reviews
@@ -634,38 +671,58 @@ export default function ProductDetailPage() {
                     {product.reviews} verified review{product.reviews !== 1 ? "s" : ""} · {product.rating.toFixed(1)} out of 5 stars
                   </p>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => setShowReviewForm(!showReviewForm)}
-                  className="px-4 py-2 text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200/80 rounded-xl hover:bg-emerald-100 transition-colors"
-                >
-                  {showReviewForm ? "Close Form" : "✍️ Write a Review"}
-                </button>
+                {canUserReview && (
+                  <button
+                    type="button"
+                    onClick={() => setShowReviewForm(!showReviewForm)}
+                    className="px-4 py-2 text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200/80 rounded-xl hover:bg-emerald-100 transition-colors shadow-xs"
+                  >
+                    {showReviewForm ? "Close Form" : "✍️ Write a Review"}
+                  </button>
+                )}
               </div>
 
-              {/* Review Submission Form */}
-              {showReviewForm && (
+              {!canUserReview && (
+                <div className="p-3.5 rounded-2xl bg-charcoal-50/80 border border-charcoal-100/80 text-[11.5px] text-charcoal-500 font-light flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0 animate-pulse" />
+                  <span>Only verified customers who have purchased and received this item can write a review. All visitors can browse verified customer feedback below.</span>
+                </div>
+              )}
+
+              {/* Review Submission Form (Only accessible for verified buyers) */}
+              {canUserReview && showReviewForm && (
                 <form
                   onSubmit={handleReviewSubmit}
                   className="p-5 rounded-2xl bg-emerald-50/40 border border-emerald-100 space-y-4 animate-in fade-in duration-200"
                 >
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-900">
-                    Submit Your Review
-                  </h4>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-charcoal-700 mb-1">
-                      Delivered Order ID *
-                    </label>
-                    <input
-                      type="text"
-                      value={orderIdInput}
-                      onChange={(e) => setOrderIdInput(e.target.value)}
-                      placeholder="e.g. 64aef..."
-                      required
-                      className="w-full px-3.5 py-2.5 text-xs rounded-xl bg-white border border-charcoal-200 focus:outline-none focus:border-emerald-500 font-medium"
-                    />
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-900">
+                      Submit Verified Purchase Review
+                    </h4>
+                    <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-100/80 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                      ✓ Verified Buyer
+                    </span>
                   </div>
+
+                  {userDeliveredOrderId ? (
+                    <div className="text-xs text-charcoal-600 bg-white/80 p-2.5 rounded-xl border border-emerald-100 font-medium">
+                      Order: <span className="font-mono text-emerald-800">#{userDeliveredOrderId}</span>
+                    </div>
+                  ) : (
+                    <div>
+                      <label className="block text-xs font-semibold text-charcoal-700 mb-1">
+                        Delivered Order ID *
+                      </label>
+                      <input
+                        type="text"
+                        value={orderIdInput}
+                        onChange={(e) => setOrderIdInput(e.target.value)}
+                        placeholder="e.g. 64aef..."
+                        required
+                        className="w-full px-3.5 py-2.5 text-xs rounded-xl bg-white border border-charcoal-200 focus:outline-none focus:border-emerald-500 font-medium"
+                      />
+                    </div>
+                  )}
 
                   <div>
                     <label className="block text-xs font-semibold text-charcoal-700 mb-1">
